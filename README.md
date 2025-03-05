@@ -1,2 +1,2 @@
 # TheMewStore
-Concept for a Pokémon card store and trade mobile application. 
+Concept for a PTCG card store and trade mobile application. 
