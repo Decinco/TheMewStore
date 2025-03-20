@@ -1,23 +1,22 @@
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../data/models/userData.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+  SupabaseClient client = Supabase.instance.client;
+  late Rx<User> user;
 
-  final count = 0.obs;
   @override
   void onInit() {
+    user = Rx<User>(client.auth.currentUser!);
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
+  Future<UserData> getUserData() async {
+    var userData = await client.from('user_data').select().eq('user_id', user.value.id);
+    UserData userDataModel = UserData.fromJson(userData[0]);
 
-  @override
-  void onClose() {
-    super.onClose();
+    return userDataModel;
   }
-
-  void increment() => count.value++;
 }
