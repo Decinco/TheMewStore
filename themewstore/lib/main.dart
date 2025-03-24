@@ -21,7 +21,7 @@ Future main() async{
       debugShowCheckedModeBanner: false,
       onReady: () => Get.find<LogInOutController>().initNavigationListener(),
       title: "Application",
-      initialRoute: AppPages.INITIAL,
+      initialRoute: AppPages.INITIAL, //splash
       getPages: AppPages.routes,
       theme: ThemeData(
         fontFamily: 'Inter'
