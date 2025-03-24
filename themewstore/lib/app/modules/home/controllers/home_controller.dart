@@ -9,7 +9,11 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    user = Rx<User>(client.auth.currentUser!);
+    User? currentUser = client.auth.currentUser;
+
+    if (currentUser != null) {
+      user = Rx<User>(client.auth.currentUser!);
+    }
     super.onInit();
   }
 
@@ -18,5 +22,9 @@ class HomeController extends GetxController {
     UserData userDataModel = UserData.fromJson(userData[0]);
 
     return userDataModel;
+  }
+
+  Future<void> logOut() async {
+    await client.auth.signOut();
   }
 }

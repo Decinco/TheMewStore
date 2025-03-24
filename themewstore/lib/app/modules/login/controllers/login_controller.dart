@@ -10,20 +10,28 @@ class LoginController extends GetxController {
   TextEditingController emailC = TextEditingController();
   TextEditingController passwordC = TextEditingController();
 
+  @override
+  onClose() {
+    emailC.dispose();
+    passwordC.dispose();
+    super.onClose();
+  }
+
   Future<bool?> login() async {
     if (emailC.text.isNotEmpty && passwordC.text.isNotEmpty) {
       isLoading.value = true;
       try {
-        await client.auth
+        AuthResponse res = await client.auth
             .signInWithPassword(email: emailC.text, password: passwordC.text);
         isLoading.value = false;
+
         return true;
       } catch (e) {
         isLoading.value = false;
-        Get.snackbar("ERROR", e.toString());
+        Get.snackbar("Oops!", e.toString());
       }
     } else {
-      Get.snackbar("ERROR", "Email and password are required");
+      Get.snackbar("Wrong!", "Email and password are required");
     }
     return null;
   }

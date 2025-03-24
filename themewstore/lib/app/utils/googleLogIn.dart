@@ -29,6 +29,8 @@ class GoogleLoginUtils {
       idToken: idToken,
       accessToken: accessToken,
     );
+
+    await googleSignIn.signOut();
   }
 
   static Future<void> webGoogleLogIn(SupabaseClient supabase) async {

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:themewstore/app/modules/signup/controllers/signup_controller.dart';
 
 import '../../../../uicon.dart';
 import '../../home/views/home_view.dart';
-import '../controllers/login_controller.dart';
+import '../controllers/signup_controller.dart';
 
-class LoginView extends GetView<LoginController> {
-  const LoginView({super.key});
+class SignupView extends GetView<SignupController> {
+  const SignupView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +28,14 @@ class LoginView extends GetView<LoginController> {
                   height: 40,
                   child: InkWell(
                     onTap: () {
-                      Get.offAllNamed("/signup");
+                      Get.offAllNamed("/login");
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Sign Up",
+                          "Log In",
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -42,7 +43,7 @@ class LoginView extends GetView<LoginController> {
                         Padding(
                           padding: EdgeInsets.only(left: 5),
                           child: Icon(
-                            UIcons.fibsuseradd,
+                            UIcons.fibsuserkey,
                             size: 40,
                           ),
                         ),
@@ -58,21 +59,11 @@ class LoginView extends GetView<LoginController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      child: Image(
-                        image: AssetImage(
-                            "assets/images/themewstore/themewstore.png"),
-                        height: 150,
-                      ),
-                    ),
-                  ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                     child: Center(
                       child: Text(
-                        "Log In",
+                        "Sign Up",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -95,6 +86,22 @@ class LoginView extends GetView<LoginController> {
                   const SizedBox(
                     height: 25,
                   ),
+
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: TextField(
+                      controller: controller.usernameC,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        fillColor: Colors.white,
+                        filled: true,
+                        label: Text("Username"),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: TextField(
@@ -106,6 +113,23 @@ class LoginView extends GetView<LoginController> {
                         fillColor: Colors.white,
                         filled: true,
                         label: Text("Password"),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: TextField(
+                      controller: controller.passwordAgainC,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        fillColor: Colors.white,
+                        filled: true,
+                        label: Text("Confirm Password"),
                       ),
                     ),
                   ),
@@ -135,7 +159,7 @@ class LoginView extends GetView<LoginController> {
                                           "assets/images/google/googl.png"),
                                       fit: BoxFit.cover),
                                   Flexible(
-                                    child: const Text("Sign in with Google",
+                                    child: const Text("Sign up with Google",
                                         style: TextStyle(
                                           fontSize: 13,
                                         )),
@@ -147,47 +171,28 @@ class LoginView extends GetView<LoginController> {
                           ),
                           ElevatedButton(
                             onPressed: () async {
-                              controller.login();
+                              bool? signup = await controller.signup();
+                              if (signup == true) {
+                                Get.offAllNamed("/login");
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(135, 45),
                               elevation: 0,
                               backgroundColor:
-                                  Color.fromARGB(255, 118, 171, 218),
+                              Color.fromARGB(255, 118, 171, 218),
                               foregroundColor: Colors.white,
                               textStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                   fontFamily: "Inter"),
                             ),
-                            child: const Text("Log In"),
+                            child: const Text("Sign Up"),
                           ),
                         ],
                       )),
                 ],
               ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                  child: Center(
-                    child: InkWell(
-                      onTap: () {
-                        Get.toNamed("/home");
-                      },
-                      child: Text(
-                        "Forgot your password?",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
             )
           ],
         ),
