@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/modules/generic/controllers/LoginOutController.dart';
 import 'app/routes/app_pages.dart';
 
+<<<<<<< HEAD
 Future main() async{
   await dotenv.load(fileName: ".env");
 
@@ -16,6 +17,11 @@ Future main() async{
 
   Get.put(LogInOutController());
 
+=======
+import 'app/modules/product/views/product_view.dart';
+
+void main() {
+>>>>>>> feature/product
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -23,9 +29,14 @@ Future main() async{
       title: "Application",
       initialRoute: AppPages.INITIAL, //splash
       getPages: AppPages.routes,
+<<<<<<< HEAD
       theme: ThemeData(
         fontFamily: 'Inter'
       ),
     ),
+=======
+        debugShowCheckedModeBanner: false
+    )
+>>>>>>> feature/product
   );
 }
