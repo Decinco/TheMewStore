@@ -15,7 +15,6 @@ class AppPages {
   AppPages._();
 
   static const INITIAL = Routes.LOGIN;
-  static const INITIAL = Routes.PRODUCT;
 
   static final routes = [
     GetPage(

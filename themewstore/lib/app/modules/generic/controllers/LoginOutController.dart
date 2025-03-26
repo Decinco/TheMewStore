@@ -24,7 +24,7 @@ class LogInOutController extends GetxController {
   }
 
   void initNavigationListener() {
-    navigateBasedOnListener();
+    //navigateBasedOnListener();
 
     ever(loggedIn, (value) {
       navigateBasedOnListener();

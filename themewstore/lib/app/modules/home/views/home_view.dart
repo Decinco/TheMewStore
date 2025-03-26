@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
+import 'package:themewstore/uicon.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -17,7 +18,7 @@ class HomeView extends GetView<HomeController> {
           children: [
             const Text('The Mew Store', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(width: 10),
-            const Icon(Icons.shopping_bag, color: Colors.black),
+            const Icon(UIcons.fibsshoppingbag, color: Colors.black),
           ],
         ),
         centerTitle: true,
@@ -28,7 +29,7 @@ class HomeView extends GetView<HomeController> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(UIcons.fibsbell),
             onPressed: () {},
           ),
         ],
