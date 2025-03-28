@@ -6,6 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="ef6ad31a-64b3-45ce-8452-84e05225740a" name="Changes" comment="crear carpeta de product">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/modules/shoppingcart/controllers/shoppingcart_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/shoppingcart/controllers/shoppingcart_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/modules/shoppingcart/views/shoppingcart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/shoppingcart/views/shoppingcart_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/routes/app_pages.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/routes/app_pages.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
