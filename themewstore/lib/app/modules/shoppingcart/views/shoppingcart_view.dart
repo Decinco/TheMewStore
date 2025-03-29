@@ -29,35 +29,42 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                 icon: const Icon(Icons.shopping_bag, color: Colors.black, size: 28),
                 onPressed: () {},
               ),
-              Positioned(
-                right: 6,
-                top: 6,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
+              // Solo mostramos el número si hay productos en el carrito
+              Obx(() {
+                return controller.cartItems.isEmpty
+                    ? Container()
+                    : Positioned(
+                  right: 6,
+                  top: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      controller.cartItems.length.toString(),
+                      style: const TextStyle(
+                          color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  child: const Text(
-                    '1',
-                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+                );
+              }),
             ],
           ),
         ],
       ),
       body: Column(
         children: [
-          // Barra de búsqueda
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TextField(
+              onChanged: (value) {
+                controller.filterProducts(value);
+              },
               decoration: InputDecoration(
                 hintText: 'Buscar...',
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                suffixIcon: const Icon(Icons.zoom_in, color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -67,24 +74,33 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
               ),
             ),
           ),
-          // Carrusel de productos
           Expanded(
-            child: Obx(() => CarouselSlider(
-              options: CarouselOptions(
-                height: MediaQuery.of(context).size.height * 0.6,
-                enlargeCenterPage: true,
-                enableInfiniteScroll: false,
-                onPageChanged: (index, reason) {
-                  controller.currentPage.value = index;
-                },
-              ),
-              items: controller.cartItems.map((item) {
-                int index = controller.cartItems.indexOf(item); // Obtener el índice de cada item
-                return _cartItem(index); // Usa tu función para generar el item del carrito
-              }).toList(),
-            )),
+            child: Obx(() {
+              if (controller.filteredCartItems.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "No hay ningún producto disponible",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                );
+              }
+
+              return CarouselSlider(
+                options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                  onPageChanged: (index, reason) {
+                    controller.currentPage.value = index;
+                  },
+                ),
+                carouselController: controller.carouselController,
+                items: controller.filteredCartItems.asMap().entries.map((entry) {
+                  return _cartItem(entry.key);
+                }).toList(),
+              );
+            }),
           ),
-          // Paginación y botones
           Obx(() => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Column(
@@ -97,41 +113,45 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
-                        "${controller.currentPage.value + 1} / ${controller.cartItems.length}",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        controller.cartItems.isEmpty
+                            ? "0 / 0"
+                            : "${controller.currentPage.value + 1} / ${controller.filteredCartItems.length}",
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                     _quantityButton(Icons.chevron_right, controller.nextPage,
-                        enabled: controller.currentPage.value < controller.cartItems.length - 1),
+                        enabled: controller.currentPage.value < controller.filteredCartItems.length - 1),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {
-                        controller.removeItem(); // Eliminación de artículo
-                      },
-                      icon: const Icon(Icons.delete, color: Colors.white),
-                      label: const Text('Remove'),
+                      onPressed: controller.filteredCartItems.isEmpty ? null : controller.removeItem,
+                      icon: const Icon(Icons.delete, color: Colors.white, size: 28),
+                      label: const Text('Remove', style: TextStyle(fontSize: 20)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                        minimumSize: const Size(160, 50),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
                     ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.payment, color: Colors.white),
-                      label: const Text('Pay'),
+                      onPressed: controller.filteredCartItems.isEmpty ? null : () {},
+                      icon: const Icon(Icons.payment, color: Colors.white, size: 28),
+                      label: const Text('Pay', style: TextStyle(fontSize: 20)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                        minimumSize: const Size(160, 50),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
@@ -147,7 +167,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
 
   Widget _cartItem(int index) {
     return Obx(() {
-      final item = controller.cartItems[index];
+      final item = controller.filteredCartItems[index];
       return Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
@@ -164,7 +184,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _quantityButton(Icons.remove, () => controller.decrement(index),
-                      enabled: controller.cartItems[index]["quantity"].value > 1),
+                      enabled: controller.filteredCartItems[index]["quantity"].value > 1),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
@@ -173,7 +193,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                     ),
                   ),
                   _quantityButton(Icons.add, () => controller.increment(index),
-                      enabled: controller.cartItems[index]["quantity"].value < 100),
+                      enabled: controller.filteredCartItems[index]["quantity"].value < 100),
                 ],
               ),
             ],

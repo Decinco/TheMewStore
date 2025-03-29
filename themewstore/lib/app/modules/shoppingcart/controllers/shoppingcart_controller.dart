@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 // Extensión de CarouselController para manejar la navegación entre páginas
 extension CarouselControllerExtension on CarouselController {
@@ -15,8 +16,9 @@ extension CarouselControllerExtension on CarouselController {
   }
 
   // Para ir a una página específica con animación
-  void animateToPage(int page, {Duration duration = const Duration(milliseconds: 300)}) {
-    animateToPage(page); // Usamos `jumpToPage` para la animación suave
+  // En tu extensión
+  void animateToPage(int page, {Duration duration = const Duration(milliseconds: 300), Curve curve = Curves.easeInOut}) {
+    this.animateToPage(page, duration: duration, curve: curve);
   }
 }
 
@@ -53,7 +55,24 @@ class ShoppingcartController extends GetxController {
   ].obs;
 
   var currentPage = 0.obs;
-  final CarouselController carouselController = CarouselController();
+  var filteredCartItems = <Map<String, dynamic>>[].obs; // Lista filtrada
+
+  final CarouselSliderController carouselController = CarouselSliderController();
+  @override
+  void onInit() {
+    super.onInit();
+    filteredCartItems.assignAll(cartItems); // Inicializa la lista filtrada
+  }
+
+  // Filtrar productos por nombre
+  void filterProducts(String query) {
+    if (query.isEmpty) {
+      filteredCartItems.assignAll(cartItems); // Si está vacío, mostrar todos
+    } else {
+      filteredCartItems.assignAll(cartItems.where((item) =>
+          item["name"].toLowerCase().contains(query.toLowerCase())).toList());
+    }
+  }
 
   // Incrementar cantidad y mover el carrusel al índice
   void increment(int index) {
@@ -69,21 +88,20 @@ class ShoppingcartController extends GetxController {
     }
   }
 
-  // Pasar al siguiente producto en el carrusel
   void nextPage() {
     if (currentPage.value < cartItems.length - 1) {
       currentPage.value++;
-      carouselController.nextPageWithAnimation(carouselController, currentPage.value, duration: Duration(milliseconds: 300)); // Desplaza el carrusel
+      carouselController.animateToPage(currentPage.value);
     }
   }
 
-  // Pasar al producto anterior en el carrusel
   void previousPage() {
     if (currentPage.value > 0) {
       currentPage.value--;
-      carouselController.previousPageWithAnimation(carouselController, currentPage.value, duration: Duration(milliseconds: 300)); // Desplaza el carrusel
+      carouselController.animateToPage(currentPage.value);
     }
   }
+
 
   // Eliminar el producto actual del carrito
   void removeItem() {
