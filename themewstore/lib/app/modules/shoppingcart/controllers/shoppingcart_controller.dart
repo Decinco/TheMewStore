@@ -59,6 +59,7 @@ class ShoppingcartController extends GetxController {
 
   final CarouselSliderController carouselController = CarouselSliderController();
   @override
+
   void onInit() {
     super.onInit();
     filteredCartItems.assignAll(cartItems); // Inicializa la lista filtrada
@@ -105,12 +106,26 @@ class ShoppingcartController extends GetxController {
 
   // Eliminar el producto actual del carrito
   void removeItem() {
-    if (cartItems.isNotEmpty) {
-      cartItems.removeAt(currentPage.value);
-      if (currentPage.value >= cartItems.length && currentPage.value > 0) {
+    if (filteredCartItems.isNotEmpty) {
+      int index = currentPage.value;
+      var removedItem = filteredCartItems[index]; // Guardamos el item a eliminar
+
+      // Eliminar el producto de ambas listas
+      cartItems.removeWhere((item) => item == removedItem);
+      filteredCartItems.removeAt(index);
+
+      // Ajustar la página actual
+      if (currentPage.value >= filteredCartItems.length && currentPage.value > 0) {
         currentPage.value--;
       }
     }
+  }
+
+  double get totalAmount {
+    return cartItems.fold(0.0, (sum, item) {
+      double price = double.tryParse(item["price"].replaceAll("€", "").replaceAll(",", ".")) ?? 0.0;
+      return sum + (price * item["quantity"].value);
+    });
   }
 
   // Obtener el número total de productos en el carrito

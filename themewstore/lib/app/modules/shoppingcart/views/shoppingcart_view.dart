@@ -29,7 +29,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                 icon: const Icon(Icons.shopping_bag, color: Colors.black, size: 28),
                 onPressed: () {},
               ),
-              // Solo mostramos el número si hay productos en el carrito
               Obx(() {
                 return controller.cartItems.isEmpty
                     ? Container()
@@ -43,9 +42,11 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                       shape: BoxShape.circle,
                     ),
                     child: Text(
-                      controller.cartItems.length.toString(),
+                      controller.filteredCartItems.length.toString(),
                       style: const TextStyle(
-                          color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 );
@@ -95,7 +96,10 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                   },
                 ),
                 carouselController: controller.carouselController,
-                items: controller.filteredCartItems.asMap().entries.map((entry) {
+                items: controller.filteredCartItems
+                    .asMap()
+                    .entries
+                    .map((entry) {
                   return _cartItem(entry.key);
                 }).toList(),
               );
@@ -113,50 +117,61 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
-                        controller.cartItems.isEmpty
+                        controller.filteredCartItems.isEmpty
                             ? "0 / 0"
                             : "${controller.currentPage.value + 1} / ${controller.filteredCartItems.length}",
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                     _quantityButton(Icons.chevron_right, controller.nextPage,
-                        enabled: controller.currentPage.value < controller.filteredCartItems.length - 1),
+                        enabled: controller.currentPage.value <
+                            controller.filteredCartItems.length - 1),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: controller.filteredCartItems.isEmpty ? null : controller.removeItem,
+                      onPressed:
+                      controller.filteredCartItems.isEmpty ? null : controller.removeItem,
                       icon: const Icon(Icons.delete, color: Colors.white, size: 28),
                       label: const Text('Remove', style: TextStyle(fontSize: 20)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-                        minimumSize: const Size(160, 50),
+                        minimumSize: const Size(140, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
-                    ElevatedButton.icon(
-                      onPressed: controller.filteredCartItems.isEmpty ? null : () {},
-                      icon: const Icon(Icons.payment, color: Colors.white, size: 28),
-                      label: const Text('Pay', style: TextStyle(fontSize: 20)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-                        minimumSize: const Size(160, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: controller.filteredCartItems.isEmpty ? null : () {},
+                        icon: const Icon(Icons.payment, color: Colors.white, size: 28),
+                        label: Obx(() {
+                          return Text(
+                            'Pay ${controller.totalAmount.toStringAsFixed(2)}€',
+                            style: const TextStyle(fontSize: 18),
+                          );
+                        }),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
+
               ],
             ),
           )),
@@ -178,13 +193,13 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
               Image.network(item["image"], width: 150, height: 150, fit: BoxFit.cover),
               const SizedBox(height: 10),
               Text(item["name"], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(item["price"], style: const TextStyle(fontSize: 16)),
+              Text("${item["price"]}€", style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _quantityButton(Icons.remove, () => controller.decrement(index),
-                      enabled: controller.filteredCartItems[index]["quantity"].value > 1),
+                      enabled: item["quantity"].value > 1),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
@@ -193,7 +208,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                     ),
                   ),
                   _quantityButton(Icons.add, () => controller.increment(index),
-                      enabled: controller.filteredCartItems[index]["quantity"].value < 100),
+                      enabled: item["quantity"].value < 100),
                 ],
               ),
             ],
