@@ -129,37 +129,55 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                             controller.filteredCartItems.length - 1),
                   ],
                 ),
-                const SizedBox(height: 16), // Mayor margen superior
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton.icon(
                       onPressed: controller.filteredCartItems.isEmpty ? null : controller.removeItem,
-                      icon: const Icon(Icons.delete, color: Colors.red, size: 24),
+                      icon: const Icon(Icons.delete, color: Colors.white, size: 24),
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.red.shade100, // Fondo rojo claro
+                        backgroundColor: Colors.red.shade500, // Fondo rojo oscuro
                       ),
-                      label: const Text(
-                        'Remove',
-                        style: TextStyle(fontSize: 14, color: Colors.red),
+                      label: const Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Remove',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.white),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: TextButton.icon(
                         onPressed: controller.filteredCartItems.isEmpty ? null : () {},
-                        icon: const Icon(Icons.payment, color: Colors.green, size: 24),
+                        icon: const Icon(Icons.payment, color: Colors.white, size: 24),
                         style: TextButton.styleFrom(
-                          backgroundColor: Colors.green.shade100, // Fondo verde claro
+                          backgroundColor: Colors.green.shade500, // Fondo verde oscuro
                         ),
                         label: Obx(() {
-                          return Text(
-                            'Pay ${controller.totalAmount.toStringAsFixed(2)}€',
-                            style: const TextStyle(fontSize: 14, color: Colors.green),
+                          return Text.rich(
+                            TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'Pay ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: '${controller.totalAmount.toStringAsFixed(2)}€',
+                                ),
+                              ],
+                            ),
+                            style: const TextStyle(fontSize: 14, color: Colors.white),
                           );
                         }),
                       ),
                     ),
+
                   ],
                 ),
 
