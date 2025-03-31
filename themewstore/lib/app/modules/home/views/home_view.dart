@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
 import 'package:themewstore/uicon.dart';
-
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -48,25 +47,29 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
           ),
-          slider.CarouselSlider(
-            options: slider.CarouselOptions(height: 150, autoPlay: true),
-            items: [
-              'assets/img1.jpg', 'assets/img2.jpg', 'assets/img3.jpg'
-            ].map((image) {
+          // Carousel Slider with products
+          Obx(() => controller.products.isNotEmpty
+              ? slider.CarouselSlider(
+            options: slider.CarouselOptions(height: 260, autoPlay: true),
+            items: controller.products.map((product) {
               return Builder(
                 builder: (BuildContext context) {
                   return Container(
                     width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.symmetric(horizontal: 5.0),
                     decoration: BoxDecoration(color: Colors.pink[50]),
-                    child: Image.asset(image, fit: BoxFit.cover),
+                    child: Image.network(product.image, fit: BoxFit.cover),
                   );
                 },
               );
             }).toList(),
-          ),
+          )
+              : const Center(child: CircularProgressIndicator())),
+
+          // GridView of products
           Expanded(
-            child: GridView.builder(
+            child: Obx(() => controller.products.isNotEmpty
+                ? GridView.builder(
               padding: const EdgeInsets.all(10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -74,8 +77,9 @@ class HomeView extends GetView<HomeController> {
                 mainAxisSpacing: 10,
                 childAspectRatio: 0.8,
               ),
-              itemCount: 6,
+              itemCount: controller.products.length,
               itemBuilder: (context, index) {
+                final product = controller.products[index];
                 return Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -88,7 +92,7 @@ class HomeView extends GetView<HomeController> {
                         child: Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/product${index + 1}.jpg'),
+                              image: NetworkImage(product.image),
                               fit: BoxFit.cover,
                             ),
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
@@ -98,7 +102,7 @@ class HomeView extends GetView<HomeController> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          '\$${((index + 1) * 19.99).toStringAsFixed(2)}',
+                          '\$${product.price.toStringAsFixed(2)}',
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -106,7 +110,8 @@ class HomeView extends GetView<HomeController> {
                   ),
                 );
               },
-            ),
+            )
+                : const Center(child: CircularProgressIndicator())),
           ),
         ],
       ),
