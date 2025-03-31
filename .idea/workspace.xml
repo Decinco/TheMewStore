@@ -4,10 +4,22 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef6ad31a-64b3-45ce-8452-84e05225740a" name="Changes" comment="env">
+    <list default="true" id="ef6ad31a-64b3-45ce-8452-84e05225740a" name="Changes" comment="crear carpeta de product">
+      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/themewstore/lib/app/data/models/productStock.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/routes/app_pages.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/routes/app_pages.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/routes/app_routes.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/modules/home/controllers/home_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/home/controllers/home_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/modules/home/views/home_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/home/views/home_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +49,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Decinco/TheMewStore.git&quot;,
-    &quot;accountId&quot;: &quot;b7e9fba6-8d6a-416a-a9ad-e7512a76df16&quot;
+    &quot;accountId&quot;: &quot;9ed2c07d-ff4a-45ac-b8d0-0c15c49514cf&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -49,6 +61,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/home__functions&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/S2AM/flutter/bin/cache/dart-sdk&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;dart.settings&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Flutter.main.dart.executor": "Run",
