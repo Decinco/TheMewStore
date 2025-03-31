@@ -8,6 +8,10 @@ import '../modules/password/bindings/password_binding.dart';
 import '../modules/password/views/password_view.dart';
 import '../modules/product/bindings/product_binding.dart';
 import '../modules/product/views/product_view.dart';
+import '../modules/product/bindings/product_binding.dart';
+import '../modules/product/views/product_view.dart';
+import '../modules/shoppingcart/bindings/shoppingcart_binding.dart';
+import '../modules/shoppingcart/views/shoppingcart_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
 
@@ -16,7 +20,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.SHOPPINGCART;
 
   static final routes = [
     GetPage(
@@ -49,6 +53,11 @@ class AppPages {
       name: _Paths.PASSWORD,
       page: () => const PasswordView(),
       binding: PasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.SHOPPINGCART,
+      page: () => const ShoppingcartView(),
+      binding: ShoppingcartBinding(),
     ),
   ];
 }
