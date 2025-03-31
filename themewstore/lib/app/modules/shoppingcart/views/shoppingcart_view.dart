@@ -129,48 +129,40 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                             controller.filteredCartItems.length - 1),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16), // Mayor margen superior
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed:
-                      controller.filteredCartItems.isEmpty ? null : controller.removeItem,
-                      icon: const Icon(Icons.delete, color: Colors.white, size: 28),
-                      label: const Text('Remove', style: TextStyle(fontSize: 20)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-                        minimumSize: const Size(140, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                    TextButton.icon(
+                      onPressed: controller.filteredCartItems.isEmpty ? null : controller.removeItem,
+                      icon: const Icon(Icons.delete, color: Colors.red, size: 24),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.red.shade100, // Fondo rojo claro
+                      ),
+                      label: const Text(
+                        'Remove',
+                        style: TextStyle(fontSize: 14, color: Colors.red),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 16),
                     Expanded(
-                      child: ElevatedButton.icon(
+                      child: TextButton.icon(
                         onPressed: controller.filteredCartItems.isEmpty ? null : () {},
-                        icon: const Icon(Icons.payment, color: Colors.white, size: 28),
+                        icon: const Icon(Icons.payment, color: Colors.green, size: 24),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.green.shade100, // Fondo verde claro
+                        ),
                         label: Obx(() {
                           return Text(
                             'Pay ${controller.totalAmount.toStringAsFixed(2)}€',
-                            style: const TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 14, color: Colors.green),
                           );
                         }),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
                       ),
                     ),
                   ],
                 ),
+
 
               ],
             ),
