@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64020039-6501-4212-8b6b-d811e044944e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/map/bindings/map_binding.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/map/controllers/map_controller.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/map/views/map_view.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/routes/app_pages.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/routes/app_pages.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/routes/app_routes.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themewstore/lib/app/modules/map/views/map_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/themewstore/lib/app/modules/map/views/map_view.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,14 +19,14 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Flutter.Unnamed.executor": "Run",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feature/map",
-    "io.flutter.reload.alreadyRun": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Flutter.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/map&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Unnamed" type="FlutterRunConfigurationType" factoryName="Flutter" nameIsGenerated="true">
       <option name="filePath" value="$PROJECT_DIR$/themewstore/lib/main.dart" />
