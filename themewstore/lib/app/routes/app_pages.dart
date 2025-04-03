@@ -7,9 +7,11 @@ import '../modules/login/views/login_view.dart';
 import '../modules/password/bindings/password_binding.dart';
 import '../modules/password/views/password_view.dart';
 import '../modules/product/bindings/product_binding.dart';
-import '../modules/product/views/product_view.dart';
 import '../modules/product/bindings/product_binding.dart';
 import '../modules/product/views/product_view.dart';
+import '../modules/product/views/product_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 import '../modules/shoppingcart/bindings/shoppingcart_binding.dart';
 import '../modules/shoppingcart/views/shoppingcart_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
@@ -20,7 +22,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SHOPPINGCART;
+  static const INITIAL = Routes.PRODUCT;
 
   static final routes = [
     GetPage(
@@ -58,6 +60,11 @@ class AppPages {
       name: _Paths.SHOPPINGCART,
       page: () => const ShoppingcartView(),
       binding: ShoppingcartBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS,
+      page: () => const SettingsView(),
+      binding: SettingsBinding(),
     ),
   ];
 }
