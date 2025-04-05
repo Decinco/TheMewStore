@@ -27,15 +27,13 @@ class LogInOutController extends GetxController {
     //navigateBasedOnListener();
 
     ever(loggedIn, (value) {
-        navigateBasedOnListener();
+      navigateBasedOnListener();
     });
   }
 
   void navigateBasedOnListener() {
     if (loggedIn.value) {
-      if (Get.currentRoute == '/login') {
-        Get.offAllNamed('/home');
-      }
+      Get.offAllNamed('/home');
     } else {
       Get.offAllNamed('/login');
     }

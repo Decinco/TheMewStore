@@ -21,7 +21,7 @@ class LoginView extends GetView<LoginController> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox.fromSize(
-                  size: Size(0, 45),
+                  size: Size(0, 30),
                 ),
                 SizedBox(
                   height: 40,
@@ -175,8 +175,7 @@ class LoginView extends GetView<LoginController> {
                   child: Center(
                     child: InkWell(
                       onTap: () {
-                        Get.toNamed("/password",
-                            arguments: controller.emailC.text);
+                        Get.toNamed("/home");
                       },
                       child: Text(
                         "Forgot your password?",

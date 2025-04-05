@@ -12,7 +12,7 @@ class ProductStock {
   String comments;
   int rating;
   String description;
-  int price;
+  double price;
   int stock;
   String productType;
   int expansionId;

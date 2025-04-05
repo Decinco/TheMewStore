@@ -20,7 +20,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.SHOPPINGCART;
 
   static final routes = [
     GetPage(
@@ -53,8 +53,6 @@ class AppPages {
       name: _Paths.PASSWORD,
       page: () => const PasswordView(),
       binding: PasswordBinding(),
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(milliseconds: 400),
     ),
     GetPage(
       name: _Paths.SHOPPINGCART,

@@ -3,14 +3,19 @@ import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
 import 'package:themewstore/uicon.dart';
 import '../controllers/home_controller.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
+  String getPublicImageUrl(String path) {
+    return Supabase.instance.client.storage.from('productimages').getPublicUrl(path);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(237, 213, 229, 100),
+      backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -21,7 +26,7 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(237, 213, 229, 100),
+        backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {},
@@ -36,37 +41,40 @@ class HomeView extends GetView<HomeController> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: TextField(
               decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
                 hintText: 'Buscar...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
           ),
-          // Carousel Slider with products
           Obx(() => controller.products.isNotEmpty
               ? slider.CarouselSlider(
-            options: slider.CarouselOptions(height: 260, autoPlay: true),
+            options: slider.CarouselOptions(
+              height: 220,
+              autoPlay: true,
+              enlargeCenterPage: true,
+            ),
             items: controller.products.map((product) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(color: Colors.pink[50]),
-                    child: Image.network(product.image, fit: BoxFit.cover),
-                  );
-                },
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  getPublicImageUrl(product.image),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 50),
+                ),
               );
             }).toList(),
           )
               : const Center(child: CircularProgressIndicator())),
-
-          // GridView of products
           Expanded(
             child: Obx(() => controller.products.isNotEmpty
                 ? GridView.builder(
@@ -75,39 +83,48 @@ class HomeView extends GetView<HomeController> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                childAspectRatio: 0.8,
+                childAspectRatio: 0.9,
               ),
               itemCount: controller.products.length,
               itemBuilder: (context, index) {
                 final product = controller.products[index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(product.image),
-                              fit: BoxFit.cover,
+                return Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.network(
+                        getPublicImageUrl(product.image),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 50),
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
                             ),
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                          ],
+                        ),
+                        child: Text(
+                          '\$${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          '\$${product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             )
