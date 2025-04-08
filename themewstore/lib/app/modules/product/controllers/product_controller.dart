@@ -1,43 +1,69 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:get/get.dart';
 
 class ProductController extends GetxController {
+  final SupabaseClient client = Supabase.instance.client;
+
   var quantity = 1.obs;
-  var rating = 4.0.obs; // Puntuación inicial
-  var isFavorite = false.obs;
-  var cartQuantity = 0.obs; // Cantidad de productos en la bolsa de compras
+  var cartQuantity = 0.obs;
+  var comments = <Comment>[].obs;
+  var stock = 0.obs;  // Aquí añadimos el stock
+  // Para cargar desde el HomeView
+  var product = {}.obs;
 
-  var comments = <Comment>[].obs; // Lista de comentarios
+  void setProduct(Map<String, dynamic> data) {
+    product.value = data;
+    stock.value = product['stock'] ?? 0;  // Cargar el stock del producto
+  }
 
+  Future<void> loadComments(dynamic productId) async {
+    try {
+      final data = await client
+          .from('comments')
+          .select()
+          .eq('product_id', productId.toString()) // 👈 convertir a String
+          .order('created_at', ascending: false);
+
+      comments.value = (data as List).map((c) => Comment.fromMap(c)).toList();
+    } catch (e) {
+      print('Error cargando comentarios: $e');
+    }
+  }
+
+  Future<void> addComment(String user, String text, int rating) async {
+    final newComment = {
+      'product_id': product['id'].toString(), // 👈 convertir a String
+      'user': user,
+      'text': text,
+      'rating': rating,
+    };
+
+    try {
+      final response = await client.from('comments').insert(newComment);
+      if (response != null) {
+        comments.insert(0, Comment(user: user, text: text, rating: rating));
+      }
+    } catch (e) {
+      print('Error insertando comentario: $e');
+    }
+  }
+
+  // Función para aumentar la cantidad, respetando el stock
   void increaseQuantity() {
-    quantity.value++; // Ya no hay límite
+    if (quantity.value < stock.value) {
+      quantity.value++;
+    } else {
+      Get.snackbar('¡Limite alcanzado!', 'No puedes agregar más de $stock unidades.');
+    }
   }
-
+  // Función para disminuir la cantidad, sin bajar de 1
   void decreaseQuantity() {
-    if (quantity.value > 1) quantity.value--;
-  }
-
-  void setRating(int newRating) {
-    if (rating.value == newRating.toDouble()) {
-      rating.value = newRating - 1 > 0 ? (newRating - 1).toDouble() : 0.0;
-    } else {
-      rating.value = newRating.toDouble();
+    if (quantity.value > 1) {
+      quantity.value--;
     }
   }
-
-  void toggleFavorite() => isFavorite.value = !isFavorite.value;
-
   void addToCart() {
-    if (cartQuantity.value < 9) {
-      cartQuantity.value++;
-    } else {
-      cartQuantity.value = 10; // Para mostrar "+9"
-    }
-  }
-
-  void addComment(String user, String comment, int rating) {
-    if (comment.isNotEmpty) {
-      comments.add(Comment(user: user, text: comment, rating: rating));
-    }
+    cartQuantity.value = cartQuantity.value < 9 ? cartQuantity.value + 1 : 10;
   }
 
   void toggleCommentFavorite(int index) {
@@ -45,11 +71,33 @@ class ProductController extends GetxController {
     comments.refresh();
   }
 
-  void setCommentRating(int index, int newRating) {
-    comments[index].rating.value = newRating;
-    comments.refresh(); // Asegura que GetX actualice la UI
-  }
+  Future<void> addToCartAndSync() async {
+    final currentUser = Supabase.instance.client.auth.currentUser;
+    if (currentUser == null) {
+      print("❌ Usuario no autenticado");
+      return;
+    }
 
+    try {
+      final int productId = product['id']; // asegurate que este campo exista
+      final int qty = quantity.value;
+      final double unitPrice = product['price'];
+      final double totalPrice = unitPrice * qty;
+
+      final response = await client.from('shopping_cart').upsert({
+        'user_id': currentUser.id,
+        'product_id': productId,
+        'quantity': qty,
+        'total_price': totalPrice,
+      }, onConflict: 'product_id, user_id');
+
+
+      print("✅ Insertado o actualizado correctamente: $response");
+      cartQuantity.value = cartQuantity.value < 9 ? cartQuantity.value + qty : 10;
+    } catch (e) {
+      print("❌ Error al añadir al carrito: $e");
+    }
+  }
 }
 
 class Comment {
@@ -58,7 +106,18 @@ class Comment {
   RxInt rating;
   RxBool isFavorite;
 
-  Comment({required this.user, required this.text, required int rating})
-      : rating = rating.obs,
+  Comment({
+    required this.user,
+    required this.text,
+    required int rating,
+  })  : rating = rating.obs,
         isFavorite = false.obs;
+
+  factory Comment.fromMap(Map<String, dynamic> map) {
+    return Comment(
+      user: map['user'] ?? 'Anónimo',
+      text: map['text'] ?? '',
+      rating: map['rating'] ?? 0,
+    );
+  }
 }
