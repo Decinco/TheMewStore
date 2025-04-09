@@ -52,8 +52,6 @@ class ProductController extends GetxController {
   void increaseQuantity() {
     if (quantity.value < stock.value) {
       quantity.value++;
-    } else {
-      Get.snackbar('¡Limite alcanzado!', 'No puedes agregar más de $stock unidades.');
     }
   }
   // Función para disminuir la cantidad, sin bajar de 1

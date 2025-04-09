@@ -98,6 +98,7 @@ class HomeView extends GetView<HomeController> {
                       'price': product.price,
                       'description': product.description,
                       'image': getPublicImageUrl(product.image),
+                      'stock': product.stock
                     });
                   },
                   child: Stack(
