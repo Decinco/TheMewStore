@@ -12,6 +12,7 @@ class UserData {
   String region;
   dynamic description;
   String email;
+  dynamic profilePicture;
 
   UserData({
     required this.userId,
@@ -21,6 +22,7 @@ class UserData {
     required this.region,
     required this.description,
     required this.email,
+    required this.profilePicture,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
@@ -31,6 +33,7 @@ class UserData {
     region: json["region"],
     description: json["description"],
     email: json["email"],
+    profilePicture: json["profile_picture"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -41,5 +44,6 @@ class UserData {
     "region": region,
     "description": description,
     "email": email,
+    "profile_picture": profilePicture,
   };
 }

@@ -10,6 +10,7 @@ abstract class Routes {
   static const PASSWORD = _Paths.PASSWORD;
   static const SHOPPINGCART = _Paths.SHOPPINGCART;
   static const PROFILEFRIENDS = _Paths.PROFILEFRIENDS;
+  static const SPLASH = _Paths.SPLASH;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const PASSWORD = '/password';
   static const SHOPPINGCART = '/shoppingcart';
   static const PROFILEFRIENDS = '/profilefriends';
+  static const SPLASH = '/splash';
 }

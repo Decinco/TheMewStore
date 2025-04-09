@@ -16,6 +16,8 @@ import '../modules/shoppingcart/bindings/shoppingcart_binding.dart';
 import '../modules/shoppingcart/views/shoppingcart_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 
 part 'app_routes.dart';
 
@@ -65,6 +67,11 @@ class AppPages {
       name: _Paths.PROFILEFRIENDS,
       page: () => const ProfilefriendsView(),
       binding: ProfilefriendsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
     ),
   ];
 }

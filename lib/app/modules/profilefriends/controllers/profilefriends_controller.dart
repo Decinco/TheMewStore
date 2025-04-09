@@ -1,23 +1,20 @@
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:themewstore/app/data/models/userData.dart';
 
 class ProfilefriendsController extends GetxController {
-  //TODO: Implement ProfilefriendsController
+  SupabaseClient client = Supabase.instance.client;
+  User user = Supabase.instance.client.auth.currentUser!;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  Future<UserData> getProfileData() async {
+    final response = await client
+        .from('user_data')
+        .select()
+        .eq('user_id', user.id ?? "")
+        .single();
+
+    UserData userData = UserData.fromJson(response);
+
+    return userData;
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

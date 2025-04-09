@@ -66,7 +66,7 @@ class HomeView extends GetView<HomeController> {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
-                  getPublicImageUrl(product.image),
+                  getPublicImageUrl("a"),
                   fit: BoxFit.cover,
                   width: double.infinity,
                   errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 50),
