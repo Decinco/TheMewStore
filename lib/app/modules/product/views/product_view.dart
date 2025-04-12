@@ -85,6 +85,7 @@ class ProductView extends StatelessWidget {
         title: const Text('The Mew Store', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
+          // En el AppBar de ProductView
           Obx(() => IconButton(
             icon: Stack(
               children: [
@@ -103,7 +104,9 @@ class ProductView extends StatelessWidget {
                   ),
               ],
             ),
-            onPressed: () {},
+            onPressed: () {
+              // Navegar a la vista del carrito
+            },
           )),
         ],
         iconTheme: const IconThemeData(color: Colors.black),
