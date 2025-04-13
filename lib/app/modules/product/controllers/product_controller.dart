@@ -95,8 +95,9 @@ class ProductController extends GetxController {
       final int productId = product['id'];
       final int qty = quantity.value;
       final double price = product['price'];
+      final int maxStock = stock.value;
 
-      // Obtener cantidad actual
+      // Obtener cantidad actual en carrito
       final response = await client
           .from('shopping_cart')
           .select('quantity')
@@ -109,22 +110,38 @@ class ProductController extends GetxController {
         currentQuantity = response['quantity'] ?? 0;
       }
 
-      final newQuantity = currentQuantity + qty;
+      // Calcular nueva cantidad sin superar el stock
+      final int availableToAdd = maxStock - currentQuantity;
+      if (availableToAdd <= 0) {
+        // Ya se alcanzó el stock máximo, no añadimos más
+        Get.snackbar('Stock alcanzado', 'Ya tienes la cantidad máxima en el carrito.',
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      final int quantityToAdd = qty > availableToAdd ? availableToAdd : qty;
+      final int newQuantity = currentQuantity + quantityToAdd;
 
       await client.from('shopping_cart').upsert({
         'user_id': currentUser.id,
         'product_id': productId,
         'quantity': newQuantity,
-        'total_price': newQuantity * price, // Asegúrate de mantener actualizado
+        'total_price': newQuantity * price,
       }, onConflict: 'product_id, user_id');
 
-      // Actualizar icono del carrito (productos únicos)
       await updateCartQuantityFromDB();
+
+      // Opcional: notificación al usuario
+      Get.snackbar('Añadido al carrito', 'Se añadieron $quantityToAdd unidades.',
+          snackPosition: SnackPosition.BOTTOM);
 
     } catch (e) {
       print('Error al añadir al carrito: $e');
+      Get.snackbar('Error', 'No se pudo añadir al carrito.',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
+
 
   @override
   void onInit() {
