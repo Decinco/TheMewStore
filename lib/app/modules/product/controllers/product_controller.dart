@@ -11,6 +11,24 @@ class ProductController extends GetxController {
   // Para cargar desde el HomeView
   var product = {}.obs;
 
+  Future<void> updateCartQuantityFromDB() async {
+    final currentUser = Supabase.instance.client.auth.currentUser;
+    if (currentUser == null) return;
+
+    try {
+      final response = await client
+          .from('shopping_cart')
+          .select('product_id')
+          .eq('user_id', currentUser.id);
+
+      if (response != null && response is List) {
+        cartQuantity.value = response.length;
+      }
+    } catch (e) {
+      print('Error actualizando cantidad del carrito: $e');
+    }
+  }
+
   void setProduct(Map<String, dynamic> data) {
     product.value = data;
     stock.value = product['stock'] ?? 0;  // Cargar el stock del producto
@@ -71,43 +89,49 @@ class ProductController extends GetxController {
 
   Future<void> addToCartAndSync() async {
     final currentUser = Supabase.instance.client.auth.currentUser;
-    if (currentUser == null) {
-      return;
-    }
+    if (currentUser == null) return;
 
     try {
       final int productId = product['id'];
       final int qty = quantity.value;
+      final double price = product['price'];
 
-      // Obtener la cantidad actual del carrito desde Supabase
+      // Obtener cantidad actual
       final response = await client
           .from('shopping_cart')
           .select('quantity')
           .eq('user_id', currentUser.id)
           .eq('product_id', productId)
-          .single();
+          .maybeSingle();
 
       int currentQuantity = 0;
       if (response != null && response.isNotEmpty) {
         currentQuantity = response['quantity'] ?? 0;
       }
 
-      // Sumar la nueva cantidad a la existente
       final newQuantity = currentQuantity + qty;
 
-      // Actualizar o insertar en la base de datos
       await client.from('shopping_cart').upsert({
         'user_id': currentUser.id,
         'product_id': productId,
         'quantity': newQuantity,
+        'total_price': newQuantity * price, // Asegúrate de mantener actualizado
       }, onConflict: 'product_id, user_id');
 
-      // Actualizar el estado local del carrito
-      cartQuantity.value += qty;
+      // Actualizar icono del carrito (productos únicos)
+      await updateCartQuantityFromDB();
 
     } catch (e) {
+      print('Error al añadir al carrito: $e');
     }
   }
+
+  @override
+  void onInit() {
+    super.onInit();
+    updateCartQuantityFromDB();
+  }
+
 }
 
 class Comment {
