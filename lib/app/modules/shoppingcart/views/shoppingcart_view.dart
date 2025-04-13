@@ -13,9 +13,14 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
         elevation: 0,
-        title: const Text(
-          'Shopping cart',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        title: GestureDetector(
+          onTap: () {
+            Get.offAllNamed('/home'); // <-- Asegúrate de que la ruta exista
+          },
+          child: const Text(
+            'Shopping cart',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -85,7 +90,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                   ),
                 );
               }
-
               return CarouselSlider(
                 options: CarouselOptions(
                   height: MediaQuery.of(context).size.height * 0.6,
@@ -177,11 +181,8 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                         }),
                       ),
                     ),
-
                   ],
                 ),
-
-
               ],
             ),
           )),
@@ -189,7 +190,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       ),
     );
   }
-
   Widget _cartItem(int index) {
     return Obx(() {
       final item = controller.filteredCartItems[index];
@@ -227,7 +227,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       );
     });
   }
-
   Widget _quantityButton(IconData icon, VoidCallback onPressed, {bool enabled = true}) {
     return GestureDetector(
       onTap: enabled ? onPressed : null,
