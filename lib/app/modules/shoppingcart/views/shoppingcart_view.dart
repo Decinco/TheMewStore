@@ -200,11 +200,17 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(item["image"], width: 150, height: 150, fit: BoxFit.cover),
+              Image.network(
+                  item["image"] ?? 'https://via.placeholder.com/150',
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.cover
+              ),
               const SizedBox(height: 10),
-              Text(item["name"], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("${item["price"]}€", style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 10),
+              Text(item["name"],
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("${item["price"].toStringAsFixed(2)}€",
+                  style: const TextStyle(fontSize: 16)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

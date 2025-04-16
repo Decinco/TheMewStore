@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ef6ad31a-64b3-45ce-8452-84e05225740a" name="Changes" comment="p">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/product/views/product_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/product/views/product_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/app/modules/product/controllers/product_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/product/controllers/product_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/app/modules/shoppingcart/controllers/shoppingcart_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/shoppingcart/controllers/shoppingcart_controller.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/app/modules/shoppingcart/views/shoppingcart_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/shoppingcart/views/shoppingcart_view.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
