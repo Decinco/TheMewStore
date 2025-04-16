@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,11 +32,24 @@ class LogInOutController extends GetxController {
   }
 
   void initNavigationListener() {
-    //navigateBasedOnListener();
+    firstNavigation();
+    Future.delayed(Duration(seconds: 2), () {
+      navigateBasedOnListener();
+    });
 
     ever(loggedIn, (value) {
       navigateBasedOnListener();
     });
+  }
+
+  void firstNavigation() {
+    User? user = client.auth.currentUser;
+
+    if (user != null) {
+      loggedIn.value = true;
+    } else {
+      loggedIn.value = false;
+    }
   }
 
   void navigateBasedOnListener() {
