@@ -116,25 +116,23 @@ class ShoppingcartController extends GetxController {
 
     try {
       final item = filteredCartItems[currentPage.value];
-      final productId = item['product_id']; // Asegurar tipo correcto
+      final productId = item['product_id'] as int; // Asegurar tipo int
 
-      // Debug: Verificar datos antes de eliminar
-      print('Eliminando producto ID: $productId para usuario: ${user.id}');
-
-      await client.from('shopping_cart')
+      // Eliminar de la base de datos
+      final response = await client.from('shopping_cart')
           .delete()
           .eq('user_id', user.id)
           .eq('product_id', productId);
 
-      // Forzar actualización inmediata
+      // Actualizar listas locales inmediatamente
       cartItems.removeWhere((element) => element['product_id'] == productId);
+      filteredCartItems.removeWhere((element) => element['product_id'] == productId);
+
+      // Actualizar UI
+      cartItems.refresh();
       filteredCartItems.refresh();
 
-      // Esperar y volver a cargar datos
-      await Future.delayed(Duration(milliseconds: 300));
-      await fetchCartItems();
-
-      // Ajustar página actual después de actualizar
+      // Ajustar paginación
       if (filteredCartItems.isNotEmpty) {
         currentPage.value = currentPage.value.clamp(0, filteredCartItems.length - 1);
         carouselController.jumpToPage(currentPage.value);
@@ -144,14 +142,13 @@ class ShoppingcartController extends GetxController {
 
       // Actualizar contadores
       Get.find<ProductController>().updateCartQuantityFromDB();
-      Get.snackbar('Éxito', 'Producto eliminado del carrito',
+      Get.snackbar('Éxito', 'Producto eliminado',
           snackPosition: SnackPosition.BOTTOM);
 
     } catch (e) {
-      print('Error detallado: ${e.toString()}');
-      Get.snackbar('Error', 'Falló la eliminación: ${e.toString()}',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 5));
+      print('Error eliminando: ${e.toString()}');
+      Get.snackbar('Error', 'No se pudo eliminar: ${e.toString()}',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 

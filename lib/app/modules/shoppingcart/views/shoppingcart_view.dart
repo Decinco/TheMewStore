@@ -194,6 +194,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
     return Obx(() {
       final item = controller.filteredCartItems[index];
       return Card(
+        key: Key(item['product_id'].toString()), // Key única
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
