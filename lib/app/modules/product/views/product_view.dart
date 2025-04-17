@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../shoppingcart/controllers/shoppingcart_controller.dart';
+import '../../shoppingcart/views/shoppingcart_view.dart';
 import '../controllers/product_controller.dart';
 
 
@@ -105,9 +107,12 @@ class ProductView extends StatelessWidget {
                   ),
               ],
             ),
-            onPressed: () {
-              // Navegar a la vista del carrito
-            },
+              onPressed: () {
+                // Inyectamos el controlador antes de navegar
+                Get.put(ShoppingcartController());
+                Get.to(() => const ShoppingcartView());
+              }
+
           )),
         ],
         iconTheme: const IconThemeData(color: Colors.black),
