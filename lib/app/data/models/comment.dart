@@ -18,7 +18,7 @@ class Comment {
 
   factory Comment.fromMap(Map<String, dynamic> map) {
     return Comment(
-      user: map['user_id'] ?? 'Anon',
+      user: map['user_data']?['user_name'] ?? 'Anon',
       text: map['content'] ?? '',
       rating: map['rating'] ?? 0,
       createdAt: DateTime.parse(map['created_at'] ?? DateTime.now().toString()),

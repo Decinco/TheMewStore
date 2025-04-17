@@ -27,7 +27,6 @@ class ProductController extends GetxController {
         cartQuantity.value = response.length;
       }
     } catch (e) {
-      print('Error actualizando cantidad del carrito: $e');
     }
   }
 
@@ -40,13 +39,12 @@ class ProductController extends GetxController {
     try {
       final data = await client
           .from('product_comments')
-          .select('content, rating, created_at, user_id')
+          .select('content, rating, created_at, user_data(user_name)')
           .eq('product_id', productId)
           .order('created_at', ascending: false);
 
       comments.value = (data as List).map((c) => Comment.fromMap(c)).toList();
     } catch (e) {
-      print('Error cargando comentarios: $e');
     }
   }
 
@@ -55,9 +53,12 @@ class ProductController extends GetxController {
     final currentUser = Supabase.instance.client.auth.currentUser;
     if (currentUser == null) return;
 
+    final productId = product['id'];
+    if (productId == null) return;
+
     final newComment = {
-      'product_id': product['product_id'], // 👈 usa product_id
-      'user_id': currentUser.id, // usa UUID del usuario autenticado
+      'product_id': product['id'], // este sí tiene valor
+      'user_id': currentUser.id,
       'content': content,
       'rating': rating,
     };
@@ -65,16 +66,22 @@ class ProductController extends GetxController {
     try {
       final response = await client.from('product_comments').insert(newComment);
       if (response != null) {
+        final userInfo = await client
+            .from('user_data')
+            .select('user_name')
+            .eq('user_id', currentUser.id)
+            .maybeSingle();
+
+        final userName = userInfo?['user_name'] ?? 'Anon';
+
         comments.insert(0, Comment(
-          user: user,
+          user: userName,
           text: content,
           rating: rating,
           createdAt: DateTime.now(),
         ));
-
       }
     } catch (e) {
-      print('Error insertando comentario: $e');
     }
   }
 
@@ -150,17 +157,13 @@ class ProductController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
 
     } catch (e) {
-      print('Error al añadir al carrito: $e');
       Get.snackbar('Error', 'No se pudo añadir al carrito.',
           snackPosition: SnackPosition.BOTTOM);
     }
   }
-
-
   @override
   void onInit() {
     super.onInit();
     updateCartQuantityFromDB();
   }
-
 }
