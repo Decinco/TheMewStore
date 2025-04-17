@@ -49,3 +49,4 @@ app.*.map.json
 .idea/misc.xml
 .idea/TheMewStore.iml
 /.idea
+.idea/*
