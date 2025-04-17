@@ -1,6 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../shoppingcart/controllers/shoppingcart_controller.dart';
+
 class ProductController extends GetxController {
   final SupabaseClient client = Supabase.instance.client;
 
@@ -130,6 +132,7 @@ class ProductController extends GetxController {
       }, onConflict: 'product_id, user_id');
 
       await updateCartQuantityFromDB();
+      Get.find<ShoppingcartController>().fetchCartItems();
 
       // Opcional: notificación al usuario
       Get.snackbar('Añadido al carrito', 'Se añadieron $quantityToAdd unidades.',
