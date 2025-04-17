@@ -222,8 +222,8 @@ class ProductView extends StatelessWidget {
                                   children: List.generate(
                                     5,
                                         (index) => Icon(
-                                      index < comment.rating.value
-                                          ? Icons.star
+                                          index < comment.rating
+                                              ? Icons.star
                                           : Icons.star_border,
                                       color: Colors.yellow,
                                       size: 18,

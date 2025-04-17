@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:get/get.dart';
-
+import '../../../data/models/comment.dart';
 import '../../shoppingcart/controllers/shoppingcart_controller.dart';
 
 class ProductController extends GetxController {
@@ -39,9 +39,9 @@ class ProductController extends GetxController {
   Future<void> loadComments(dynamic productId) async {
     try {
       final data = await client
-          .from('comments')
-          .select()
-          .eq('product_id', productId.toString()) // 👈 convertir a String
+          .from('product_comments')
+          .select('content, rating, created_at, user_id')
+          .eq('product_id', productId)
           .order('created_at', ascending: false);
 
       comments.value = (data as List).map((c) => Comment.fromMap(c)).toList();
@@ -50,23 +50,34 @@ class ProductController extends GetxController {
     }
   }
 
-  Future<void> addComment(String user, String text, int rating) async {
+
+  Future<void> addComment(String user, String content, int rating) async {
+    final currentUser = Supabase.instance.client.auth.currentUser;
+    if (currentUser == null) return;
+
     final newComment = {
-      'product_id': product['id'].toString(), // 👈 convertir a String
-      'user': user,
-      'text': text,
+      'product_id': product['product_id'], // 👈 usa product_id
+      'user_id': currentUser.id, // usa UUID del usuario autenticado
+      'content': content,
       'rating': rating,
     };
 
     try {
-      final response = await client.from('comments').insert(newComment);
+      final response = await client.from('product_comments').insert(newComment);
       if (response != null) {
-        comments.insert(0, Comment(user: user, text: text, rating: rating));
+        comments.insert(0, Comment(
+          user: user,
+          text: content,
+          rating: rating,
+          createdAt: DateTime.now(),
+        ));
+
       }
     } catch (e) {
       print('Error insertando comentario: $e');
     }
   }
+
 
   // Función para aumentar la cantidad, respetando el stock
   void increaseQuantity() {
@@ -152,26 +163,4 @@ class ProductController extends GetxController {
     updateCartQuantityFromDB();
   }
 
-}
-
-class Comment {
-  String user;
-  String text;
-  RxInt rating;
-  RxBool isFavorite;
-
-  Comment({
-    required this.user,
-    required this.text,
-    required int rating,
-  })  : rating = rating.obs,
-        isFavorite = false.obs;
-
-  factory Comment.fromMap(Map<String, dynamic> map) {
-    return Comment(
-      user: map['user'] ?? 'Anónimo',
-      text: map['text'] ?? '',
-      rating: map['rating'] ?? 0,
-    );
-  }
 }
