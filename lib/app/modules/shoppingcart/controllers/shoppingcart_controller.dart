@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../product/controllers/product_controller.dart';
 
 // Extensión de CarouselController para manejar la navegación entre páginas
 extension CarouselControllerExtension on CarouselController {
@@ -23,70 +26,136 @@ extension CarouselControllerExtension on CarouselController {
 }
 
 class ShoppingcartController extends GetxController {
-  var cartItems = <Map<String, dynamic>>[
-    {
-      "name": "10 Sobres de Pokemon 1 Gen.",
-      "price": "49,99€",
-      "image": "https://m.media-amazon.com/images/I/71Fhp8m+gaL._AC_SY450_.jpg",
-      "description": "Son sobres originales y god pack asegurado.",
-      "quantity": 1.obs,
-    },
-    {
-      "name": "kjhg.",
-      "price": "60.00€",
-      "image": "https://m.media-amazon.com/images/I/71Fhp8m+gaL._AC_SY450_.jpg",
-      "description": "Son sobres originales y god pack asegurado.",
-      "quantity": 1.obs,
-    },
-    {
-      "name": "10 Sobres de Pokemon 1 Gen.",
-      "price": "49,99€",
-      "image": "https://m.media-amazon.com/images/I/71Fhp8m+gaL._AC_SY450_.jpg",
-      "description": "Son sobres originales y god pack asegurado.",
-      "quantity": 1.obs,
-    },
-    {
-      "name": "sd.",
-      "price": "50.00€",
-      "image": "https://m.media-amazon.com/images/I/71Fhp8m+gaL._AC_SY450_.jpg",
-      "description": "Son sobres originales y god pack asegurado.",
-      "quantity": 1.obs,
-    },
-  ].obs;
-
+  final SupabaseClient client = Supabase.instance.client;
+  var cartItems = <Map<String, dynamic>>[].obs;
   var currentPage = 0.obs;
-  var filteredCartItems = <Map<String, dynamic>>[].obs; // Lista filtrada
-
+  var filteredCartItems = <Map<String, dynamic>>[].obs;
+  //final CarouselController carouselController = CarouselController();
   final CarouselSliderController carouselController = CarouselSliderController();
   @override
-
   void onInit() {
     super.onInit();
-    filteredCartItems.assignAll(cartItems); // Inicializa la lista filtrada
+    fetchCartItems();
   }
 
-  // Filtrar productos por nombre
-  void filterProducts(String query) {
-    if (query.isEmpty) {
-      filteredCartItems.assignAll(cartItems); // Si está vacío, mostrar todos
-    } else {
-      filteredCartItems.assignAll(cartItems.where((item) =>
-          item["name"].toLowerCase().contains(query.toLowerCase())).toList());
+  Future<void> fetchCartItems() async {
+    final user = client.auth.currentUser;
+    if (user == null) return;
+
+    try {
+      final response = await client
+          .from('shopping_cart')
+          .select('''
+            quantity, 
+            product_stock: product_id (
+              product_id,
+              product_name,
+              price,
+              image,
+              description
+            )
+          ''')
+          .eq('user_id', user.id);
+
+      cartItems.assignAll(_parseCartItems(response));
+      filteredCartItems.assignAll(cartItems);
+    } catch (e) {
+      print('Error fetching cart items: $e');
     }
   }
 
-  // Incrementar cantidad y mover el carrusel al índice
-  void increment(int index) {
-    cartItems[index]["quantity"].value++;
-    carouselController.animateToPage(index); // Mueve el carrusel al item correspondiente
+  List<Map<String, dynamic>> _parseCartItems(List<dynamic> data) {
+    return data.map((item) {
+      final product = item['product_stock'];
+      return {
+        'product_id': product['product_id'],
+        'name': product['product_name'],
+        'price': product['price'].toDouble(),
+        'image': product['image'],
+        'description': product['description'],
+        'quantity': (item['quantity'] as int).obs,
+      };
+    }).toList();
   }
 
-  // Decrementar cantidad y mover el carrusel al índice
-  void decrement(int index) {
-    if (cartItems[index]["quantity"].value > 1) {
-      cartItems[index]["quantity"].value--;
-      carouselController.animateToPage(index); // Mueve el carrusel al item correspondiente
+  Future<void> _updateCartQuantity(int productId, int newQuantity) async {
+    final user = client.auth.currentUser;
+    if (user == null) return;
+
+    await client.from('shopping_cart').upsert({
+      'user_id': user.id,
+      'product_id': productId,
+      'quantity': newQuantity,
+    });
+  }
+
+  void increment(int index) async {
+    final item = filteredCartItems[index];
+    item['quantity'].value++;
+    await _updateCartQuantity(item['product_id'], item['quantity'].value);
+    fetchCartItems();
+  }
+
+  void decrement(int index) async {
+    final item = filteredCartItems[index];
+    if (item['quantity'].value > 1) {
+      item['quantity'].value--;
+      await _updateCartQuantity(item['product_id'], item['quantity'].value);
+      fetchCartItems();
     }
+  }
+
+  void removeItem() async {
+    if (filteredCartItems.isEmpty) return;
+
+    final user = client.auth.currentUser;
+    if (user == null) {
+      Get.snackbar('Error', 'Usuario no autenticado');
+      return;
+    }
+
+    try {
+      final item = filteredCartItems[currentPage.value];
+      final productId = item['product_id'] as int; // Asegurar tipo int
+
+      // Eliminar de la base de datos
+      final response = await client.from('shopping_cart')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('product_id', productId);
+
+      // Actualizar listas locales inmediatamente
+      cartItems.removeWhere((element) => element['product_id'] == productId);
+      filteredCartItems.removeWhere((element) => element['product_id'] == productId);
+
+      // Actualizar UI
+      cartItems.refresh();
+      filteredCartItems.refresh();
+
+      // Ajustar paginación
+      if (filteredCartItems.isNotEmpty) {
+        currentPage.value = currentPage.value.clamp(0, filteredCartItems.length - 1);
+        carouselController.jumpToPage(currentPage.value);
+      } else {
+        currentPage.value = 0;
+      }
+
+      // Actualizar contadores
+      Get.find<ProductController>().updateCartQuantityFromDB();
+      Get.snackbar('Éxito', 'Producto eliminado',
+          snackPosition: SnackPosition.BOTTOM);
+
+    } catch (e) {
+      print('Error eliminando: ${e.toString()}');
+      Get.snackbar('Error', 'No se pudo eliminar: ${e.toString()}',
+          snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  double get totalAmount {
+    return filteredCartItems.fold(0.0, (sum, item) {
+      return sum + (item['price'] * item['quantity'].value);
+    });
   }
 
   void nextPage() {
@@ -103,31 +172,14 @@ class ShoppingcartController extends GetxController {
     }
   }
 
-
-  // Eliminar el producto actual del carrito
-  void removeItem() {
-    if (filteredCartItems.isNotEmpty) {
-      int index = currentPage.value;
-      var removedItem = filteredCartItems[index]; // Guardamos el item a eliminar
-
-      // Eliminar el producto de ambas listas
-      cartItems.removeWhere((item) => item == removedItem);
-      filteredCartItems.removeAt(index);
-
-      // Ajustar la página actual
-      if (currentPage.value >= filteredCartItems.length && currentPage.value > 0) {
-        currentPage.value--;
-      }
+  void filterProducts(String query) {
+    if (query.isEmpty) {
+      filteredCartItems.assignAll(cartItems); // Si está vacío, mostrar todos
+    } else {
+      filteredCartItems.assignAll(cartItems.where((item) =>
+          item["name"].toLowerCase().contains(query.toLowerCase())).toList());
     }
   }
-
-  double get totalAmount {
-    return cartItems.fold(0.0, (sum, item) {
-      double price = double.tryParse(item["price"].replaceAll("€", "").replaceAll(",", ".")) ?? 0.0;
-      return sum + (price * item["quantity"].value);
-    });
-  }
-
   // Obtener el número total de productos en el carrito
   int get totalItems => cartItems.length;
 }

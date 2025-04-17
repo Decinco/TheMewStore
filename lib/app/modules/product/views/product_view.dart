@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../shoppingcart/controllers/shoppingcart_controller.dart';
+import '../../shoppingcart/views/shoppingcart_view.dart';
 import '../controllers/product_controller.dart';
 
+
 void _showCommentDialog(BuildContext context, ProductController controller) {
-  TextEditingController userController = TextEditingController();
-  TextEditingController commentController = TextEditingController();
-  RxInt rating = 0.obs;
+  final userController = TextEditingController();
+  final commentController = TextEditingController();
+  final rating = 0.obs;
 
   Get.defaultDialog(
     title: "Añadir Comentario",
@@ -34,13 +37,8 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
           children: List.generate(5, (index) {
             return GestureDetector(
               onTap: () {
-                if (rating.value == index + 1) {
-                  rating.value = index; // Si ya estaba seleccionada, se quita
-                } else {
-                  rating.value = index + 1; // Si no estaba, se añade
-                }
+                rating.value = rating.value == index + 1 ? index : index + 1;
               },
-
               child: Icon(
                 index < rating.value ? Icons.star : Icons.star_border,
                 color: Colors.yellow,
@@ -50,9 +48,13 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
         )),
         const SizedBox(height: 10),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if (userController.text.isNotEmpty && commentController.text.isNotEmpty) {
-              controller.addComment(userController.text, commentController.text, rating.value);
+              await controller.addComment(
+                userController.text,
+                commentController.text,
+                rating.value,
+              );
               Get.back();
             }
           },
@@ -63,41 +65,55 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
   );
 }
 
-class ProductView extends GetView<ProductController> {
+class ProductView extends StatelessWidget {
+  final ProductController controller = Get.find<ProductController>();
+
+  ProductView({super.key}) {
+    // Este se ejecuta al momento de construir la vista y recibe los argumentos pasados
+    final args = Get.arguments;
+    if (args != null && args is Map<String, dynamic>) {
+      controller.setProduct(args);
+      controller.loadComments(args['id']); // Carga los comentarios también
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
+    final product = controller.product;
+
     return Scaffold(
       backgroundColor: const Color(0xFFEDD5E5),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
-        title: const Text(
-          'The Mew Store',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+        title: const Text('The Mew Store', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
-          Obx(
-                () => IconButton(
-              icon: Stack(
-                children: [
-                  const Icon(Icons.shopping_bag, color: Colors.black),
-                  if (controller.cartQuantity.value > 0)
-                    Positioned(
-                      right: 0,
-                      child: CircleAvatar(
-                        radius: 7,
-                        backgroundColor: Colors.red,
-                        child: Text(
-                          controller.cartQuantity.value > 9 ? '+9' : '${controller.cartQuantity.value}',
-                          style: const TextStyle(fontSize: 10, color: Colors.white),
-                        ),
+          // En el AppBar de ProductView
+          Obx(() => IconButton(
+            icon: Stack(
+              children: [
+                const Icon(Icons.shopping_bag, color: Colors.black),
+                if (controller.cartQuantity.value > 0)
+                  Positioned(
+                    right: 0,
+                    child: CircleAvatar(
+                      radius: 7,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        controller.cartQuantity.value > 9 ? '+9' : '${controller.cartQuantity.value}',
+                        style: const TextStyle(fontSize: 10, color: Colors.white),
                       ),
                     ),
-                ],
-              ),
-              onPressed: () {},
+                  ),
+              ],
             ),
-          ),
+              onPressed: () {
+                // Inyectamos el controlador antes de navegar
+                Get.put(ShoppingcartController());
+                Get.to(() => const ShoppingcartView());
+              }
+
+          )),
         ],
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -117,27 +133,37 @@ class ProductView extends GetView<ProductController> {
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                          children: [
                           const SizedBox(height: 20),
-                          const Text(
-                            '10 Sobres de Pokemon 1 Gen.',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          Text(
+                            product['product_name'] ?? 'Producto',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
-                          const Text('49,99 €', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                          Text('${(product['price'] as num).toStringAsFixed(2)} €',
+                              style: const TextStyle(fontSize: 16, color: Colors.black54)),
                           const SizedBox(height: 10),
-                          Center(child: Image.asset('assets/pokemon_cards.png', height: 150)),
+                          Center(
+                            child: product['image'] != null
+                                ? Image.network(product['image'] as String, height: 150)
+                                : Image.asset('assets/placeholder.png', height: 150),
+                          ),
                           const SizedBox(height: 10),
-                          const Text('Descripción:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(product['description'] ?? 'Sin descripción', style: TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 4),
-                          const Text('Son sobres originales y god pack asegurado.\n-Mucho Texto'),
+                          Text(product['description'] ?? 'Sin descripción'),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(icon: const Icon(Icons.remove_circle_outline), onPressed: controller.decreaseQuantity),
-                              Obx(() => Text('${controller.quantity}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-                              IconButton(icon: const Icon(Icons.add_circle_outline), onPressed: controller.increaseQuantity),
+                              IconButton(
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                  onPressed: controller.decreaseQuantity),
+                              Obx(() => Text('${controller.quantity}',
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+                              IconButton(
+                                  icon: const Icon(Icons.add_circle_outline),
+                                  onPressed: controller.increaseQuantity),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -149,7 +175,7 @@ class ProductView extends GetView<ProductController> {
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                               ),
-                              onPressed: controller.addToCart,
+                              onPressed: controller.addToCartAndSync,
                               icon: const Icon(Icons.shopping_cart),
                               label: const Text('Añadir al Carrito'),
                             ),
@@ -161,68 +187,73 @@ class ProductView extends GetView<ProductController> {
                   Positioned(
                     top: 5,
                     right: 5,
-                    child: IconButton(icon: const Icon(Icons.close, color: Colors.black), onPressed: () => Get.back()),
+                    child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.black),
+                        onPressed: () => Get.back()),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
 
-              // Sección de comentarios
+              // Reseñas
               const Text('Reseñas:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              Obx(
-                    () => controller.comments.isEmpty
-                    ? const Center(child: Text('No hay reseñas aún.'))
-                    : Column(
-                  children: controller.comments.map((comment) {
-                    return Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            const CircleAvatar(radius: 24, child: Icon(Icons.person, size: 24)),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(comment.user, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                          (index) => Icon(
-                                        index < comment.rating.value ? Icons.star : Icons.star_border,
-                                        color: Colors.yellow,
-                                        size: 18,
-                                      ),
+              Obx(() => controller.comments.isEmpty
+                  ? const Center(child: Text('No hay reseñas aún.'))
+                  : Column(
+                children: controller.comments.map((comment) {
+                  return Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          const CircleAvatar(radius: 24, child: Icon(Icons.person, size: 24)),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(comment.user,
+                                    style: const TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                        (index) => Icon(
+                                      index < comment.rating.value
+                                          ? Icons.star
+                                          : Icons.star_border,
+                                      color: Colors.yellow,
+                                      size: 18,
                                     ),
                                   ),
-                                  const SizedBox(height: 5),
-                                  Text(comment.text, style: const TextStyle(fontSize: 12)),
-                                ],
-                              ),
-                            ),
-                            Obx(
-                                  () => IconButton(
-                                icon: Icon(
-                                  comment.isFavorite.value ? Icons.favorite : Icons.favorite_border,
-                                  color: comment.isFavorite.value ? Colors.red : Colors.black,
                                 ),
-                                onPressed: () => controller.toggleCommentFavorite(controller.comments.indexOf(comment)),
-                              ),
+                                const SizedBox(height: 5),
+                                Text(comment.text,
+                                    style: const TextStyle(fontSize: 12)),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          Obx(() => IconButton(
+                            icon: Icon(
+                              comment.isFavorite.value
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: comment.isFavorite.value ? Colors.red : Colors.black,
+                            ),
+                            onPressed: () => controller.toggleCommentFavorite(
+                                controller.comments.indexOf(comment)),
+                          )),
+                        ],
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                    ),
+                  );
+                }).toList(),
+              )),
               const SizedBox(height: 10),
 
-              // Botón de añadir comentario siempre al final
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
