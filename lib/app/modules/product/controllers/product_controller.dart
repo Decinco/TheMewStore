@@ -49,7 +49,7 @@ class ProductController extends GetxController {
   }
 
 
-  Future<void> addComment(String user, String content, int rating) async {
+  Future<void> addComment(String content, int rating) async {
     final currentUser = Supabase.instance.client.auth.currentUser;
     if (currentUser == null) return;
 
@@ -64,23 +64,8 @@ class ProductController extends GetxController {
     };
 
     try {
-      final response = await client.from('product_comments').insert(newComment);
-      if (response != null) {
-        final userInfo = await client
-            .from('user_data')
-            .select('user_name')
-            .eq('user_id', currentUser.id)
-            .maybeSingle();
-
-        final userName = userInfo?['user_name'] ?? 'Anon';
-
-        comments.insert(0, Comment(
-          user: userName,
-          text: content,
-          rating: rating,
-          createdAt: DateTime.now(),
-        ));
-      }
+      await client.from('product_comments').insert(newComment);
+      await loadComments(productId); // Recarga comentarios desde la base de datos
     } catch (e) {
     }
   }

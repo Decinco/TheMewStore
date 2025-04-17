@@ -15,13 +15,6 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TextField(
-          controller: userController,
-          decoration: const InputDecoration(
-            hintText: "Tu nombre...",
-            border: OutlineInputBorder(),
-          ),
-        ),
         const SizedBox(height: 10),
         TextField(
           controller: commentController,
@@ -49,9 +42,8 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () async {
-            if (userController.text.isNotEmpty && commentController.text.isNotEmpty) {
+            if (commentController.text.isNotEmpty) {
               await controller.addComment(
-                userController.text,
                 commentController.text,
                 rating.value,
               );
