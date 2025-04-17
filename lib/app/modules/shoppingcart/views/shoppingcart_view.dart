@@ -13,9 +13,14 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
         elevation: 0,
-        title: const Text(
-          'Shopping cart',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        title: GestureDetector(
+          onTap: () {
+            Get.offAllNamed('/home'); // <-- Asegúrate de que la ruta exista
+          },
+          child: const Text(
+            'Shopping cart',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -85,7 +90,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                   ),
                 );
               }
-
               return CarouselSlider(
                 options: CarouselOptions(
                   height: MediaQuery.of(context).size.height * 0.6,
@@ -177,11 +181,8 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                         }),
                       ),
                     ),
-
                   ],
                 ),
-
-
               ],
             ),
           )),
@@ -189,22 +190,28 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       ),
     );
   }
-
   Widget _cartItem(int index) {
     return Obx(() {
       final item = controller.filteredCartItems[index];
       return Card(
+        key: Key(item['product_id'].toString()), // Key única
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(item["image"], width: 150, height: 150, fit: BoxFit.cover),
+              Image.network(
+                  item["image"] ?? 'https://via.placeholder.com/150',
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.cover
+              ),
               const SizedBox(height: 10),
-              Text(item["name"], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("${item["price"]}€", style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 10),
+              Text(item["name"],
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("${item["price"].toStringAsFixed(2)}€",
+                  style: const TextStyle(fontSize: 16)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -227,7 +234,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       );
     });
   }
-
   Widget _quantityButton(IconData icon, VoidCallback onPressed, {bool enabled = true}) {
     return GestureDetector(
       onTap: enabled ? onPressed : null,
