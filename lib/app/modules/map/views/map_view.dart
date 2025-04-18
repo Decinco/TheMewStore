@@ -70,19 +70,28 @@ class MapView extends GetView<MapController> {
           ),
           Expanded(
             child: Obx(
-                  () => fm.FlutterMap(
-                mapController: controller.mapController,
-                options: fm.MapOptions(
-                  center: LatLng(40.4168, -3.7038),
-                  zoom: 13,
-                ),
-                children: [
-                  fm.TileLayer(
-                    urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    subdomains: const ['a','b','c'],
+                  () => Container(
+                margin: controller.isFullScreen.value
+                    ? EdgeInsets.zero
+                    : const EdgeInsets.all(20),
+                child: fm.FlutterMap(
+                  mapController: controller.mapController,
+                  options: fm.MapOptions(
+                    center: LatLng(40.4168, -3.7038),
+                    zoom: 13,
                   ),
-                  fm.MarkerLayer(markers: controller.markers.value), // Corregido aquí
-                ],
+                  children: [
+                    fm.TileLayer(
+                      urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      subdomains: const ['a','b','c'],
+                    ),
+                    fm.MarkerLayer(
+                      markers: controller.markers.isNotEmpty
+                          ? controller.markers.value
+                          : [],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

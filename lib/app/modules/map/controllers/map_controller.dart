@@ -15,6 +15,8 @@ class MapController extends GetxController {
   final RxList<fm.Marker> markers = <fm.Marker>[].obs; // Declaración explícita
   /// Controlador del TextField de búsqueda
   final TextEditingController searchController = TextEditingController();
+  final RxBool isFullScreen = false.obs; // Nuevo estado reactivo
+
 
   @override
   void onInit() {
