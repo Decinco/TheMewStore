@@ -8,16 +8,20 @@ import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MapController extends GetxController {
-  final fm.MapController mapController = fm.MapController();
+  //final fm.MapController mapController = fm.MapController();
   final RxList<fm.Marker> markers = <fm.Marker>[].obs;
   final TextEditingController searchController = TextEditingController();
   final RxBool isFullScreen = false.obs;
   final RxList<String> searchSuggestions = <String>[].obs;
   final RxString errorMessage = ''.obs;
+  final RxBool showSuggestions = false.obs; // Nueva variable de estado
+
+  late final fm.MapController mapController; // Declaración late
 
   @override
   void onInit() {
     super.onInit();
+    mapController = fm.MapController();
     fetchLocations();
   }
 
@@ -58,6 +62,9 @@ class MapController extends GetxController {
     } catch (e) {
       showErrorMessage('Error al cargar ubicaciones: ${e.toString()}');
     }
+
+    showSuggestions.value = filter != null && filter.isNotEmpty;
+
   }
 
   void onSearch() async {

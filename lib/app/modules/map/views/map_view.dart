@@ -69,12 +69,20 @@ class MapView extends GetView<MapController> {
                       onPressed: controller.onSearch,
                     ),
                   ),
-                  onChanged: (value) => controller.fetchLocations(filter: value),
-                  onSubmitted: (_) => controller.onSearch(),
+                  onTap: () => controller.showSuggestions.value = true,
+                  onChanged: (value) {
+                  controller.fetchLocations(filter: value);
+                  controller.showSuggestions.value = value.isNotEmpty;
+                  },
+                  onSubmitted: (_) {
+                    controller.onSearch();
+                    controller.showSuggestions.value = false;
+                  }
                 ),
-                Obx(() => controller.searchSuggestions.isNotEmpty
+                Obx(() => controller.showSuggestions.value && controller.searchSuggestions.isNotEmpty
                     ? Container(
-                  height: 150,
+
+                height: 150,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -112,8 +120,11 @@ class MapView extends GetView<MapController> {
                 child: fm.FlutterMap(
                   mapController: controller.mapController,
                   options: fm.MapOptions(
-                    center: LatLng(40.4168, -3.7038),
-                    zoom: 13,
+                    center: LatLng(41.3851, 2.1734), // Coordenadas de Barcelona
+                    zoom: 12,
+                    onMapReady: () {
+                        controller.mapController.move(LatLng(41.3851, 2.1734), 12);
+                    },
                   ),
                   children: [
                     fm.TileLayer(
