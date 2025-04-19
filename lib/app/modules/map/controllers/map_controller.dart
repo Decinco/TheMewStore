@@ -8,49 +8,42 @@ import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MapController extends GetxController {
-  /// El controller de flutter_map, alias fm
   final fm.MapController mapController = fm.MapController();
-  /// Lista reactiva de marcadores de flutter_map
-  //final markers = <fm.Marker>[].obs;
-  final RxList<fm.Marker> markers = <fm.Marker>[].obs; // Declaración explícita
-  /// Controlador del TextField de búsqueda
+  final RxList<fm.Marker> markers = <fm.Marker>[].obs;
   final TextEditingController searchController = TextEditingController();
-  final RxBool isFullScreen = false.obs; // Nuevo estado reactivo
-
+  final RxBool isFullScreen = false.obs;
+  final RxList<String> searchSuggestions = <String>[].obs;
+  final RxString errorMessage = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Carga inicial de ubicaciones
     fetchLocations();
   }
 
-  /// Consulta supabase en la tabla 'locations' y actualiza marcadores
-  /// Obtiene ubicaciones de Supabase y actualiza marcadores
   Future<void> fetchLocations({String? filter}) async {
     final client = Supabase.instance.client;
 
-    // Construye la consulta
-    var builder = client.from('locations').select();
-    if (filter?.isNotEmpty == true) {
-      builder = builder.ilike('name', '%${filter}%');
+    var query = client.from('map').select('location, lat, lng, description_user');
+
+    if (filter != null && filter.isNotEmpty) {
+      query = query.ilike('location', '%$filter%');
     }
 
     try {
-      // Await directo devuelve List<dynamic>
-      final List<dynamic> rows = await builder;
+      final List<dynamic> rows = await query;
+
+      final suggestions = rows.map<String>((e) => e['location'] as String).toList();
+      searchSuggestions.assignAll(suggestions);
 
       final newMarkers = rows.map<fm.Marker>((entry) {
-        final row = entry as Map<String, dynamic>;
+        final data = entry as Map<String, dynamic>;
         return fm.Marker(
-          point: LatLng(
-            (row['lat'] as num).toDouble(),
-            (row['lng'] as num).toDouble(),
-          ),
+          point: LatLng(data['lat'], data['lng']),
           width: 40,
           height: 40,
           builder: (ctx) => GestureDetector(
-            onTap: () => Get.snackbar('Location', row['name'] as String),
+            onTap: () => Get.snackbar(data['location'], data['description_user']),
             child: const Icon(
               Icons.location_pin,
               size: 40,
@@ -61,26 +54,47 @@ class MapController extends GetxController {
       }).toList();
 
       markers.assignAll(newMarkers);
+
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      showErrorMessage('Error al cargar ubicaciones: ${e.toString()}');
     }
   }
 
-
-  /// Llama a fetchLocations con el texto del TextField
-  void onSearch() {
+  void onSearch() async {
     final text = searchController.text.trim();
-    fetchLocations(filter: text.isEmpty ? null : text);
+    if (text.isEmpty) {
+      fetchLocations();
+      return;
+    }
+
+    // Verificar si la sugerencia existe
+    if (!searchSuggestions.any((s) => s.toLowerCase() == text.toLowerCase())) {
+      showErrorMessage('Ubicación no encontrada');
+      return;
+    }
+
+    await fetchLocations(filter: text);
+
+    // Centrar el mapa en la primera coincidencia
+    if (markers.isNotEmpty) {
+      final firstMarker = markers.first;
+      mapController.move(firstMarker.point, mapController.zoom);
+    }
   }
 
-  /// Ajusta zoom para mostrar todos los marcadores
-  /// Alterna entre modo pantalla completa
+  void showErrorMessage(String message) {
+    errorMessage.value = message;
+    Future.delayed(const Duration(seconds: 3), () => errorMessage.value = '');
+  }
+
   void onZoomFullScreen() {
     isFullScreen.toggle();
-
-    if (isFullScreen.value) {
-      // Opcional: Ajustar zoom al activar pantalla completa
-      mapController.move(mapController.center, mapController.zoom + 1);
+    if (markers.isNotEmpty) {
+      final bounds = fm.LatLngBounds.fromPoints(
+          markers.map((m) => m.point).toList()
+      );
+      mapController.fitBounds(bounds);
     }
   }
+
 }

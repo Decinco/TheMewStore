@@ -43,31 +43,66 @@ class MapView extends GetView<MapController> {
         children: [
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: controller.searchController,
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      hintText: 'Buscar...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                Obx(() => controller.errorMessage.isNotEmpty
+                    ? Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  color: Colors.red[100],
+                  child: Center(
+                    child: Text(
+                      controller.errorMessage.value,
+                      style: const TextStyle(color: Colors.red),
                     ),
-                    onSubmitted: (_) => controller.onSearch(),
                   ),
+                )
+                    : const SizedBox.shrink()),
+                TextField(
+                  controller: controller.searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Buscar tiendas...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: controller.onSearch,
+                    ),
+                  ),
+                  onChanged: (value) => controller.fetchLocations(filter: value),
+                  onSubmitted: (_) => controller.onSearch(),
                 ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.search, color: Colors.black),
-                  onPressed: controller.onSearch,
-                ),
+                Obx(() => controller.searchSuggestions.isNotEmpty
+                    ? Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: ListView.builder(
+                    itemCount: controller.searchSuggestions.length,
+                    itemBuilder: (context, index) => ListTile(
+                      title: Text(controller.searchSuggestions[index]),
+                      onTap: () {
+                        controller.searchController.text =
+                        controller.searchSuggestions[index];
+                        controller.onSearch();
+                      },
+                    ),
+                  ),
+                )
+                    : const SizedBox.shrink()),
               ],
             ),
           ),
+
           Expanded(
             child: Obx(
                   () => Container(
