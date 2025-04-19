@@ -86,9 +86,7 @@ class MapView extends GetView<MapController> {
                       subdomains: const ['a','b','c'],
                     ),
                     fm.MarkerLayer(
-                      markers: controller.markers.isNotEmpty
-                          ? controller.markers.value
-                          : [],
+                      markers: controller.markers, // Eliminado .value
                     ),
                   ],
                 ),

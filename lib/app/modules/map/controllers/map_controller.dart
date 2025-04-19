@@ -74,20 +74,13 @@ class MapController extends GetxController {
   }
 
   /// Ajusta zoom para mostrar todos los marcadores
+  /// Alterna entre modo pantalla completa
   void onZoomFullScreen() {
-    if (markers.isEmpty) return;
+    isFullScreen.toggle();
 
-    // Obtiene límites de todos los puntos
-    final bounds = fm.LatLngBounds.fromPoints(
-      markers.map((m) => m.point).toList(),
-    );
-
-    // Aplica fitBounds con padding
-    mapController.fitBounds(
-      bounds,
-      options: const fm.FitBoundsOptions(
-        padding: EdgeInsets.all(50),
-      ),
-    );
+    if (isFullScreen.value) {
+      // Opcional: Ajustar zoom al activar pantalla completa
+      mapController.move(mapController.center, mapController.zoom + 1);
+    }
   }
 }
