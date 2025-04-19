@@ -78,7 +78,7 @@ class MapView extends GetView<MapController> {
                 : const SizedBox.shrink()),
           ),
 
-          // Barra de búsqueda
+          // Barra de búsqueda con estilo integrado
           Positioned(
             top: 12,
             left: 20,
@@ -87,20 +87,21 @@ class MapView extends GetView<MapController> {
               children: [
                 Obx(() => controller.errorMessage.isNotEmpty
                     ? Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    color: Colors.red[100],
-                    child: Center(
-                      child: Text(
-                        controller.errorMessage.value,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    )
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  color: Colors.red[100],
+                  child: Center(
+                    child: Text(
+                      controller.errorMessage.value,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
                 )
                     : const SizedBox.shrink()),
                 TextField(
                     controller: controller.searchController,
                     decoration: InputDecoration(
                       hintText: 'Buscar tiendas...',
+                      hintStyle: TextStyle(color: Colors.grey[600]),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: const BorderSide(color: Colors.grey),
@@ -108,12 +109,13 @@ class MapView extends GetView<MapController> {
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 14),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: const Color(0xFFEDD5E5),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.search, color: Colors.black),
                         onPressed: controller.onSearch,
                       ),
                     ),
+                    style: const TextStyle(color: Colors.black),
                     onTap: () => controller.showSuggestions.value = true,
                     onChanged: (value) {
                       controller.fetchLocations(filter: value);
@@ -130,7 +132,7 @@ class MapView extends GetView<MapController> {
                   height: 150,
                   margin: const EdgeInsets.only(top: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95),
+                    color: const Color(0xFFEDD5E5),
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
@@ -143,7 +145,10 @@ class MapView extends GetView<MapController> {
                   child: ListView.builder(
                     itemCount: controller.searchSuggestions.length,
                     itemBuilder: (context, index) => ListTile(
-                      title: Text(controller.searchSuggestions[index]),
+                      title: Text(
+                        controller.searchSuggestions[index],
+                        style: const TextStyle(color: Colors.black),
+                      ),
                       tileColor: Colors.transparent,
                       onTap: () {
                         controller.searchController.text =
