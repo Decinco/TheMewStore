@@ -116,10 +116,24 @@ class MapView extends GetView<MapController> {
                       ),
                     ),
                     style: const TextStyle(color: Colors.black),
-                    onTap: () => controller.showSuggestions.value = true,
+                    onTap: () {
+                      controller.showSuggestions.value = true;
+                      if (controller.searchController.text.isEmpty) {
+                        controller.fetchLocations();
+                      }
+                    },
                     onChanged: (value) {
-                      controller.fetchLocations(filter: value);
-                      controller.showSuggestions.value = value.isNotEmpty;
+                      if (value.isNotEmpty) {
+                        // Solo buscar si no estamos en modo de selección única
+                        if (controller.searchSuggestions.length != 1 ||
+                            controller.searchSuggestions.first != value) {
+                          controller.fetchLocations(filter: value);
+                        }
+                        controller.showSuggestions.value = true;
+                      } else {
+                        controller.searchSuggestions.clear();
+                        controller.showSuggestions.value = false;
+                      }
                     },
                     onSubmitted: (_) {
                       controller.onSearch();
@@ -129,7 +143,9 @@ class MapView extends GetView<MapController> {
                 Obx(() => controller.showSuggestions.value &&
                     controller.searchSuggestions.isNotEmpty
                     ? Container(
-                  height: 150,
+                  constraints: BoxConstraints(
+                    maxHeight: 56 * controller.searchSuggestions.length.clamp(1, 3).toDouble(),
+                  ),
                   margin: const EdgeInsets.only(top: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFFEDD5E5),
@@ -149,17 +165,14 @@ class MapView extends GetView<MapController> {
                         controller.searchSuggestions[index],
                         style: const TextStyle(color: Colors.black),
                       ),
-                      tileColor: Colors.transparent,
                       onTap: () {
-                        controller.searchController.text =
-                        controller.searchSuggestions[index];
-                        controller.onSearch();
-                        controller.showSuggestions.value = false;
+                        controller.selectLocation(controller.searchSuggestions[index]);
                       },
                     ),
                   ),
                 )
                     : const SizedBox.shrink()),
+
               ],
             ),
           ),

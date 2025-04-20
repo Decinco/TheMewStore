@@ -25,46 +25,40 @@ class MapController extends GetxController {
     fetchLocations();
   }
 
-  Future<void> fetchLocations({String? filter}) async {
+  Future<void> fetchLocations({String? filter, bool exact = false}) async {
     final client = Supabase.instance.client;
 
-    var query = client.from('map').select('location, lat, lng, description_user');
-
-    if (filter != null && filter.isNotEmpty) {
-      query = query.ilike('location', '%$filter%');
-    }
-
     try {
+      var query = client.from('map').select('location, lat, lng, description_user');
+
+      if (filter != null && filter.isNotEmpty) {
+        query = exact
+            ? query.eq('location', filter) // Búsqueda exacta
+            : query.ilike('location', '%$filter%'); // Búsqueda parcial
+      }
+
       final List<dynamic> rows = await query;
 
-      final suggestions = rows.map<String>((e) => e['location'] as String).toList();
-      searchSuggestions.assignAll(suggestions);
+      // Solo actualizar sugerencias si no es búsqueda exacta
+      if (!exact) {
+        final locations = rows.map<String>((e) => e['location'] as String).toList();
+        searchSuggestions.assignAll(locations);
+      }
 
-      final newMarkers = rows.map<fm.Marker>((entry) {
+      markers.assignAll(rows.map<fm.Marker>((entry) {
         final data = entry as Map<String, dynamic>;
         return fm.Marker(
           point: LatLng(data['lat'], data['lng']),
-          width: 40,
-          height: 40,
           builder: (ctx) => GestureDetector(
             onTap: () => Get.snackbar(data['location'], data['description_user']),
-            child: const Icon(
-              Icons.location_pin,
-              size: 40,
-              color: Colors.red,
-            ),
+            child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
           ),
         );
-      }).toList();
-
-      markers.assignAll(newMarkers);
+      }));
 
     } catch (e) {
-      showErrorMessage('Error al cargar ubicaciones: ${e.toString()}');
+      showErrorMessage('Error: ${e.toString()}');
     }
-
-    showSuggestions.value = filter != null && filter.isNotEmpty;
-
   }
 
   void onSearch() async {
@@ -74,18 +68,37 @@ class MapController extends GetxController {
       return;
     }
 
-    // Verificar si la sugerencia existe
-    if (!searchSuggestions.any((s) => s.toLowerCase() == text.toLowerCase())) {
-      showErrorMessage('Ubicación no encontrada');
-      return;
-    }
+    // Buscar coincidencia exacta
+    final client = Supabase.instance.client;
+    try {
+      final List<dynamic> rows = await client.from('map')
+          .select('location, lat, lng, description_user')
+          .eq('location', text);
 
-    await fetchLocations(filter: text);
+      if (rows.isEmpty) {
+        showErrorMessage('Ubicación no encontrada');
+        return;
+      }
 
-    // Centrar el mapa en la primera coincidencia
-    if (markers.isNotEmpty) {
-      final firstMarker = markers.first;
-      mapController.move(firstMarker.point, mapController.zoom);
+      // Actualizar marcadores
+      markers.assignAll(rows.map<fm.Marker>((entry) {
+        final data = entry as Map<String, dynamic>;
+        return fm.Marker(
+          point: LatLng(data['lat'], data['lng']),
+          builder: (ctx) => GestureDetector(
+            onTap: () => Get.snackbar(data['location'], data['description_user']),
+            child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
+          ),
+        );
+      }));
+
+      // Mover mapa al marcador
+      if (markers.isNotEmpty) {
+        mapController.move(markers.first.point, 18);
+      }
+
+    } catch (e) {
+      showErrorMessage('Error: ${e.toString()}');
     }
   }
 
@@ -103,5 +116,22 @@ class MapController extends GetxController {
       mapController.fitBounds(bounds);
     }
   }
+  void selectLocation(String location) async {
+    // 1. Asignar el texto al controlador
+    searchController.text = location;
 
+    // 2. Forzar la lista de sugerencias a solo este elemento
+    searchSuggestions.assignAll([location]);
+
+    // 3. Realizar búsqueda exacta
+    await fetchLocations(filter: location, exact: true);
+
+    // 4. Mover el mapa al marcador
+    if (markers.isNotEmpty) {
+      mapController.move(markers.first.point, 18);
+    }
+
+    // 5. Ocultar sugerencias
+    showSuggestions.value = false;
+  }
 }
