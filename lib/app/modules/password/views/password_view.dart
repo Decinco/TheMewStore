@@ -68,20 +68,24 @@ class PasswordView extends GetView<PasswordController> {
                                         height: 25,
                                       ),
                                       ElevatedButton(
-                                        onPressed: isProcessing ? null : () async {
-                                          isProcessing = true;
+                                        onPressed: isProcessing
+                                            ? null
+                                            : () async {
+                                                isProcessing = true;
 
-                                          bool? result = await controller.sendOtp();
-                                          if (result == true) {
-                                            if (context.mounted) {
-                                              otpFocusNode.requestFocus();
-                                              DefaultTabController.of(context)
-                                                  .animateTo(1);
-                                            }
-                                          }
+                                                bool? result =
+                                                    await controller.sendOtp();
+                                                if (result == true) {
+                                                  if (context.mounted) {
+                                                    otpFocusNode.requestFocus();
+                                                    DefaultTabController.of(
+                                                            context)
+                                                        .animateTo(1);
+                                                  }
+                                                }
 
-                                          isProcessing = false;
-                                        },
+                                                isProcessing = false;
+                                              },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size(135, 45),
                                           elevation: 0,
@@ -127,7 +131,8 @@ class PasswordView extends GetView<PasswordController> {
                                         keyboardType: TextInputType.number,
                                         pinTheme: PinTheme(
                                           shape: PinCodeFieldShape.box,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           fieldHeight: 55,
                                           fieldWidth: 50,
                                           activeFillColor: Colors.white,
@@ -142,20 +147,25 @@ class PasswordView extends GetView<PasswordController> {
                                         height: 10,
                                       ),
                                       ElevatedButton(
-                                        onPressed: isProcessing ? null : () async {
-                                          isProcessing = true;
+                                        onPressed: isProcessing
+                                            ? null
+                                            : () async {
+                                                isProcessing = true;
 
-                                          bool? result = await controller.verifyOtp();
-                                          if (result == true) {
-                                            if (context.mounted) {
-                                              firstPasswordFocusNode.requestFocus();
-                                              DefaultTabController.of(context)
-                                                  .animateTo(2);
-                                            }
-                                          }
+                                                bool? result = await controller
+                                                    .verifyOtp();
+                                                if (result == true) {
+                                                  if (context.mounted) {
+                                                    firstPasswordFocusNode
+                                                        .requestFocus();
+                                                    DefaultTabController.of(
+                                                            context)
+                                                        .animateTo(2);
+                                                  }
+                                                }
 
-                                          isProcessing = false;
-                                        },
+                                                isProcessing = false;
+                                              },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size(135, 45),
                                           elevation: 0,
@@ -195,7 +205,8 @@ class PasswordView extends GetView<PasswordController> {
                                         child: TextField(
                                           focusNode: firstPasswordFocusNode,
                                           controller: controller.nuPasswordC,
-                                          keyboardType: TextInputType.visiblePassword,
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
                                           obscureText: true,
                                           decoration: const InputDecoration(
                                             border: InputBorder.none,
@@ -211,8 +222,10 @@ class PasswordView extends GetView<PasswordController> {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: TextField(
-                                          controller: controller.nuPasswordConfirmC,
-                                          keyboardType: TextInputType.visiblePassword,
+                                          controller:
+                                              controller.nuPasswordConfirmC,
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
                                           obscureText: true,
                                           decoration: const InputDecoration(
                                             border: InputBorder.none,
@@ -226,13 +239,15 @@ class PasswordView extends GetView<PasswordController> {
                                         height: 25,
                                       ),
                                       ElevatedButton(
-                                        onPressed: isProcessing ? null : () async {
-                                          isProcessing = true;
+                                        onPressed: isProcessing
+                                            ? null
+                                            : () async {
+                                                isProcessing = true;
 
-                                          controller.changePassword();
+                                                controller.changePassword();
 
-                                          isProcessing = false;
-                                        },
+                                                isProcessing = false;
+                                              },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size(135, 45),
                                           elevation: 0,
