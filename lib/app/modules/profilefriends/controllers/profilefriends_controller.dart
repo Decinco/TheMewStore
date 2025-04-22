@@ -13,7 +13,7 @@ class ProfilefriendsController extends GetxController {
     final response = await client
         .from('user_data')
         .select()
-        .eq('user_id', user.id ?? "")
+        .eq('user_id', user.id)
         .single();
 
     UserData userData = UserData.fromJson(response);
