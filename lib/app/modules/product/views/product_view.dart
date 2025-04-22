@@ -6,7 +6,7 @@ import '../controllers/product_controller.dart';
 
 
 void _showCommentDialog(BuildContext context, ProductController controller) {
-  final userController = TextEditingController();
+  //final userController = TextEditingController();
   final commentController = TextEditingController();
   final rating = 0.obs;
 

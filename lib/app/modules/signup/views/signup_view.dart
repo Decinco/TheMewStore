@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:themewstore/app/modules/signup/controllers/signup_controller.dart';
 
 import '../../../../uicon.dart';
-import '../../home/views/home_view.dart';
-import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
   const SignupView({super.key});

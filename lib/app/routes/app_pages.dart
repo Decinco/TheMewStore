@@ -9,8 +9,6 @@ import '../modules/map/views/map_view.dart';
 import '../modules/password/bindings/password_binding.dart';
 import '../modules/password/views/password_view.dart';
 import '../modules/product/bindings/product_binding.dart';
-import '../modules/product/bindings/product_binding.dart';
-import '../modules/product/views/product_view.dart';
 import '../modules/product/views/product_view.dart';
 import '../modules/shoppingcart/bindings/shoppingcart_binding.dart';
 import '../modules/shoppingcart/views/shoppingcart_view.dart';

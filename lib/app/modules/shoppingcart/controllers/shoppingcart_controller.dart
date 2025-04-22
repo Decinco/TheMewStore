@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../product/controllers/product_controller.dart';
@@ -119,7 +118,7 @@ class ShoppingcartController extends GetxController {
       final productId = item['product_id'] as int; // Asegurar tipo int
 
       // Eliminar de la base de datos
-      final response = await client.from('shopping_cart')
+      await client.from('shopping_cart')
           .delete()
           .eq('user_id', user.id)
           .eq('product_id', productId);

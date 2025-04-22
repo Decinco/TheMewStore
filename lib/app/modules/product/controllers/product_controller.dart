@@ -22,11 +22,9 @@ class ProductController extends GetxController {
           .from('shopping_cart')
           .select('product_id')
           .eq('user_id', currentUser.id);
-
-      if (response != null && response is List) {
-        cartQuantity.value = response.length;
-      }
+      cartQuantity.value = response.length;
     } catch (e) {
+      Get.snackbar("Error", "Error");
     }
   }
 

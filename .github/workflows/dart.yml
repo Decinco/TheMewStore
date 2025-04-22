@@ -22,7 +22,7 @@ jobs:
         run: flutter pub get
 
       - name: Analyze project source
-        run: flutter analyze
+        run: flutter analyze --fatal-warnings --no-pub
 
       - name: Verify formatting
         run: dart format --output=write .
