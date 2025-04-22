@@ -26,24 +26,24 @@ class UserData {
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-    userId: json["user_id"],
-    userName: json["user_name"],
-    rating: json["rating"],
-    userCode: json["user_code"],
-    region: json["region"],
-    description: json["description"],
-    email: json["email"],
-    profilePicture: json["profile_picture"],
-  );
+        userId: json["user_id"],
+        userName: json["user_name"],
+        rating: json["rating"],
+        userCode: json["user_code"],
+        region: json["region"],
+        description: json["description"],
+        email: json["email"],
+        profilePicture: json["profile_picture"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "user_id": userId,
-    "user_name": userName,
-    "rating": rating,
-    "user_code": userCode,
-    "region": region,
-    "description": description,
-    "email": email,
-    "profile_picture": profilePicture,
-  };
+        "user_id": userId,
+        "user_name": userName,
+        "rating": rating,
+        "user_code": userCode,
+        "region": region,
+        "description": description,
+        "email": email,
+        "profile_picture": profilePicture,
+      };
 }

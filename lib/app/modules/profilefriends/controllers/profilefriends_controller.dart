@@ -10,11 +10,8 @@ class ProfilefriendsController extends GetxController {
   TextEditingController descriptionC = TextEditingController();
 
   Future<UserData> getProfileData() async {
-    final response = await client
-        .from('user_data')
-        .select()
-        .eq('user_id', user.id)
-        .single();
+    final response =
+        await client.from('user_data').select().eq('user_id', user.id).single();
 
     UserData userData = UserData.fromJson(response);
 

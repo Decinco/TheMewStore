@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-List<Album> albumFromJson(String str) => List<Album>.from(json.decode(str).map((x) => Album.fromJson(x)));
+List<Album> albumFromJson(String str) =>
+    List<Album>.from(json.decode(str).map((x) => Album.fromJson(x)));
 
-String albumToJson(List<Album> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String albumToJson(List<Album> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Album {
   int albumCardId;
@@ -16,14 +18,14 @@ class Album {
   });
 
   factory Album.fromJson(Map<String, dynamic> json) => Album(
-    albumCardId: json["album_card_id"],
-    userId: json["user_id"],
-    cardId: json["card_id"],
-  );
+        albumCardId: json["album_card_id"],
+        userId: json["user_id"],
+        cardId: json["card_id"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "album_card_id": albumCardId,
-    "user_id": userId,
-    "card_id": cardId,
-  };
+        "album_card_id": albumCardId,
+        "user_id": userId,
+        "card_id": cardId,
+      };
 }
