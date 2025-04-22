@@ -31,30 +31,31 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
           Stack(
             children: [
               IconButton(
-                icon: const Icon(Icons.shopping_bag, color: Colors.black, size: 28),
+                icon: const Icon(Icons.shopping_bag,
+                    color: Colors.black, size: 28),
                 onPressed: () {},
               ),
               Obx(() {
                 return controller.cartItems.isEmpty
                     ? Container()
                     : Positioned(
-                  right: 6,
-                  top: 6,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      controller.filteredCartItems.length.toString(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                );
+                        right: 6,
+                        top: 6,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            controller.filteredCartItems.length.toString(),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
               }),
             ],
           ),
@@ -100,96 +101,109 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                   },
                 ),
                 carouselController: controller.carouselController,
-                items: controller.filteredCartItems
-                    .asMap()
-                    .entries
-                    .map((entry) {
+                items:
+                    controller.filteredCartItems.asMap().entries.map((entry) {
                   return _cartItem(entry.key);
                 }).toList(),
               );
             }),
           ),
           Obx(() => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Column(
                   children: [
-                    _quantityButton(Icons.chevron_left, controller.previousPage,
-                        enabled: controller.currentPage.value > 0),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        controller.filteredCartItems.isEmpty
-                            ? "0 / 0"
-                            : "${controller.currentPage.value + 1} / ${controller.filteredCartItems.length}",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    _quantityButton(Icons.chevron_right, controller.nextPage,
-                        enabled: controller.currentPage.value <
-                            controller.filteredCartItems.length - 1),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton.icon(
-                      onPressed: controller.filteredCartItems.isEmpty ? null : controller.removeItem,
-                      icon: const Icon(Icons.delete, color: Colors.white, size: 24),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.red.shade500, // Fondo rojo oscuro
-                      ),
-                      label: const Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Remove',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _quantityButton(
+                            Icons.chevron_left, controller.previousPage,
+                            enabled: controller.currentPage.value > 0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            controller.filteredCartItems.isEmpty
+                                ? "0 / 0"
+                                : "${controller.currentPage.value + 1} / ${controller.filteredCartItems.length}",
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      ),
+                        _quantityButton(
+                            Icons.chevron_right, controller.nextPage,
+                            enabled: controller.currentPage.value <
+                                controller.filteredCartItems.length - 1),
+                      ],
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextButton.icon(
-                        onPressed: controller.filteredCartItems.isEmpty ? null : () {},
-                        icon: const Icon(Icons.payment, color: Colors.white, size: 24),
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.green.shade500, // Fondo verde oscuro
-                        ),
-                        label: Obx(() {
-                          return Text.rich(
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton.icon(
+                          onPressed: controller.filteredCartItems.isEmpty
+                              ? null
+                              : controller.removeItem,
+                          icon: const Icon(Icons.delete,
+                              color: Colors.white, size: 24),
+                          style: TextButton.styleFrom(
+                            backgroundColor:
+                                Colors.red.shade500, // Fondo rojo oscuro
+                          ),
+                          label: const Text.rich(
                             TextSpan(
                               children: [
-                                const TextSpan(
-                                  text: 'Pay ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
                                 TextSpan(
-                                  text: '${controller.totalAmount.toStringAsFixed(2)}€',
+                                  text: 'Remove',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
-                            style: const TextStyle(fontSize: 14, color: Colors.white),
-                          );
-                        }),
-                      ),
+                            style: TextStyle(fontSize: 14, color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextButton.icon(
+                            onPressed: controller.filteredCartItems.isEmpty
+                                ? null
+                                : () {},
+                            icon: const Icon(Icons.payment,
+                                color: Colors.white, size: 24),
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Colors.green.shade500, // Fondo verde oscuro
+                            ),
+                            label: Obx(() {
+                              return Text.rich(
+                                TextSpan(
+                                  children: [
+                                    const TextSpan(
+                                      text: 'Pay ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          '${controller.totalAmount.toStringAsFixed(2)}€',
+                                    ),
+                                  ],
+                                ),
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.white),
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          )),
+              )),
         ],
       ),
     );
   }
+
   Widget _cartItem(int index) {
     return Obx(() {
       final item = controller.filteredCartItems[index];
@@ -201,27 +215,26 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(
-                  item["image"] ?? 'https://via.placeholder.com/150',
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.cover
-              ),
+              Image.network(item["image"] ?? 'https://via.placeholder.com/150',
+                  width: 150, height: 150, fit: BoxFit.cover),
               const SizedBox(height: 10),
               Text(item["name"],
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
               Text("${item["price"].toStringAsFixed(2)}€",
                   style: const TextStyle(fontSize: 16)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _quantityButton(Icons.remove, () => controller.decrement(index),
+                  _quantityButton(
+                      Icons.remove, () => controller.decrement(index),
                       enabled: item["quantity"].value > 1),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       item["quantity"].value.toString(),
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                   _quantityButton(Icons.add, () => controller.increment(index),
@@ -234,16 +247,20 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       );
     });
   }
-  Widget _quantityButton(IconData icon, VoidCallback onPressed, {bool enabled = true}) {
+
+  Widget _quantityButton(IconData icon, VoidCallback onPressed,
+      {bool enabled = true}) {
     return GestureDetector(
       onTap: enabled ? onPressed : null,
       child: Container(
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          border: Border.all(color: enabled ? Colors.grey : Colors.grey.shade300),
+          border:
+              Border.all(color: enabled ? Colors.grey : Colors.grey.shade300),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(icon, size: 18, color: enabled ? Colors.black : Colors.grey.shade400),
+        child: Icon(icon,
+            size: 18, color: enabled ? Colors.black : Colors.grey.shade400),
       ),
     );
   }

@@ -23,7 +23,8 @@ class HomeController extends GetxController {
   }
 
   Future<UserData> getUserData() async {
-    var userData = await client.from('user_data').select().eq('user_id', user.value.id);
+    var userData =
+        await client.from('user_data').select().eq('user_id', user.value.id);
     UserData userDataModel = UserData.fromJson(userData[0]);
     return userDataModel;
   }
@@ -32,7 +33,9 @@ class HomeController extends GetxController {
     try {
       var response = await client.from('product_stock').select();
 
-      products.value = response.map<ProductStock>((item) => ProductStock.fromJson(item)).toList();
+      products.value = response
+          .map<ProductStock>((item) => ProductStock.fromJson(item))
+          .toList();
     } catch (e) {
       print('Error fetching products: $e');
     }
