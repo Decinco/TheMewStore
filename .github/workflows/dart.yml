@@ -1,13 +1,13 @@
-name: Dart
+name: Check PR Dart Integrity
 
 permissions:
   contents: write
   
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
+if: ${{ github.event_name != 'push' || github.actor != 'github-actions[bot]' }}
 
 jobs:
   build:
@@ -36,6 +36,6 @@ jobs:
           git config user.email "yourdartcodeiswronglyformatted@juanarreglatucodigo.wtf"
           git add .
           git commit -m "Apply automatic formatting via GitHub Actions" || echo "No changes to commit"
-          git push origin HEAD:refs/heads/${{ github.ref_name }}
+          git push origin HEAD:${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

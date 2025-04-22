@@ -1,0 +1,28 @@
+name: Check Commit Dart Integrity
+
+permissions:
+  contents: write
+  
+on:
+  push:
+    branches: [ "**" ]
+
+if: ${{ github.event_name != 'push' || github.actor != 'github-actions[bot]' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install the Flutter SDK
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project source
+        run: flutter analyze --no-fatal-infos --fatal-warnings --no-pub
