@@ -123,7 +123,6 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                           color: Color.fromRGBO(78, 78, 78, 1),
                         ),
                         SizedBox(width: 5),
-                        StarRating()
                       ],
                     )
                   ])
