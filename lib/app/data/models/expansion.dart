@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-List<Expansion> expansionFromJson(String str) => List<Expansion>.from(json.decode(str).map((x) => Expansion.fromJson(x)));
+List<Expansion> expansionFromJson(String str) =>
+    List<Expansion>.from(json.decode(str).map((x) => Expansion.fromJson(x)));
 
-String expansionToJson(List<Expansion> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String expansionToJson(List<Expansion> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Expansion {
   int expansionId;
@@ -24,22 +26,22 @@ class Expansion {
   });
 
   factory Expansion.fromJson(Map<String, dynamic> json) => Expansion(
-    expansionId: json["expansion_id"],
-    expansionName: json["expansion_name"],
-    expansionCode: json["expansion_code"],
-    symbol: json["symbol"],
-    printedTotal: json["printed_total"],
-    logo: json["logo"],
-    series: json["series"],
-  );
+        expansionId: json["expansion_id"],
+        expansionName: json["expansion_name"],
+        expansionCode: json["expansion_code"],
+        symbol: json["symbol"],
+        printedTotal: json["printed_total"],
+        logo: json["logo"],
+        series: json["series"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "expansion_id": expansionId,
-    "expansion_name": expansionName,
-    "expansion_code": expansionCode,
-    "symbol": symbol,
-    "printed_total": printedTotal,
-    "logo": logo,
-    "series": series,
-  };
+        "expansion_id": expansionId,
+        "expansion_name": expansionName,
+        "expansion_code": expansionCode,
+        "symbol": symbol,
+        "printed_total": printedTotal,
+        "logo": logo,
+        "series": series,
+      };
 }
