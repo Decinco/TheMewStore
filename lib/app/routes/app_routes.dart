@@ -11,6 +11,7 @@ abstract class Routes {
   static const SHOPPINGCART = _Paths.SHOPPINGCART;
   static const PROFILEFRIENDS = _Paths.PROFILEFRIENDS;
   static const SPLASH = _Paths.SPLASH;
+  static const MAP = _Paths.MAP;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const SHOPPINGCART = '/shoppingcart';
   static const PROFILEFRIENDS = '/profilefriends';
   static const SPLASH = '/splash';
+  static const MAP = '/map';
 }
