@@ -33,7 +33,9 @@ jobs:
         run: |
           git config user.name "DartlyCorrectBot"
           git config user.email "yourdartcodeiswronglyformatted@juanarreglatucodigo.wtf"
+          git stash # Stash unstaged changes to avoid conflicts
           git pull --rebase origin ${{ github.head_ref }}
+          git stash pop # Restore stashed changes after rebase
           git add .
           git commit -m "Apply automatic formatting via GitHub Actions" || echo "No changes to commit"
           git push origin HEAD:${{ github.head_ref }}
