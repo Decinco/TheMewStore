@@ -40,16 +40,38 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                 onPressed: () {
                                   Get.snackbar("cambiar Imagen", "TODO");
                                 },
-                                icon: Icon(UIcons.fibspencil)
-                            ),
+                                icon: Icon(UIcons.fibspencil)),
                           ),
                         ))
                   ],
                 ),
-                Text(userData.userName ?? 'No Name'),
-                Text(userData.email),
+                Text(
+                  userData.userCode,
+                  style: TextStyle(
+                      color: Color.fromRGBO(152, 151, 151, 1), fontSize: 12),
+                ),
               ],
-            )
+            ),
+            Divider(
+              height: 80,
+              thickness: 15,
+              indent: 10,
+              endIndent: 10,
+              color: Color.fromRGBO(152, 151, 151, 1),
+            ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userData.userName ?? 'No Name',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Text(userData.email),
+                ])
           ],
         ));
   }
