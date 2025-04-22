@@ -7,10 +7,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
-if: ${{ github.event_name != 'push' || github.actor != 'github-actions[bot]' }}
-
 jobs:
   build:
+    if: ${{ github.event_name != 'push' || github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
 
     steps:
