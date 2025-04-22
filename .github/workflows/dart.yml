@@ -21,8 +21,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-
       - name: Analyze project source
         run: flutter analyze
+
+      - name: Verify formatting
+        run: dart format --output=write .
+
+      - name: Push changes
+        run: |
+          git config user.name "DartlyCorrectBot"
+          git config user.email "yourdartcodeiswronglyformatted@juanarreglatucodigo.wtf"
+          git add .
+          git commit -m "Apply automatic formatting via GitHub Actions" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
