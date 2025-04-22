@@ -33,11 +33,15 @@ class HomeController extends GetxController {
     try {
       var response = await client.from('product_stock').select();
 
-      maxPrice.value = allProducts.map((p) => p.price).reduce((a, b) => a > b ? a : b);
+      maxPrice.value =
+          allProducts.map((p) => p.price).reduce((a, b) => a > b ? a : b);
       selectedPrice.value = maxPrice.value;
 
-      allProducts.value = response.map<ProductStock>((item) => ProductStock.fromJson(item)).toList();
-      expansionOptions.value = allProducts.map((p) => p.expansionId.toString()).toSet().toList();
+      allProducts.value = response
+          .map<ProductStock>((item) => ProductStock.fromJson(item))
+          .toList();
+      expansionOptions.value =
+          allProducts.map((p) => p.expansionId.toString()).toSet().toList();
       _setRandomProducts();
     } catch (e) {
       print('Error fetching products: $e');
@@ -62,20 +66,20 @@ class HomeController extends GetxController {
 
   void filterProducts() {
     var filtered = allProducts.where((p) =>
-    p.productName.toLowerCase().contains(searchQuery.value.toLowerCase()) &&
-        p.price <= selectedPrice.value
-    );
+        p.productName.toLowerCase().contains(searchQuery.value.toLowerCase()) &&
+        p.price <= selectedPrice.value);
 
     if (selectedExpansion.value.isNotEmpty) {
-      filtered = filtered.where((p) => p.expansionId.toString() == selectedExpansion.value);
+      filtered = filtered
+          .where((p) => p.expansionId.toString() == selectedExpansion.value);
     }
 
     products.value = filtered.toList();
   }
 
-
   Future<UserData> getUserData() async {
-    var userData = await client.from('user_data').select().eq('user_id', user.value.id);
+    var userData =
+        await client.from('user_data').select().eq('user_id', user.value.id);
     return UserData.fromJson(userData[0]);
   }
 
