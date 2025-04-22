@@ -84,7 +84,6 @@ class SignupView extends GetView<SignupController> {
                   const SizedBox(
                     height: 25,
                   ),
-
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: TextField(
@@ -178,7 +177,7 @@ class SignupView extends GetView<SignupController> {
                               fixedSize: Size(135, 45),
                               elevation: 0,
                               backgroundColor:
-                              Color.fromARGB(255, 118, 171, 218),
+                                  Color.fromARGB(255, 118, 171, 218),
                               foregroundColor: Colors.white,
                               textStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,

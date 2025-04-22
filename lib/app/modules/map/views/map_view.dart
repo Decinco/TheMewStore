@@ -41,7 +41,7 @@ class MapView extends GetView<MapController> {
           // Mapa con margen superior para el buscador
           Positioned.fill(
             child: Obx(
-                  () => Container(
+              () => Container(
                 margin: controller.isFullScreen.value
                     ? EdgeInsets.zero
                     : const EdgeInsets.fromLTRB(20, 80, 20, 20),
@@ -51,13 +51,15 @@ class MapView extends GetView<MapController> {
                     center: LatLng(41.3851, 2.1734),
                     zoom: 12,
                     onMapReady: () {
-                      controller.mapController.move(LatLng(41.3851, 2.1734), 12);
+                      controller.mapController
+                          .move(LatLng(41.3851, 2.1734), 12);
                     },
                   ),
                   children: [
                     fm.TileLayer(
-                      urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      subdomains: const ['a','b','c'],
+                      urlTemplate:
+                          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      subdomains: const ['a', 'b', 'c'],
                     ),
                     fm.MarkerLayer(
                       markers: controller.markers,
@@ -72,9 +74,9 @@ class MapView extends GetView<MapController> {
           Positioned.fill(
             child: Obx(() => controller.showSuggestions.value
                 ? GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () => controller.showSuggestions.value = false,
-            )
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => controller.showSuggestions.value = false,
+                  )
                 : const SizedBox.shrink()),
           ),
 
@@ -87,15 +89,15 @@ class MapView extends GetView<MapController> {
               children: [
                 Obx(() => controller.errorMessage.isNotEmpty
                     ? Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  color: Colors.red[100],
-                  child: Center(
-                    child: Text(
-                      controller.errorMessage.value,
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ),
-                )
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        color: Colors.red[100],
+                        child: Center(
+                          child: Text(
+                            controller.errorMessage.value,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      )
                     : const SizedBox.shrink()),
                 TextField(
                     controller: controller.searchController,
@@ -138,41 +140,43 @@ class MapView extends GetView<MapController> {
                     onSubmitted: (_) {
                       controller.onSearch();
                       controller.showSuggestions.value = false;
-                    }
-                ),
+                    }),
                 Obx(() => controller.showSuggestions.value &&
-                    controller.searchSuggestions.isNotEmpty
+                        controller.searchSuggestions.isNotEmpty
                     ? Container(
-                  constraints: BoxConstraints(
-                    maxHeight: 56 * controller.searchSuggestions.length.clamp(1, 3).toDouble(),
-                  ),
-                  margin: const EdgeInsets.only(top: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEDD5E5),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: ListView.builder(
-                    itemCount: controller.searchSuggestions.length,
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text(
-                        controller.searchSuggestions[index],
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      onTap: () {
-                        controller.selectLocation(controller.searchSuggestions[index]);
-                      },
-                    ),
-                  ),
-                )
+                        constraints: BoxConstraints(
+                          maxHeight: 56 *
+                              controller.searchSuggestions.length
+                                  .clamp(1, 3)
+                                  .toDouble(),
+                        ),
+                        margin: const EdgeInsets.only(top: 8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEDD5E5),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: ListView.builder(
+                          itemCount: controller.searchSuggestions.length,
+                          itemBuilder: (context, index) => ListTile(
+                            title: Text(
+                              controller.searchSuggestions[index],
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                            onTap: () {
+                              controller.selectLocation(
+                                  controller.searchSuggestions[index]);
+                            },
+                          ),
+                        ),
+                      )
                     : const SizedBox.shrink()),
-
               ],
             ),
           ),
