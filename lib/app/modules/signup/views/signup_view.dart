@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:themewstore/app/modules/signup/controllers/signup_controller.dart';
 
 import '../../../../uicon.dart';
-import '../../home/views/home_view.dart';
-import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
   const SignupView({super.key});
@@ -86,7 +84,6 @@ class SignupView extends GetView<SignupController> {
                   const SizedBox(
                     height: 25,
                   ),
-
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: TextField(
@@ -180,7 +177,7 @@ class SignupView extends GetView<SignupController> {
                               fixedSize: Size(135, 45),
                               elevation: 0,
                               backgroundColor:
-                              Color.fromARGB(255, 118, 171, 218),
+                                  Color.fromARGB(255, 118, 171, 218),
                               foregroundColor: Colors.white,
                               textStyle: const TextStyle(
                                   fontWeight: FontWeight.bold,

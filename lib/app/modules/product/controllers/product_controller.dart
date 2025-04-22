@@ -9,7 +9,7 @@ class ProductController extends GetxController {
   var quantity = 1.obs;
   var cartQuantity = 0.obs;
   var comments = <Comment>[].obs;
-  var stock = 0.obs;  // Aquí añadimos el stock
+  var stock = 0.obs; // Aquí añadimos el stock
   // Para cargar desde el HomeView
   var product = {}.obs;
 
@@ -22,17 +22,15 @@ class ProductController extends GetxController {
           .from('shopping_cart')
           .select('product_id')
           .eq('user_id', currentUser.id);
-
-      if (response != null && response is List) {
-        cartQuantity.value = response.length;
-      }
+      cartQuantity.value = response.length;
     } catch (e) {
+      Get.snackbar("Error", "Error");
     }
   }
 
   void setProduct(Map<String, dynamic> data) {
     product.value = data;
-    stock.value = product['stock'] ?? 0;  // Cargar el stock del producto
+    stock.value = product['stock'] ?? 0; // Cargar el stock del producto
   }
 
   Future<void> loadComments(dynamic productId) async {
@@ -44,10 +42,8 @@ class ProductController extends GetxController {
           .order('created_at', ascending: false);
 
       comments.value = (data as List).map((c) => Comment.fromMap(c)).toList();
-    } catch (e) {
-    }
+    } catch (e) {}
   }
-
 
   Future<void> addComment(String content, int rating) async {
     final currentUser = Supabase.instance.client.auth.currentUser;
@@ -65,11 +61,10 @@ class ProductController extends GetxController {
 
     try {
       await client.from('product_comments').insert(newComment);
-      await loadComments(productId); // Recarga comentarios desde la base de datos
-    } catch (e) {
-    }
+      await loadComments(
+          productId); // Recarga comentarios desde la base de datos
+    } catch (e) {}
   }
-
 
   // Función para aumentar la cantidad, respetando el stock
   void increaseQuantity() {
@@ -77,12 +72,14 @@ class ProductController extends GetxController {
       quantity.value++;
     }
   }
+
   // Función para disminuir la cantidad, sin bajar de 1
   void decreaseQuantity() {
     if (quantity.value > 1) {
       quantity.value--;
     }
   }
+
   void addToCart() {
     cartQuantity.value = cartQuantity.value < 9 ? cartQuantity.value + 1 : 10;
   }
@@ -119,7 +116,8 @@ class ProductController extends GetxController {
       final int availableToAdd = maxStock - currentQuantity;
       if (availableToAdd <= 0) {
         // Ya se alcanzó el stock máximo, no añadimos más
-        Get.snackbar('Stock alcanzado', 'Ya tienes la cantidad máxima en el carrito.',
+        Get.snackbar(
+            'Stock alcanzado', 'Ya tienes la cantidad máxima en el carrito.',
             snackPosition: SnackPosition.BOTTOM);
         return;
       }
@@ -138,14 +136,15 @@ class ProductController extends GetxController {
       Get.find<ShoppingcartController>().fetchCartItems();
 
       // Opcional: notificación al usuario
-      Get.snackbar('Añadido al carrito', 'Se añadieron $quantityToAdd unidades.',
+      Get.snackbar(
+          'Añadido al carrito', 'Se añadieron $quantityToAdd unidades.',
           snackPosition: SnackPosition.BOTTOM);
-
     } catch (e) {
       Get.snackbar('Error', 'No se pudo añadir al carrito.',
           snackPosition: SnackPosition.BOTTOM);
     }
   }
+
   @override
   void onInit() {
     super.onInit();

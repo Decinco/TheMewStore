@@ -1,0 +1,43 @@
+name: Check PR Dart Integrity
+
+permissions:
+  contents: write
+  
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install the Flutter SDK
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project source
+        run: flutter analyze --no-fatal-infos --fatal-warnings --no-pub
+
+      - name: Verify formatting
+        run: dart format --output=write .
+
+      - name: Push changes
+        if: ${{ github.event_name != 'push' || github.actor != 'github-actions[bot]' }}
+        run: |
+          git config user.name "DartlyCorrectBot"
+          git config user.email "yourdartcodeiswronglyformatted@juanarreglatucodigo.wtf"
+          git stash # Stash unstaged changes to avoid conflicts
+          git pull --rebase origin ${{ github.head_ref }}
+          git stash pop # Restore stashed changes after rebase
+          git add .
+          git commit -m "Apply automatic formatting via GitHub Actions" || echo "No changes to commit"
+          git push origin HEAD:${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'dart:convert';
 
 class Comment {
   final String user;

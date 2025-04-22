@@ -29,7 +29,8 @@ class MapController extends GetxController {
     final client = Supabase.instance.client;
 
     try {
-      var query = client.from('map').select('location, lat, lng, description_user');
+      var query =
+          client.from('map').select('location, lat, lng, description_user');
 
       if (filter != null && filter.isNotEmpty) {
         query = exact
@@ -41,7 +42,8 @@ class MapController extends GetxController {
 
       // Solo actualizar sugerencias si no es búsqueda exacta
       if (!exact) {
-        final locations = rows.map<String>((e) => e['location'] as String).toList();
+        final locations =
+            rows.map<String>((e) => e['location'] as String).toList();
         searchSuggestions.assignAll(locations);
       }
 
@@ -50,12 +52,12 @@ class MapController extends GetxController {
         return fm.Marker(
           point: LatLng(data['lat'], data['lng']),
           builder: (ctx) => GestureDetector(
-            onTap: () => Get.snackbar(data['location'], data['description_user']),
+            onTap: () =>
+                Get.snackbar(data['location'], data['description_user']),
             child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
           ),
         );
       }));
-
     } catch (e) {
       showErrorMessage('Error: ${e.toString()}');
     }
@@ -71,7 +73,8 @@ class MapController extends GetxController {
     // Buscar coincidencia exacta
     final client = Supabase.instance.client;
     try {
-      final List<dynamic> rows = await client.from('map')
+      final List<dynamic> rows = await client
+          .from('map')
           .select('location, lat, lng, description_user')
           .eq('location', text);
 
@@ -86,7 +89,8 @@ class MapController extends GetxController {
         return fm.Marker(
           point: LatLng(data['lat'], data['lng']),
           builder: (ctx) => GestureDetector(
-            onTap: () => Get.snackbar(data['location'], data['description_user']),
+            onTap: () =>
+                Get.snackbar(data['location'], data['description_user']),
             child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
           ),
         );
@@ -96,7 +100,6 @@ class MapController extends GetxController {
       if (markers.isNotEmpty) {
         mapController.move(markers.first.point, 18);
       }
-
     } catch (e) {
       showErrorMessage('Error: ${e.toString()}');
     }
@@ -110,12 +113,12 @@ class MapController extends GetxController {
   void onZoomFullScreen() {
     isFullScreen.toggle();
     if (markers.isNotEmpty) {
-      final bounds = fm.LatLngBounds.fromPoints(
-          markers.map((m) => m.point).toList()
-      );
+      final bounds =
+          fm.LatLngBounds.fromPoints(markers.map((m) => m.point).toList());
       mapController.fitBounds(bounds);
     }
   }
+
   void selectLocation(String location) async {
     // 1. Asignar el texto al controlador
     searchController.text = location;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../product/controllers/product_controller.dart';
@@ -9,18 +8,22 @@ import '../../product/controllers/product_controller.dart';
 // Extensión de CarouselController para manejar la navegación entre páginas
 extension CarouselControllerExtension on CarouselController {
   // Para navegar a la siguiente página
-  void nextPageWithAnimation(CarouselController controller, int currentPage, {Duration duration = const Duration(milliseconds: 300)}) {
+  void nextPageWithAnimation(CarouselController controller, int currentPage,
+      {Duration duration = const Duration(milliseconds: 300)}) {
     controller.animateToPage(currentPage + 1, duration: duration);
   }
 
   // Para navegar a la página anterior
-  void previousPageWithAnimation(CarouselController controller, int currentPage, {Duration duration = const Duration(milliseconds: 300)}) {
+  void previousPageWithAnimation(CarouselController controller, int currentPage,
+      {Duration duration = const Duration(milliseconds: 300)}) {
     controller.animateToPage(currentPage - 1, duration: duration);
   }
 
   // Para ir a una página específica con animación
   // En tu extensión
-  void animateToPage(int page, {Duration duration = const Duration(milliseconds: 300), Curve curve = Curves.easeInOut}) {
+  void animateToPage(int page,
+      {Duration duration = const Duration(milliseconds: 300),
+      Curve curve = Curves.easeInOut}) {
     this.animateToPage(page, duration: duration, curve: curve);
   }
 }
@@ -31,7 +34,8 @@ class ShoppingcartController extends GetxController {
   var currentPage = 0.obs;
   var filteredCartItems = <Map<String, dynamic>>[].obs;
   //final CarouselController carouselController = CarouselController();
-  final CarouselSliderController carouselController = CarouselSliderController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   @override
   void onInit() {
     super.onInit();
@@ -43,9 +47,7 @@ class ShoppingcartController extends GetxController {
     if (user == null) return;
 
     try {
-      final response = await client
-          .from('shopping_cart')
-          .select('''
+      final response = await client.from('shopping_cart').select('''
             quantity, 
             product_stock: product_id (
               product_id,
@@ -54,8 +56,7 @@ class ShoppingcartController extends GetxController {
               image,
               description
             )
-          ''')
-          .eq('user_id', user.id);
+          ''').eq('user_id', user.id);
 
       cartItems.assignAll(_parseCartItems(response));
       filteredCartItems.assignAll(cartItems);
@@ -119,14 +120,16 @@ class ShoppingcartController extends GetxController {
       final productId = item['product_id'] as int; // Asegurar tipo int
 
       // Eliminar de la base de datos
-      final response = await client.from('shopping_cart')
+      await client
+          .from('shopping_cart')
           .delete()
           .eq('user_id', user.id)
           .eq('product_id', productId);
 
       // Actualizar listas locales inmediatamente
       cartItems.removeWhere((element) => element['product_id'] == productId);
-      filteredCartItems.removeWhere((element) => element['product_id'] == productId);
+      filteredCartItems
+          .removeWhere((element) => element['product_id'] == productId);
 
       // Actualizar UI
       cartItems.refresh();
@@ -134,7 +137,8 @@ class ShoppingcartController extends GetxController {
 
       // Ajustar paginación
       if (filteredCartItems.isNotEmpty) {
-        currentPage.value = currentPage.value.clamp(0, filteredCartItems.length - 1);
+        currentPage.value =
+            currentPage.value.clamp(0, filteredCartItems.length - 1);
         carouselController.jumpToPage(currentPage.value);
       } else {
         currentPage.value = 0;
@@ -144,7 +148,6 @@ class ShoppingcartController extends GetxController {
       Get.find<ProductController>().updateCartQuantityFromDB();
       Get.snackbar('Éxito', 'Producto eliminado',
           snackPosition: SnackPosition.BOTTOM);
-
     } catch (e) {
       print('Error eliminando: ${e.toString()}');
       Get.snackbar('Error', 'No se pudo eliminar: ${e.toString()}',
@@ -176,10 +179,13 @@ class ShoppingcartController extends GetxController {
     if (query.isEmpty) {
       filteredCartItems.assignAll(cartItems); // Si está vacío, mostrar todos
     } else {
-      filteredCartItems.assignAll(cartItems.where((item) =>
-          item["name"].toLowerCase().contains(query.toLowerCase())).toList());
+      filteredCartItems.assignAll(cartItems
+          .where((item) =>
+              item["name"].toLowerCase().contains(query.toLowerCase()))
+          .toList());
     }
   }
+
   // Obtener el número total de productos en el carrito
   int get totalItems => cartItems.length;
 }

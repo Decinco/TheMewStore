@@ -21,7 +21,7 @@ class LoginController extends GetxController {
     if (emailC.text.isNotEmpty && passwordC.text.isNotEmpty) {
       isLoading.value = true;
       try {
-        AuthResponse res = await client.auth
+        await client.auth
             .signInWithPassword(email: emailC.text, password: passwordC.text);
         isLoading.value = false;
 
