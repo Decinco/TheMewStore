@@ -8,6 +8,9 @@ class ProfilefriendsController extends GetxController {
   User user = Supabase.instance.client.auth.currentUser!;
 
   TextEditingController descriptionC = TextEditingController();
+  TextEditingController usernameC = TextEditingController();
+
+  late Rx<Future<UserData>> userData;
 
   Future<UserData> getProfileData() async {
     final response =
@@ -16,7 +19,24 @@ class ProfilefriendsController extends GetxController {
     UserData userData = UserData.fromJson(response);
 
     descriptionC.text = userData.description ?? "";
+    usernameC.text = userData.userName ?? "";
 
     return userData;
+  }
+
+  Future<void> changeUsername() async {;
+    UserData data = await userData.value;
+    if (usernameC.text != data.userName) {
+      await client.from('user_data').update({"user_name": usernameC.text}).eq(
+          "user_id", user.id);
+
+      userData.value = getProfileData();
+
+      userData.refresh();
+    }
+  }
+
+  Future<void> changeImage() async {
+    
   }
 }
