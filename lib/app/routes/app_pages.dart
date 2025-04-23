@@ -10,17 +10,21 @@ import '../modules/password/bindings/password_binding.dart';
 import '../modules/password/views/password_view.dart';
 import '../modules/product/bindings/product_binding.dart';
 import '../modules/product/views/product_view.dart';
+import '../modules/profilefriends/bindings/profilefriends_binding.dart';
+import '../modules/profilefriends/views/profilefriends_view.dart';
 import '../modules/shoppingcart/bindings/shoppingcart_binding.dart';
 import '../modules/shoppingcart/views/shoppingcart_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
 import '../modules/signup/views/signup_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -58,6 +62,16 @@ class AppPages {
       name: _Paths.SHOPPINGCART,
       page: () => const ShoppingcartView(),
       binding: ShoppingcartBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILEFRIENDS,
+      page: () => const ProfilefriendsView(),
+      binding: ProfilefriendsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
     ),
     GetPage(
       name: _Paths.MAP,
