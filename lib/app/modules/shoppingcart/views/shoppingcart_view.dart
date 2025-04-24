@@ -230,43 +230,43 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                   borderRadius: BorderRadius.circular(10),
                   child: imageUrl.isNotEmpty
                       ? Image.network(
-                    imageUrl,
-                    fit: BoxFit.contain,
-                    headers: const {'Cache-Control': 'no-cache'},
-                    loadingBuilder: (context, child, progress) {
-                      if (progress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: progress.expectedTotalBytes != null
-                              ? progress.cumulativeBytesLoaded /
-                              progress.expectedTotalBytes!
-                              : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      debugPrint('''
+                          imageUrl,
+                          fit: BoxFit.contain,
+                          headers: const {'Cache-Control': 'no-cache'},
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: progress.expectedTotalBytes != null
+                                    ? progress.cumulativeBytesLoaded /
+                                        progress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            debugPrint('''
                             Error cargando imagen:
                             Producto ID: $productId
                             URL: $imageUrl
                             Error: $error
                           ''');
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.error, color: Colors.red, size: 40),
-                          Text(
-                            'Error loading image\nID: $productId',
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      );
-                    },
-                  )
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error,
+                                    color: Colors.red, size: 40),
+                                Text(
+                                  'Error loading image\nID: $productId',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            );
+                          },
+                        )
                       : Image.asset('assets/placeholder.png'),
                 ),
               ),
-
               Text(item["name"],
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
@@ -288,7 +288,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                   ),
                   _quantityButton(
                     Icons.add,
-                        () => controller.increment(index),
+                    () => controller.increment(index),
                     // <-- aquí usamos el stock real
                     enabled: item["quantity"].value < (item["stock"] as int),
                   ),

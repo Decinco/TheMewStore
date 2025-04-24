@@ -49,9 +49,7 @@ class ShoppingcartController extends GetxController {
 
     try {
       // Select product data including stock
-      final response = await client
-          .from('shopping_cart')
-          .select('''
+      final response = await client.from('shopping_cart').select('''
             quantity,
             product:product_id (
               product_id,
@@ -61,8 +59,7 @@ class ShoppingcartController extends GetxController {
               description,
               stock
             )
-          ''')
-          .eq('user_id', user.id);
+          ''').eq('user_id', user.id);
 
       cartItems.assignAll(_parseCartItems(response));
       filteredCartItems.assignAll(cartItems);
@@ -94,7 +91,8 @@ class ShoppingcartController extends GetxController {
   }
 
   /// Upsert cart item with new quantity and total price
-  Future<void> _updateCartQuantity(int productId, int newQuantity, double price) async {
+  Future<void> _updateCartQuantity(
+      int productId, int newQuantity, double price) async {
     final user = client.auth.currentUser;
     if (user == null) return;
 
@@ -110,7 +108,7 @@ class ShoppingcartController extends GetxController {
   void increment(int index) async {
     final item = filteredCartItems[index];
     final current = item['quantity'].value as int;
-    final stock   = item['stock'] as int;
+    final stock = item['stock'] as int;
 
     if (current < stock) {
       // 1) Actualizas solo el observable
