@@ -107,24 +107,28 @@ class ShoppingcartController extends GetxController {
     });
   }
 
-  /// Increase quantity if stock allows
   void increment(int index) async {
     final item = filteredCartItems[index];
     final current = item['quantity'].value as int;
-    final stock = item['stock'] as int;
+    final stock   = item['stock'] as int;
 
     if (current < stock) {
+      // 1) Actualizas solo el observable
       item['quantity'].value++;
+
       await _updateCartQuantity(
-          item['product_id'], item['quantity'].value, item['price']);
-      fetchCartItems();
+        item['product_id'],
+        item['quantity'].value,
+        item['price'],
+      );
+
+      // 3) (opcional) refrescar totalAmount u otros cálculos, pero sin fetchCartItems()
     } else {
       Get.snackbar('Sin stock', 'No hay más unidades disponibles',
           snackPosition: SnackPosition.BOTTOM);
     }
   }
 
-  /// Decrease quantity to min 1
   void decrement(int index) async {
     final item = filteredCartItems[index];
     final current = item['quantity'].value as int;
@@ -132,10 +136,11 @@ class ShoppingcartController extends GetxController {
     if (current > 1) {
       item['quantity'].value--;
       await _updateCartQuantity(
-          item['product_id'], item['quantity'].value, item['price']);
-      fetchCartItems();
+        item['product_id'],
+        item['quantity'].value,
+        item['price'],
+      );
     } else {
-      // Optionally remove item if desired
       Get.snackbar('Cantidad mínima', 'La cantidad no puede ser menor que 1',
           snackPosition: SnackPosition.BOTTOM);
     }

@@ -286,8 +286,12 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  _quantityButton(Icons.add, () => controller.increment(index),
-                      enabled: item["quantity"].value < 100),
+                  _quantityButton(
+                    Icons.add,
+                        () => controller.increment(index),
+                    // <-- aquí usamos el stock real
+                    enabled: item["quantity"].value < (item["stock"] as int),
+                  ),
                 ],
               ),
             ],
