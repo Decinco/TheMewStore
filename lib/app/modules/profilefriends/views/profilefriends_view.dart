@@ -29,23 +29,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             ],
           ),
           SizedBox(height: 10),
-          ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: TextField(
-                maxLines: 4,
-                controller: controller.descriptionC,
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  label: Text(
-                    "Add your own description!",
-                    style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
-                  ),
-                  border: InputBorder.none,
-                  fillColor: Colors.white,
-                  filled: true,
-                ),
-              ))
+          profileDescription(userData)
         ]));
   }
 
@@ -356,6 +340,26 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             ],
           )
         ]);
+  }
+  
+  Widget profileDescription(Future<UserData> userData) {
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: TextField(
+          maxLines: 4,
+          controller: controller.descriptionC,
+          decoration: const InputDecoration(
+            alignLabelWithHint: true,
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            label: Text(
+              "Add your own description!",
+              style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
+            ),
+            border: InputBorder.none,
+            fillColor: Colors.white,
+            filled: true,
+          ),
+        ));
   }
 
   @override
