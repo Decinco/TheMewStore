@@ -40,18 +40,23 @@ class ProfilefriendsController extends GetxController {
   }
 
   Future<void> changeImage() async {
+    UserData data = await userData.value;
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
     );
 
-    final String fullPath = await client.storage.from('profilepicture').upload(
-      'public/avatar1.png',
+    final String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+
+    await client.storage.from('profilepictures').upload(
+      'saved/user/${data.userId}/$imageName.png',
       File(image!.path),
       fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
     );
 
-    await client.from('user_data').update({"profile_picture": fullPath}).eq(
+    final String link = await client.storage.from('profilepictures').getPublicUrl('saved/user/${data.userId}/$imageName.png');
+
+    await client.from('user_data').update({"profile_picture": link}).eq(
         "user_id", user.id);
 
     userData.value = getProfileData();
