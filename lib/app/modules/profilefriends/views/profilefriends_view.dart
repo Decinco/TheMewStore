@@ -96,7 +96,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     child: IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          Get.snackbar("cambiar Imagen", "TODO"); // TODO
+                          controller.changeImage();
                         },
                         icon: Icon(UIcons.fibspencil)),
                   ),

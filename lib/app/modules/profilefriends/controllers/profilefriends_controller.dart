@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/data/models/userData.dart';
 
@@ -37,6 +40,22 @@ class ProfilefriendsController extends GetxController {
   }
 
   Future<void> changeImage() async {
-    
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+    );
+
+    final String fullPath = await client.storage.from('profilepicture').upload(
+      'public/avatar1.png',
+      File(image!.path),
+      fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+    );
+
+    await client.from('user_data').update({"profile_picture": fullPath}).eq(
+        "user_id", user.id);
+
+    userData.value = getProfileData();
+
+    userData.refresh();
   }
 }
