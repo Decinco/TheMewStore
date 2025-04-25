@@ -93,9 +93,11 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
               }
               return CarouselSlider(
                 options: CarouselOptions(
-                  height: MediaQuery.of(context).size.height * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.65,
+                  viewportFraction: 0.8,
                   enlargeCenterPage: true,
                   enableInfiniteScroll: false,
+                  autoPlay: false,
                   onPageChanged: (index, reason) {
                     controller.currentPage.value = index;
                   },
@@ -207,17 +209,64 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
   Widget _cartItem(int index) {
     return Obx(() {
       final item = controller.filteredCartItems[index];
+      final imageUrl = item["image"]?.toString() ?? '';
+      final productId = item['product_id'].toString();
+
       return Card(
-        key: Key(item['product_id'].toString()), // Key única
+        key: Key(productId),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(item["image"] ?? 'https://via.placeholder.com/150',
-                  width: 150, height: 150, fit: BoxFit.cover),
-              const SizedBox(height: 10),
+              Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[200],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: imageUrl.isNotEmpty
+                      ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.contain,
+                          headers: const {'Cache-Control': 'no-cache'},
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: progress.expectedTotalBytes != null
+                                    ? progress.cumulativeBytesLoaded /
+                                        progress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            debugPrint('''
+                            Error cargando imagen:
+                            Producto ID: $productId
+                            URL: $imageUrl
+                            Error: $error
+                          ''');
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error,
+                                    color: Colors.red, size: 40),
+                                Text(
+                                  'Error loading image\nID: $productId',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            );
+                          },
+                        )
+                      : Image.asset('assets/placeholder.png'),
+                ),
+              ),
               Text(item["name"],
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
@@ -237,8 +286,12 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  _quantityButton(Icons.add, () => controller.increment(index),
-                      enabled: item["quantity"].value < 100),
+                  _quantityButton(
+                    Icons.add,
+                    () => controller.increment(index),
+                    // <-- aquí usamos el stock real
+                    enabled: item["quantity"].value < (item["stock"] as int),
+                  ),
                 ],
               ),
             ],
