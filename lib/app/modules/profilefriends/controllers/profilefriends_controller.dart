@@ -30,13 +30,43 @@ class ProfilefriendsController extends GetxController {
   Future<void> changeUsername() async {;
     UserData data = await userData.value;
     if (usernameC.text != data.userName) {
-      await client.from('user_data').update({"user_name": usernameC.text}).eq(
-          "user_id", user.id);
+      if (usernameC.text.isEmpty) {
+        Get.snackbar("Wrong!", "Username cannot be empty");
+      }
+      else if (usernameC.text.length < 3) {
+        Get.snackbar("Wrong!", "Username must be at least 3 characters");
+      }
+      else  {
+        await client.from('user_data').update({"user_name": usernameC.text}).eq(
+            "user_id", user.id);
 
-      userData.value = getProfileData();
+        userData.value = getProfileData();
 
-      userData.refresh();
+        userData.refresh();
+      }
     }
+  }
+
+  Future<void> changeDescription() async {;
+  UserData data = await userData.value;
+  if (descriptionC.text != data.description) {
+    if (usernameC.text.isEmpty) {
+      await client.from('user_data')
+          .update({"description": null})
+          .eq(
+          "user_id", user.id);
+    }
+    else {
+      await client.from('user_data')
+          .update({"description": descriptionC.text})
+          .eq(
+          "user_id", user.id);
+    }
+
+    userData.value = getProfileData();
+
+    userData.refresh();
+  }
   }
 
   Future<void> changeImage() async {

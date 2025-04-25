@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
 import 'package:get/get.dart';
@@ -175,6 +176,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: TextField(
+                                  maxLength: 14,
+                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                   controller: controller.usernameC,
                                   decoration: const InputDecoration(
                                     alignLabelWithHint: true,
@@ -213,7 +216,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     isScrollControlled: true,
                     backgroundColor: Color.fromARGB(255, 237, 213, 229),
                     enterBottomSheetDuration: Duration(milliseconds: 150),
-                  ); // TODO
+                  );
                 },
                 padding: EdgeInsets.only(left: 5),
                 constraints: BoxConstraints(),
@@ -247,7 +250,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     } else {
                       UserData userData = snapshot.data!;
                       return Text(
-                        userData.description ?? 'No Description',
+                        userData.email,
                         style: TextStyle(
                             fontSize: 12,
                             height: 1,
@@ -341,25 +344,137 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
           )
         ]);
   }
-  
+
   Widget profileDescription(Future<UserData> userData) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: TextField(
-          maxLines: 4,
-          controller: controller.descriptionC,
-          decoration: const InputDecoration(
-            alignLabelWithHint: true,
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            label: Text(
-              "Add your own description!",
-              style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
+    return Stack(children: [
+      ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            color: Color.fromARGB(255, 255, 255, 255),
+            width: double.infinity,
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(10,10,35,10),
+                child: FutureBuilder(
+                    future: userData,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 217, 217, 217),
+                            highlightColor: Color.fromARGB(255, 255, 255, 255),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              child: Container(
+                                width: double.infinity,
+                                height: 100,
+                                color: Color.fromARGB(255, 217, 217, 217),
+                              ),
+                            ));
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData) {
+                        return Text('No data found');
+                      } else {
+                        UserData userData = snapshot.data!;
+                        return Text(
+                          '${userData.description != null ? '"${userData.description}"' : 'Make your own description!'}\n\n\n',
+                          maxLines: 4,
+                          style: TextStyle(
+                              fontSize: 16,
+                              height: 1.5,
+                              color: Color.fromRGBO(78, 78, 78, 1)),
+                        );
+                      }
+                    })),
+          )),
+      Positioned(
+          right: 3,
+          top: 3,
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(7)),
+            child: Container(
+              color: Color.fromRGBO(217, 217, 217, 1),
+              width: 30,
+              height: 30,
+              child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    Get.bottomSheet(
+                      Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Enter your description below:",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 20),
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: TextField(
+                                    maxLength: 150,
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    maxLines: 4,
+                                    controller: controller.descriptionC,
+                                    decoration: const InputDecoration(
+                                      label: Text(
+                                        "Description",
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                152, 151, 151, 1)),
+                                      ),
+                                      border: InputBorder.none,
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                    ),
+                                  )),
+                              SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  controller.changeDescription();
+                                  Get.back();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  fixedSize: Size(135, 45),
+                                  elevation: 0,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 118, 171, 218),
+                                  foregroundColor: Colors.white,
+                                  textStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      fontFamily: "Inter"),
+                                ),
+                                child: const Text("Submit"),
+                              ),
+                            ],
+                          )),
+                      isScrollControlled: true,
+                      backgroundColor: Color.fromARGB(255, 237, 213, 229),
+                      enterBottomSheetDuration: Duration(milliseconds: 150),
+                    );
+                  },
+                  icon: Icon(UIcons.fibspencil)),
             ),
-            border: InputBorder.none,
-            fillColor: Colors.white,
-            filled: true,
-          ),
-        ));
+          ))
+    ]);
+    // TextField(
+    //   maxLines: 4,
+    //   controller: controller.descriptionC,
+    //   decoration: const InputDecoration(
+    //     alignLabelWithHint: true,
+    //     floatingLabelBehavior: FloatingLabelBehavior.never,
+    //     label: Text(
+    //       "Description",
+    //       style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
+    //     ),
+    //     border: InputBorder.none,
+    //     fillColor: Colors.white,
+    //     filled: true,
+    //   ),
+    // )
   }
 
   @override
