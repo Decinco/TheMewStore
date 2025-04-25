@@ -37,7 +37,11 @@ jobs:
           git pull --rebase origin ${{ github.head_ref }}
           git stash pop # Restore stashed changes after rebase
           git add .
-          git commit -m "Apply automatic formatting via GitHub Actions" || echo "No changes to commit"
-          git push origin HEAD:${{ github.head_ref }}
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Apply automatic formatting via GitHub Actions"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
