@@ -61,12 +61,12 @@ class HomeView extends GetView<HomeController> {
                         '../../../../assets/images/themewstore/user.png', () {
                       Get.toNamed('/profile');
                     }),
-                    _drawerIcon(
-                        '../../../../assets/images/themewstore/bag.png', () {
+                    _drawerIcon('../../../../assets/images/themewstore/bag.png',
+                        () {
                       Get.toNamed('/cart');
                     }),
-                    _drawerIcon(
-                        '../../../../assets/images/themewstore/map.png', () {
+                    _drawerIcon('../../../../assets/images/themewstore/map.png',
+                        () {
                       Get.toNamed('/map');
                     }),
                     _drawerIcon(
@@ -74,7 +74,8 @@ class HomeView extends GetView<HomeController> {
                       Get.toNamed('/currency');
                     }),
                     _drawerIcon(
-                        '../../../../assets/images/themewstore/friends.png', () {
+                        '../../../../assets/images/themewstore/friends.png',
+                        () {
                       Get.toNamed('/friends');
                     }),
                   ]),
@@ -115,43 +116,43 @@ class HomeView extends GetView<HomeController> {
                         itemBuilder: (context) => [
                           PopupMenuItem(
                             child: Obx(() => DropdownButton<String>(
-                              value: controller.selectedExpansion.value
-                                  .isEmpty
-                                  ? null
-                                  : controller.selectedExpansion.value,
-                              hint: const Text('Filtrar por expansión'),
-                              items: controller.expansionOptions
-                                  .map((e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text('Expansión $e')))
-                                  .toList(),
-                              onChanged: (value) {
-                                controller.selectedExpansion.value =
-                                    value ?? '';
-                                controller.filterProducts();
-                                Navigator.pop(context);
-                              },
-                            )),
+                                  value:
+                                      controller.selectedExpansion.value.isEmpty
+                                          ? null
+                                          : controller.selectedExpansion.value,
+                                  hint: const Text('Filtrar por expansión'),
+                                  items: controller.expansionOptions
+                                      .map((e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text('Expansión $e')))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    controller.selectedExpansion.value =
+                                        value ?? '';
+                                    controller.filterProducts();
+                                    Navigator.pop(context);
+                                  },
+                                )),
                           ),
                           PopupMenuItem(
                             child: Obx(() => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('Filtrar por precio máximo'),
-                                Slider(
-                                  value: controller.selectedPrice.value,
-                                  min: 0,
-                                  max: controller.maxPrice.value,
-                                  divisions: 20,
-                                  label:
-                                  '\$${controller.selectedPrice.value.toStringAsFixed(2)}',
-                                  onChanged: (value) {
-                                    controller.selectedPrice.value = value;
-                                    controller.filterProducts();
-                                  },
-                                ),
-                              ],
-                            )),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Filtrar por precio máximo'),
+                                    Slider(
+                                      value: controller.selectedPrice.value,
+                                      min: 0,
+                                      max: controller.maxPrice.value,
+                                      divisions: 20,
+                                      label:
+                                          '\$${controller.selectedPrice.value.toStringAsFixed(2)}',
+                                      onChanged: (value) {
+                                        controller.selectedPrice.value = value;
+                                        controller.filterProducts();
+                                      },
+                                    ),
+                                  ],
+                                )),
                           ),
                           PopupMenuItem(
                             child: ElevatedButton(
@@ -184,7 +185,7 @@ class HomeView extends GetView<HomeController> {
                       fit: BoxFit.cover,
                       width: double.infinity,
                       errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.broken_image, size: 50),
+                          const Icon(Icons.broken_image, size: 50),
                     ),
                   );
                 }).toList(),
@@ -194,8 +195,7 @@ class HomeView extends GetView<HomeController> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(10),
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
@@ -225,7 +225,7 @@ class HomeView extends GetView<HomeController> {
                             width: double.infinity,
                             height: double.infinity,
                             errorBuilder: (_, __, ___) =>
-                            const Icon(Icons.broken_image, size: 50),
+                                const Icon(Icons.broken_image, size: 50),
                           ),
                         ),
                         Positioned(
@@ -238,8 +238,7 @@ class HomeView extends GetView<HomeController> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12, blurRadius: 4)
+                                BoxShadow(color: Colors.black12, blurRadius: 4)
                               ],
                             ),
                             child: Text(
