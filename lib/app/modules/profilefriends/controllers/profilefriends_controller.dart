@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/data/models/userData.dart';
 
+import '../../../data/models/card.dart';
+
 class ProfilefriendsController extends GetxController {
   SupabaseClient client = Supabase.instance.client;
   User user = Supabase.instance.client.auth.currentUser!;
@@ -14,6 +16,7 @@ class ProfilefriendsController extends GetxController {
   TextEditingController usernameC = TextEditingController();
 
   late Rx<Future<UserData>> userData;
+  late Rx<Future<List<Card>>> albumData;
 
   Future<UserData> getProfileData() async {
     final response =
@@ -25,6 +28,19 @@ class ProfilefriendsController extends GetxController {
     usernameC.text = userData.userName ?? "";
 
     return userData;
+  }
+
+  Future<List<Card>> getAlbumData() async {
+    final response =
+        await client.from('album').select('card(*)').eq('user_id', user.id);
+
+    List<Card> albumData = [];
+
+    for (var item in response) {
+      albumData.add(Card.fromJson(item['card']));
+    }
+
+    return albumData;
   }
 
   Future<void> changeUsername() async {;

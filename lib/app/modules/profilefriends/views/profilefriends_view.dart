@@ -5,6 +5,7 @@ import 'package:flutter_rating/flutter_rating.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:themewstore/app/data/models/userData.dart';
+import 'package:themewstore/app/data/models/card.dart' as card;
 import 'package:themewstore/uicon.dart';
 
 import '../controllers/profilefriends_controller.dart';
@@ -14,7 +15,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
 
   Widget profileInfo(Future<UserData> userData) {
     return Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         child: Column(children: [
           Row(
             children: [
@@ -177,7 +178,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                 borderRadius: BorderRadius.circular(10),
                                 child: TextField(
                                   maxLength: 14,
-                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                  maxLengthEnforcement:
+                                      MaxLengthEnforcement.enforced,
                                   controller: controller.usernameC,
                                   decoration: const InputDecoration(
                                     alignLabelWithHint: true,
@@ -332,7 +334,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                       UserData userData = snapshot.data!;
                       return StarRating(
                         size: 24,
-                        rating: userData.rating.toDouble(),
+                        rating: userData.rating,
                         color: Color.fromRGBO(78, 78, 78, 1),
                         borderColor: Color.fromRGBO(78, 78, 78, 1),
                         starCount: 5,
@@ -353,7 +355,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             color: Color.fromARGB(255, 255, 255, 255),
             width: double.infinity,
             child: Padding(
-                padding: EdgeInsets.fromLTRB(10,10,35,10),
+                padding: EdgeInsets.fromLTRB(10, 10, 35, 10),
                 child: FutureBuilder(
                     future: userData,
                     builder: (context, snapshot) {
@@ -415,7 +417,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                   borderRadius: BorderRadius.circular(10),
                                   child: TextField(
                                     maxLength: 150,
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    maxLengthEnforcement:
+                                        MaxLengthEnforcement.enforced,
                                     maxLines: 4,
                                     controller: controller.descriptionC,
                                     decoration: const InputDecoration(
@@ -477,9 +480,96 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
     // )
   }
 
+  Widget albumInfo(Future<List<card.Card>> albumData) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: double.infinity, // Thickness
+            height: 1,
+            color: Color.fromRGBO(202, 196, 208, 1),
+          ),
+          SizedBox.fromSize(
+            size: Size(5, 5),
+          ),
+          Text("Album",
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: "Inter",
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              )),
+          SizedBox.fromSize(
+            size: Size(5, 5),
+          ),
+          albumCardCollection(albumData)
+        ]));
+  }
+
+  Widget albumCardCollection(Future<List<card.Card>> albumData) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: FutureBuilder(
+            future: albumData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Shimmer.fromColors(
+                    baseColor: Color.fromARGB(255, 217, 217, 217),
+                    highlightColor: Color.fromARGB(255, 255, 255, 255),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        color: Color.fromARGB(255, 217, 217, 217),
+                      ),
+                    ));
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData) {
+                return Text('No data found');
+              } else {
+                List<card.Card> albumData = snapshot.data!;
+                return Container(height: 240, width: double.infinity, child:
+                  GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.70,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10),
+                  itemCount: albumData.length,
+                  itemBuilder: (context, index) {
+                    return albumCard(albumData[index]);
+                  },
+                  ));
+              }
+            }));
+  }
+
+  Widget albumCard(card.Card cardData) {
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          color: Color.fromRGBO(255, 255, 255, 0.46),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image(
+                      image: NetworkImage(cardData.image),
+                    )),
+              )
+            ],
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     controller.userData = controller.getProfileData().obs;
+    controller.albumData = controller.getAlbumData().obs;
 
     return Scaffold(
         appBar: AppBar(
@@ -518,7 +608,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     Obx(() => Column(
                           children: [
                             profileInfo(controller.userData.value),
-                            // Add more widgets here as needed
+                            albumInfo(controller.albumData.value)
                           ],
                         )),
                     Container()
