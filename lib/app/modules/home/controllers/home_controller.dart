@@ -55,8 +55,6 @@ class HomeController extends GetxController {
 
   void updateSearch(String query) {
     searchQuery.value = query;
-    showFilters.value = query.isNotEmpty;
-
     if (query.isEmpty) {
       _setRandomProducts();
     } else {
@@ -64,18 +62,17 @@ class HomeController extends GetxController {
     }
   }
 
+
   void filterProducts() {
-    var filtered = allProducts.where((p) =>
-        p.productName.toLowerCase().contains(searchQuery.value.toLowerCase()) &&
-        p.price <= selectedPrice.value);
+    final q = searchQuery.value.toLowerCase();
+    // Filtra únicamente por nombre
+    final filtered = allProducts
+        .where((p) => p.productName.toLowerCase().contains(q))
+        .toList();
 
-    if (selectedExpansion.value.isNotEmpty) {
-      filtered = filtered
-          .where((p) => p.expansionId.toString() == selectedExpansion.value);
-    }
-
-    products.value = filtered.toList();
+    products.value = filtered;
   }
+
 
   Future<UserData> getUserData() async {
     var userData =
