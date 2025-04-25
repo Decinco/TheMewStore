@@ -94,7 +94,7 @@ class MapController extends GetxController {
       }
       // Generar marcadores y centrar
       await fetchLocations(filter: text, exact: true);
-      final data = rows.first as Map<String, dynamic>;
+      final data = rows.first;
       selectMarker(data);
     } catch (e) {
       showErrorMessage('Error: ${e.toString()}');

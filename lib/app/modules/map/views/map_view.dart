@@ -232,5 +232,4 @@ class MapView extends GetView<MapController> {
       ),
     );
   }
-
 }
