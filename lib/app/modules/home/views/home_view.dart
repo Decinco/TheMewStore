@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
 import 'package:themewstore/uicon.dart';
 import '../controllers/home_controller.dart';
+import '../../shoppingcart/controllers/shoppingcart_controller.dart';
+import '../../shoppingcart/views/shoppingcart_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeView extends GetView<HomeController> {
-  HomeView({Key? key}) : super(key: key);
+  HomeView({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -50,7 +52,7 @@ class HomeView extends GetView<HomeController> {
               title: const Text('Perfil'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: navegar a pantalla de perfil
+                Get.toNamed('/');
               },
             ),
             ListTile(
@@ -58,7 +60,7 @@ class HomeView extends GetView<HomeController> {
               title: const Text('Cesta'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: navegar a pantalla de cesta
+                Get.toNamed('/shoppingcart');
               },
             ),
             ListTile(
@@ -66,7 +68,7 @@ class HomeView extends GetView<HomeController> {
               title: const Text('Mapa'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: navegar a pantalla de mapa
+                Get.toNamed('/map');
               },
             ),
             ListTile(
@@ -74,7 +76,7 @@ class HomeView extends GetView<HomeController> {
               title: const Text('Amigos'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: navegar a pantalla de amigos
+                Get.toNamed('/profilefriends');
               },
             ),
           ],
@@ -127,10 +129,44 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
           ),
+          // Botón para mostrar/ocultar el slider y mostrar el rango
+          Obx(() => controller.searchQuery.value.isNotEmpty
+              ? Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Precio: €${controller.selectedRange.value.start.toStringAsFixed(0)} - €${controller.selectedRange.value.end.toStringAsFixed(0)}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.filter_alt),
+                  onPressed: () => controller.showFilters.toggle(),
+                ),
+              ],
+            ),
+          )
+              : const SizedBox.shrink()),
+          // Slider visible solo al pulsar el botón
+          Obx(() => controller.searchQuery.value.isNotEmpty && controller.showFilters.value
+              ? Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: RangeSlider(
+              values: controller.selectedRange.value,
+              min: controller.minPrice.value,
+              max: controller.maxPrice.value,
+              labels: RangeLabels(
+                '€${controller.selectedRange.value.start.toStringAsFixed(0)}',
+                '€${controller.selectedRange.value.end.toStringAsFixed(0)}',
+              ),
+              onChanged: controller.updatePriceRange,
+            ),
+          )
+              : const SizedBox.shrink()),
           Expanded(
             child: Obx(
                   () {
-                // Si hay texto en la búsqueda, mostrar lista de resultados
                 if (controller.searchQuery.value.isNotEmpty) {
                   return ListView.builder(
                     padding: const EdgeInsets.all(10),
@@ -150,12 +186,11 @@ class HomeView extends GetView<HomeController> {
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
-                              const Icon(Icons.broken_image),
+                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
                             ),
                           ),
                           title: Text(product.productName),
-                          subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                          subtitle: Text('€${product.price.toStringAsFixed(2)}'),
                           onTap: () {
                             Get.toNamed('/product', arguments: {
                               'id': product.productId,
@@ -171,7 +206,6 @@ class HomeView extends GetView<HomeController> {
                     },
                   );
                 }
-                // Si no hay búsqueda, mostrar carrusel y rejilla
                 return Column(
                   children: [
                     Obx(
@@ -182,18 +216,18 @@ class HomeView extends GetView<HomeController> {
                           autoPlay: true,
                           enlargeCenterPage: true,
                         ),
-                        items: controller.products.map((product) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              getPublicImageUrl(product.image),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                  Icons.broken_image, size: 50),
-                            ),
-                          );
-                        }).toList(),
+                        items: controller.products
+                            .map((product) => ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            getPublicImageUrl(product.image),
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            errorBuilder: (_, __, ___) => const Icon(
+                                Icons.broken_image, size: 50),
+                          ),
+                        ))
+                            .toList(),
                       )
                           : const Center(child: CircularProgressIndicator()),
                     ),
@@ -211,19 +245,21 @@ class HomeView extends GetView<HomeController> {
                           ),
                           itemCount: controller.products.length,
                           itemBuilder: (context, index) {
-                            final product = controller.products[index];
+                            final product =
+                            controller.products[index];
                             return GestureDetector(
                               onTap: () {
-                                Get.toNamed('/product', arguments: {
-                                  'id': product.productId,
-                                  'product_name': product.productName,
-                                  'price': product.price,
-                                  'description':
-                                  product.description,
-                                  'image': getPublicImageUrl(
-                                      product.image),
-                                  'stock': product.stock
-                                });
+                                Get.toNamed('/product',
+                                    arguments: {
+                                      'id': product.productId,
+                                      'product_name': product.productName,
+                                      'price': product.price,
+                                      'description':
+                                      product.description,
+                                      'image': getPublicImageUrl(
+                                          product.image),
+                                      'stock': product.stock
+                                    });
                               },
                               child: Stack(
                                 children: [
@@ -231,12 +267,14 @@ class HomeView extends GetView<HomeController> {
                                     borderRadius:
                                     BorderRadius.circular(15),
                                     child: Image.network(
-                                      getPublicImageUrl(product.image),
+                                      getPublicImageUrl(
+                                          product.image),
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: double.infinity,
                                       errorBuilder: (_, __, ___) => const Icon(
-                                          Icons.broken_image, size: 50),
+                                          Icons.broken_image,
+                                          size: 50),
                                     ),
                                   ),
                                   Positioned(
@@ -258,10 +296,11 @@ class HomeView extends GetView<HomeController> {
                                         ],
                                       ),
                                       child: Text(
-                                        '\$${product.price.toStringAsFixed(
+                                        '€${product.price.toStringAsFixed(
                                             2)}',
                                         style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight:
+                                          FontWeight.bold,
                                           fontSize: 12,
                                         ),
                                       ),
