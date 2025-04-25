@@ -71,7 +71,6 @@ flutter:
   assets:
     - .env
     - assets/images/themewstore/themewstore.png
-    - assets/images/themewstore/mew_splash.gif
     - assets/images/google/googl.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
