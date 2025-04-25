@@ -15,12 +15,10 @@ class MapController extends GetxController {
   final RxList<String> searchSuggestions = <String>[].obs;
   final RxString errorMessage = ''.obs;
   final RxBool showSuggestions = false.obs;
-  
 
-  final double minZoom = 12.0;  // Nivel mínimo para alejar
-  final double maxZoom = 18.0;  // Nivel máximo para acercar (reduce este valor)
-  final double initialZoom = 16.0;  // Zoom inicial intermedio
-
+  final double minZoom = 12.0; // Nivel mínimo para alejar
+  final double maxZoom = 18.0; // Nivel máximo para acercar (reduce este valor)
+  final double initialZoom = 16.0; // Zoom inicial intermedio
 
   /// Datos de la ubicación seleccionada para info
   final Rxn<Map<String, dynamic>> selectedLocation = Rxn();
@@ -75,7 +73,6 @@ class MapController extends GetxController {
     }
   }
 
-
   /// Búsqueda exacta y centrado, mostrando info
   Future<void> onSearch() async {
     final text = searchController.text.trim();
@@ -100,6 +97,7 @@ class MapController extends GetxController {
       showErrorMessage('Error: ${e.toString()}');
     }
   }
+
   final RxBool showLocationCard = false.obs;
 
   /// Selecciona un marcador y muestra el card
@@ -148,10 +146,9 @@ class MapController extends GetxController {
         bounds,
         options: fm.FitBoundsOptions(
           padding: EdgeInsets.all(20),
-          maxZoom: maxZoom,  // Asegúrate de aplicar el límite máximo aquí
+          maxZoom: maxZoom, // Asegúrate de aplicar el límite máximo aquí
         ),
       );
     }
   }
-
 }
