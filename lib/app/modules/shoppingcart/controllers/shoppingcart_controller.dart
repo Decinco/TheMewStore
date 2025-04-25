@@ -42,19 +42,22 @@ class ShoppingcartController extends GetxController {
     fetchCartItems();
   }
 
+  /// Fetch cart items including product data and stock
   Future<void> fetchCartItems() async {
     final user = client.auth.currentUser;
     if (user == null) return;
 
     try {
+      // Select product data including stock
       final response = await client.from('shopping_cart').select('''
-            quantity, 
-            product_stock: product_id (
+            quantity,
+            product:product_id (
               product_id,
               product_name,
               price,
               image,
-              description
+              description,
+              stock
             )
           ''').eq('user_id', user.id);
 
@@ -65,44 +68,79 @@ class ShoppingcartController extends GetxController {
     }
   }
 
+  /// Parse Supabase response into local model
   List<Map<String, dynamic>> _parseCartItems(List<dynamic> data) {
     return data.map((item) {
-      final product = item['product_stock'];
+      final product = item['product'] as Map<String, dynamic>;
+      // Generate public URL for image
+      final imagePath = product['image']?.toString() ?? '';
+      final imageUrl = imagePath.isNotEmpty
+          ? client.storage.from('productimages').getPublicUrl(imagePath)
+          : '';
+
       return {
-        'product_id': product['product_id'],
-        'name': product['product_name'],
-        'price': product['price'].toDouble(),
-        'image': product['image'],
-        'description': product['description'],
+        'product_id': product['product_id'] as int,
+        'name': product['product_name'] as String,
+        'price': (product['price'] as num).toDouble(),
+        'image': imageUrl,
+        'description': product['description'] as String,
+        'stock': product['stock'] as int,
         'quantity': (item['quantity'] as int).obs,
       };
     }).toList();
   }
 
-  Future<void> _updateCartQuantity(int productId, int newQuantity) async {
+  /// Upsert cart item with new quantity and total price
+  Future<void> _updateCartQuantity(
+      int productId, int newQuantity, double price) async {
     final user = client.auth.currentUser;
     if (user == null) return;
 
+    final totalPrice = newQuantity * price;
     await client.from('shopping_cart').upsert({
       'user_id': user.id,
       'product_id': productId,
       'quantity': newQuantity,
+      'total_price': totalPrice,
     });
   }
 
   void increment(int index) async {
     final item = filteredCartItems[index];
-    item['quantity'].value++;
-    await _updateCartQuantity(item['product_id'], item['quantity'].value);
-    fetchCartItems();
+    final current = item['quantity'].value as int;
+    final stock = item['stock'] as int;
+
+    if (current < stock) {
+      // 1) Actualizas solo el observable
+      item['quantity'].value++;
+
+      await _updateCartQuantity(
+        item['product_id'],
+        item['quantity'].value,
+        item['price'],
+      );
+
+      // 3) (opcional) refrescar totalAmount u otros cálculos, pero sin fetchCartItems()
+    } else {
+      Get.snackbar('Sin stock', 'No hay más unidades disponibles',
+          snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   void decrement(int index) async {
     final item = filteredCartItems[index];
-    if (item['quantity'].value > 1) {
+    final current = item['quantity'].value as int;
+
+    if (current > 1) {
       item['quantity'].value--;
-      await _updateCartQuantity(item['product_id'], item['quantity'].value);
-      fetchCartItems();
+      await _updateCartQuantity(
+        item['product_id'],
+        item['quantity'].value,
+        item['price'],
+      );
+    } else {
+      Get.snackbar('Cantidad mínima', 'La cantidad no puede ser menor que 1',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
