@@ -23,7 +23,9 @@ class SplashView extends GetView<SplashController> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 30.0), // Ajusta la distancia desde el borde inferior
+                padding: const EdgeInsets.only(
+                    bottom:
+                        30.0), // Ajusta la distancia desde el borde inferior
                 child: Image.asset(
                   'assets/images/themewstore/mew_splash.gif', // Ruta de tu GIF
                   height: 100.0, // Ajusta el tamaño del GIF según sea necesario
