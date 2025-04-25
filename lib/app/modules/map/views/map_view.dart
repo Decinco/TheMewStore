@@ -17,7 +17,7 @@ class MapView extends GetView<MapController> {
         backgroundColor: const Color(0xFFEDD5E5),
         leading: Builder(
           builder: (ctx) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black),
+            icon: const Icon(UIcons.fibsmenuburger, color: Colors.black),
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
@@ -31,7 +31,7 @@ class MapView extends GetView<MapController> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(UIcons.fibszoomin, color: Colors.black),
+            icon: const Icon(UIcons.fibsexpandarrows, color: Colors.black),
             onPressed: controller.onZoomFullScreen,
           ),
         ],
@@ -99,59 +99,59 @@ class MapView extends GetView<MapController> {
                       ),
                     ),
                   ),
-                TextField(
-                  controller: controller.searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Buscar tiendas...',
-                    hintStyle: TextStyle(color: Colors.grey[600]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Colors.grey),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: TextField(
+                    controller: controller.searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Buscar tiendas...',
+                      hintStyle: TextStyle(color: Colors.grey[600]),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: const Icon(UIcons.fibssearch, color: Colors.black),
+                        onPressed: controller.onSearch,
+                      ),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 14),
-                    filled: true,
-                    fillColor: const Color(0xFFEDD5E5),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.search, color: Colors.black),
-                      onPressed: controller.onSearch,
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.black),
-                  onTap: () {
-                    controller.showSuggestions.value = true;
-                    if (controller.searchController.text.isEmpty) {
-                      controller.fetchLocations();
-                    }
-                  },
-                  onChanged: (value) {
-                    if (value.isNotEmpty) {
-                      if (controller.searchSuggestions.length != 1 ||
-                          controller.searchSuggestions.first != value) {
-                        controller.fetchLocations(filter: value);
-                      }
+                    style: const TextStyle(color: Colors.black),
+                    onTap: () {
                       controller.showSuggestions.value = true;
-                    } else {
-                      controller.searchSuggestions.clear();
+                      if (controller.searchController.text.isEmpty) {
+                        controller.fetchLocations();
+                      }
+                    },
+                    onChanged: (value) {
+                      if (value.isNotEmpty) {
+                        if (controller.searchSuggestions.length != 1 ||
+                            controller.searchSuggestions.first != value) {
+                          controller.fetchLocations(filter: value);
+                        }
+                        controller.showSuggestions.value = true;
+                      } else {
+                        controller.searchSuggestions.clear();
+                        controller.showSuggestions.value = false;
+                      }
+                    },
+                    onSubmitted: (_) {
+                      controller.onSearch();
                       controller.showSuggestions.value = false;
-                    }
-                  },
-                  onSubmitted: (_) {
-                    controller.onSearch();
-                    controller.showSuggestions.value = false;
-                  },
+                    },
+                  ),
                 ),
                 if (controller.showSuggestions.value &&
                     controller.searchSuggestions.isNotEmpty)
                   Container(
                     constraints: BoxConstraints(
-                      maxHeight: 56 * controller.searchSuggestions.length
-                          .clamp(1, 3).toDouble(),
+                      maxHeight: 56 *
+                          controller.searchSuggestions.length.clamp(1, 3).toDouble(),
                     ),
                     margin: const EdgeInsets.only(top: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEDD5E5),
-                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.2),
@@ -161,6 +161,7 @@ class MapView extends GetView<MapController> {
                       ],
                     ),
                     child: ListView.builder(
+                      padding: EdgeInsets.zero,
                       itemCount: controller.searchSuggestions.length,
                       itemBuilder: (context, index) => ListTile(
                         title: Text(
@@ -174,9 +175,11 @@ class MapView extends GetView<MapController> {
                       ),
                     ),
                   ),
+
               ],
             ),
           ),
+
 
           // 4. Card de información (último para que esté encima de todo)
           if (controller.showLocationCard.value &&
@@ -214,7 +217,7 @@ class MapView extends GetView<MapController> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(UIcons.fibscross),
                   onPressed: controller.closeLocationCard,
                 ),
               ],

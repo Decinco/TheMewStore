@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Alias para evitar choque de nombres con tu clase MapController
+import '../../../../uicon.dart';
 import 'package:flutter_map/flutter_map.dart' as fm;
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,6 +15,7 @@ class MapController extends GetxController {
   final RxList<String> searchSuggestions = <String>[].obs;
   final RxString errorMessage = ''.obs;
   final RxBool showSuggestions = false.obs;
+  
 
   final double minZoom = 12.0;  // Nivel mínimo para alejar
   final double maxZoom = 18.0;  // Nivel máximo para acercar (reduce este valor)
@@ -65,7 +66,7 @@ class MapController extends GetxController {
           height: 40.0,
           builder: (ctx) => GestureDetector(
             onTap: () => selectMarker(data),
-            child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
+            child: const Icon(UIcons.fibsmarker, size: 40, color: Colors.red),
           ),
         );
       }));
