@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/data/models/userData.dart';
 
 import '../../../data/models/card.dart';
+import '../../../data/models/expansion.dart';
 
 class ProfilefriendsController extends GetxController {
   SupabaseClient client = Supabase.instance.client;
@@ -17,6 +18,7 @@ class ProfilefriendsController extends GetxController {
 
   late Rx<Future<UserData>> userData;
   late Rx<Future<List<Card>>> albumData;
+  late Future<List<Expansion>> expansionData;
 
   Future<UserData> getProfileData() async {
     final response =
@@ -41,6 +43,26 @@ class ProfilefriendsController extends GetxController {
     }
 
     return albumData;
+  }
+
+  Future<Expansion> getExpansionData(Card cardData) async {
+    final response = await client.from('expansion').select('*').eq('expansion_id', cardData.expansionId).single();
+
+    Expansion expansion = Expansion.fromJson(response);
+
+    return expansion;
+  }
+
+  Future<List<Expansion>> getAllExpansions() async {
+    final response = await client.from('expansion').select('*');
+
+    List<Expansion> expansionData = [];
+
+    for (var item in response) {
+      expansionData.add(Expansion.fromJson(item));
+    }
+
+    return expansionData;
   }
 
   Future<void> changeUsername() async {;
