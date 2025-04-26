@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/foreignprofile/bindings/foreignprofile_binding.dart';
+import '../modules/foreignprofile/views/foreignprofile_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -77,6 +79,11 @@ class AppPages {
       name: _Paths.MAP,
       page: () => const MapView(),
       binding: MapBinding(),
+    ),
+    GetPage(
+      name: _Paths.FOREIGNPROFILE,
+      page: () => const ForeignprofileView(),
+      binding: ForeignprofileBinding(),
     ),
   ];
 }

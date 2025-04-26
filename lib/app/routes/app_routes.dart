@@ -12,6 +12,7 @@ abstract class Routes {
   static const PROFILEFRIENDS = _Paths.PROFILEFRIENDS;
   static const SPLASH = _Paths.SPLASH;
   static const MAP = _Paths.MAP;
+  static const FOREIGNPROFILE = _Paths.FOREIGNPROFILE;
 }
 
 abstract class _Paths {
@@ -25,4 +26,5 @@ abstract class _Paths {
   static const PROFILEFRIENDS = '/profilefriends';
   static const SPLASH = '/splash';
   static const MAP = '/map';
+  static const FOREIGNPROFILE = '/foreignprofile';
 }
