@@ -2,27 +2,36 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Alias para evitar choque de nombres con tu clase MapController
+import '../../../../uicon.dart';
 import 'package:flutter_map/flutter_map.dart' as fm;
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MapController extends GetxController {
-  //final fm.MapController mapController = fm.MapController();
+  late final fm.MapController mapController;
   final RxList<fm.Marker> markers = <fm.Marker>[].obs;
   final TextEditingController searchController = TextEditingController();
   final RxBool isFullScreen = false.obs;
   final RxList<String> searchSuggestions = <String>[].obs;
   final RxString errorMessage = ''.obs;
-  final RxBool showSuggestions = false.obs; // Nueva variable de estado
+  final RxBool showSuggestions = false.obs;
 
-  late final fm.MapController mapController; // Declaración late
+  final double minZoom = 12.0; // Nivel mínimo para alejar
+  final double maxZoom = 18.0; // Nivel máximo para acercar (reduce este valor)
+  final double initialZoom = 16.0; // Zoom inicial intermedio
+
+  /// Datos de la ubicación seleccionada para info
+  final Rxn<Map<String, dynamic>> selectedLocation = Rxn();
 
   @override
   void onInit() {
     super.onInit();
     mapController = fm.MapController();
-    fetchLocations();
+    // Mover el mapa después de que el widget esté construido
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      mapController.move(LatLng(41.3851, 2.1734), initialZoom);
+      fetchLocations();
+    });
   }
 
   Future<void> fetchLocations({String? filter, bool exact = false}) async {
@@ -51,10 +60,11 @@ class MapController extends GetxController {
         final data = entry as Map<String, dynamic>;
         return fm.Marker(
           point: LatLng(data['lat'], data['lng']),
+          width: 40.0,
+          height: 40.0,
           builder: (ctx) => GestureDetector(
-            onTap: () =>
-                Get.snackbar(data['location'], data['description_user']),
-            child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
+            onTap: () => selectMarker(data),
+            child: const Icon(UIcons.fibsmarker, size: 40, color: Colors.red),
           ),
         );
       }));
@@ -63,48 +73,64 @@ class MapController extends GetxController {
     }
   }
 
-  void onSearch() async {
+  /// Búsqueda exacta y centrado, mostrando info
+  Future<void> onSearch() async {
     final text = searchController.text.trim();
     if (text.isEmpty) {
-      fetchLocations();
+      await fetchLocations();
       return;
     }
-
-    // Buscar coincidencia exacta
-    final client = Supabase.instance.client;
     try {
-      final List<dynamic> rows = await client
+      final rows = await Supabase.instance.client
           .from('map')
           .select('location, lat, lng, description_user')
           .eq('location', text);
-
       if (rows.isEmpty) {
         showErrorMessage('Ubicación no encontrada');
         return;
       }
-
-      // Actualizar marcadores
-      markers.assignAll(rows.map<fm.Marker>((entry) {
-        final data = entry as Map<String, dynamic>;
-        return fm.Marker(
-          point: LatLng(data['lat'], data['lng']),
-          builder: (ctx) => GestureDetector(
-            onTap: () =>
-                Get.snackbar(data['location'], data['description_user']),
-            child: const Icon(Icons.location_pin, size: 40, color: Colors.red),
-          ),
-        );
-      }));
-
-      // Mover mapa al marcador
-      if (markers.isNotEmpty) {
-        mapController.move(markers.first.point, 18);
-      }
+      // Generar marcadores y centrar
+      await fetchLocations(filter: text, exact: true);
+      final data = rows.first;
+      selectMarker(data);
     } catch (e) {
       showErrorMessage('Error: ${e.toString()}');
     }
   }
 
+  final RxBool showLocationCard = false.obs;
+
+  /// Selecciona un marcador y muestra el card
+  void selectMarker(Map<String, dynamic> data) {
+    selectedLocation.value = data;
+    showLocationCard.value = true;
+    mapController.move(
+      LatLng(data['lat'], data['lng']),
+      mapController.zoom,
+    );
+  }
+
+  /// Cierra el card de información
+  void closeLocationCard() {
+    showLocationCard.value = false;
+    selectedLocation.value = null;
+  }
+
+  /// Seleccionar ubicación desde sugerencias de búsqueda
+  Future<void> selectLocation(String location) async {
+    // 1) Mostrar solo esta sugerencia
+    searchSuggestions.assignAll([location]);
+    // 2) Establecer en campo y ocultar lista
+    searchController.text = location;
+    showSuggestions.value = false;
+    // 3) Ejecutar búsqueda exacta (centrado + panel)
+    await onSearch();
+  }
+
+  /// Limpia la selección de marcador
+  void clearSelection() => selectedLocation.value = null;
+
+  /// Mostrar mensaje de error temporal
   void showErrorMessage(String message) {
     errorMessage.value = message;
     Future.delayed(const Duration(seconds: 3), () => errorMessage.value = '');
@@ -113,28 +139,16 @@ class MapController extends GetxController {
   void onZoomFullScreen() {
     isFullScreen.toggle();
     if (markers.isNotEmpty) {
-      final bounds =
-          fm.LatLngBounds.fromPoints(markers.map((m) => m.point).toList());
-      mapController.fitBounds(bounds);
+      final bounds = fm.LatLngBounds.fromPoints(
+        markers.map((m) => m.point).toList(),
+      );
+      mapController.fitBounds(
+        bounds,
+        options: fm.FitBoundsOptions(
+          padding: EdgeInsets.all(20),
+          maxZoom: maxZoom, // Asegúrate de aplicar el límite máximo aquí
+        ),
+      );
     }
-  }
-
-  void selectLocation(String location) async {
-    // 1. Asignar el texto al controlador
-    searchController.text = location;
-
-    // 2. Forzar la lista de sugerencias a solo este elemento
-    searchSuggestions.assignAll([location]);
-
-    // 3. Realizar búsqueda exacta
-    await fetchLocations(filter: location, exact: true);
-
-    // 4. Mover el mapa al marcador
-    if (markers.isNotEmpty) {
-      mapController.move(markers.first.point, 18);
-    }
-
-    // 5. Ocultar sugerencias
-    showSuggestions.value = false;
   }
 }
