@@ -58,4 +58,9 @@ class LogInOutController extends GetxController {
       Get.offAllNamed('/login');
     }
   }
+
+  void logOut() async {
+    await client.auth.signOut();
+    loggedIn.value = false;
+  }
 }

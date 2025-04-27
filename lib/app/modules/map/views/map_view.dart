@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart' as fm;
 import 'package:latlong2/latlong.dart';
+import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import '../controllers/map_controller.dart';
 import '../../../../uicon.dart';
 
@@ -12,7 +13,7 @@ class MapView extends GetView<MapController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEDD5E5),
-      drawer: const Drawer(),
+      drawer: Hamburguesa(),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
         leading: Builder(

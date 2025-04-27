@@ -200,12 +200,12 @@ class ProfilefriendsController extends GetxController {
     return userData;
   }
 
-  Future<void> deleteFriend(String friendId) async {
+  Future<void> deleteFriend(String userId, String friendId) async {
     await client
         .from('friends')
-        .delete()
+        .update({"status": "Canceled"})
         .eq('friend_id', friendId)
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
   }
 
   Future<void> acceptFriend(String friendId) async {

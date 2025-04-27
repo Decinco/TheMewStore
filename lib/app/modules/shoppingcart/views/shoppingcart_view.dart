@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import '../controllers/shoppingcart_controller.dart';
 
 class ShoppingcartView extends GetView<ShoppingcartController> {
@@ -10,6 +11,7 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEDD5E5),
+      drawer: Hamburguesa(),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
         elevation: 0,
@@ -23,10 +25,6 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
-        ),
         actions: [
           Stack(
             children: [

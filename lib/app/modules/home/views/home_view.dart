@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
+import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import 'package:themewstore/uicon.dart';
 import '../controllers/home_controller.dart';
 import '../../../data/models/productStock.dart';
@@ -50,74 +51,7 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
-      drawer: Drawer(
-        backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            // Cabecera del drawer
-            Container(
-              color: const Color.fromRGBO(237, 213, 229, 1),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/images/themewstore/themewstore.png',
-                    width: 50,
-                    height: 50,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            ),
-            // Ítems del drawer
-            ListTile(
-              leading: const Icon(UIcons.fibsuser),
-              title: const Text('Perfil'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/profile');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsshoppingbag),
-              title: const Text('Cesta'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/shoppingcart');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsmap),
-              title: const Text('Mapa'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/map');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsfollowing),
-              title: const Text('Amigos'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/profilefriends');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsexit),
-              title: const Text('Cerrar sesión'),
-              onTap: () {
-                Navigator.pop(context);
-                controller.logOut();
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: Hamburguesa(),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
         centerTitle: true,
@@ -167,8 +101,9 @@ class HomeView extends GetView<HomeController> {
 
           // Filtros de rango de precio
           Obx(() {
-            if (controller.searchQuery.value.isEmpty)
+            if (controller.searchQuery.value.isEmpty) {
               return const SizedBox.shrink();
+            }
             return Column(
               children: [
                 Padding(

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
 import 'package:get/get.dart';
-import 'package:path/path.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:themewstore/app/data/models/expansion.dart';
 import 'package:themewstore/app/data/models/friendLink.dart';
@@ -12,6 +11,7 @@ import 'package:themewstore/app/data/models/userData.dart';
 import 'package:themewstore/app/data/models/card.dart' as card;
 import 'package:themewstore/uicon.dart';
 
+import '../../generic/sidebar/hamburguesa.dart';
 import '../controllers/profilefriends_controller.dart';
 
 class ProfilefriendsView extends GetView<ProfilefriendsController> {
@@ -500,16 +500,19 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
         future: albumData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Shimmer.fromColors(
-                baseColor: Color.fromARGB(255, 217, 217, 217),
-                highlightColor: Color.fromARGB(255, 255, 255, 255),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  child: Container(
-                    width: double.infinity,
-                    height: 100,
-                    color: Color.fromARGB(255, 217, 217, 217),
-                  ),
+            return Container(
+                width: double.infinity,
+                height: 340,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      childAspectRatio: 0.606,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      maxCrossAxisExtent: 150.9),
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    return loadingAlbumCard();
+                  },
                 ));
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -568,6 +571,54 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             ],
           ),
         ));
+  }
+
+  Widget loadingAlbumCard() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        color: Color.fromRGBO(255, 255, 255, 0.46),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(5, 5, 5, 2),
+              child: Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 217, 217, 217),
+                highlightColor: Color.fromARGB(255, 255, 255, 255),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Container(
+                    width: double.infinity,
+                    height: 135,
+                    color: Color.fromARGB(255, 217, 217, 217),
+                  ),
+                ),
+              ),
+            ),
+            Shimmer.fromColors(
+              baseColor: Color.fromARGB(255, 217, 217, 217),
+              highlightColor: Color.fromARGB(255, 255, 255, 255),
+              child: Container(
+                width: 100,
+                height: 16,
+                color: Color.fromARGB(255, 217, 217, 217),
+              ),
+            ),
+            SizedBox(height: 5),
+            Shimmer.fromColors(
+              baseColor: Color.fromARGB(255, 217, 217, 217),
+              highlightColor: Color.fromARGB(255, 255, 255, 255),
+              child: Container(
+                width: 80,
+                height: 12,
+                color: Color.fromARGB(255, 217, 217, 217),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget newAlbumCard() {
@@ -764,8 +815,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
               } else {
                 List<FriendLink> friendList = snapshot.data!;
                 return SizedBox(
-                    height: 580,
                     child: ListView.builder(
+                      shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       itemCount: friendList.length,
                       itemBuilder: (context, index) {
@@ -795,15 +846,14 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
           } else {
             UserData friendData = snapshot.data!;
             if (friendLink.status == Status.Linked) {
-              return friendCardDetailsAccepted(friendData);
-            } else if (friendLink.status == Status.Pending) {
+              return friendCardDetailsAccepted(friendLink, friendData);
+            } else {
               if (friendLink.userId == controller.user.id) {
                 return friendCardDetailsOutgoing(friendData);
               } else {
                 return friendCardDetailsIncoming(friendData);
               }
             }
-            return friendCardDetailsAccepted(friendData);
           }
         });
   }
@@ -863,7 +913,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
     );
   }
 
-  Widget friendCardDetailsAccepted(UserData friendData) {
+  Widget friendCardDetailsAccepted(FriendLink linkInfo, UserData friendData) {
     return InkWell(
         onTap: () {
           Get.toNamed("/foreignprofile", arguments: friendData.userId);
@@ -919,7 +969,73 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                             IconButton(
                               onPressed: () {
                                 //controller.acceptFriendRequest(friendData.userId);
-                                Get.snackbar("remove friend", "TODO");
+                                Get.bottomSheet(
+                                  Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Are you sure you want to remove ${friendData.userName} from your friends list?",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(height: 20),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  controller.deleteFriend(
+                                                      linkInfo.userId,
+                                                      linkInfo.friendId);
+                                                  Get.back();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  fixedSize: Size(135, 45),
+                                                  elevation: 0,
+                                                  backgroundColor: Colors.white,
+                                                  foregroundColor: Colors.black,
+                                                  textStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20,
+                                                      fontFamily: "Inter"),
+                                                ),
+                                                child: const Text("Remove"),
+                                              ),
+                                              SizedBox(width: 10),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  fixedSize: Size(135, 45),
+                                                  elevation: 0,
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 118, 171, 218),
+                                                  foregroundColor: Colors.white,
+                                                  textStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20,
+                                                      fontFamily: "Inter"),
+                                                ),
+                                                child: const Text("Cancel"),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )),
+                                  backgroundColor: Color.fromARGB(
+                                      255, 237, 213, 229),
+                                );
                               },
                               constraints: BoxConstraints(),
                               padding: EdgeInsets.all(5),
@@ -1077,6 +1193,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
     controller.subscribeToFriendChanges();
 
     return Scaffold(
+        drawer: Hamburguesa(),
         appBar: AppBar(
           title: const Text('Profile & Friends',
               style: TextStyle(
