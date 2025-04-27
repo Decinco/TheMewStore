@@ -7,7 +7,7 @@ String userDataToJson(UserData data) => json.encode(data.toJson());
 class UserData {
   String userId;
   dynamic userName;
-  int rating;
+  double rating;
   String userCode;
   String region;
   dynamic description;
@@ -28,7 +28,7 @@ class UserData {
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
         userId: json["user_id"],
         userName: json["user_name"],
-        rating: json["rating"],
+        rating: (json["rating"] as num).toDouble(),
         userCode: json["user_code"],
         region: json["region"],
         description: json["description"],

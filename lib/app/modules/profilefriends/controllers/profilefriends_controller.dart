@@ -6,6 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/data/models/userData.dart';
 
+import '../../../data/models/card.dart';
+import '../../../data/models/expansion.dart';
+
 class ProfilefriendsController extends GetxController {
   SupabaseClient client = Supabase.instance.client;
   User user = Supabase.instance.client.auth.currentUser!;
@@ -14,6 +17,8 @@ class ProfilefriendsController extends GetxController {
   TextEditingController usernameC = TextEditingController();
 
   late Rx<Future<UserData>> userData;
+  late Rx<Future<List<Card>>> albumData;
+  late Future<List<Expansion>> expansionData;
 
   Future<UserData> getProfileData() async {
     final response =
@@ -25,6 +30,39 @@ class ProfilefriendsController extends GetxController {
     usernameC.text = userData.userName ?? "";
 
     return userData;
+  }
+
+  Future<List<Card>> getAlbumData() async {
+    final response =
+        await client.from('album').select('card(*)').eq('user_id', user.id);
+
+    List<Card> albumData = [];
+
+    for (var item in response) {
+      albumData.add(Card.fromJson(item['card']));
+    }
+
+    return albumData;
+  }
+
+  Future<Expansion> getExpansionData(Card cardData) async {
+    final response = await client.from('expansion').select('*').eq('expansion_id', cardData.expansionId).single();
+
+    Expansion expansion = Expansion.fromJson(response);
+
+    return expansion;
+  }
+
+  Future<List<Expansion>> getAllExpansions() async {
+    final response = await client.from('expansion').select('*');
+
+    List<Expansion> expansionData = [];
+
+    for (var item in response) {
+      expansionData.add(Expansion.fromJson(item));
+    }
+
+    return expansionData;
   }
 
   Future<void> changeUsername() async {;

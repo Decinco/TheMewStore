@@ -1,10 +1,13 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:themewstore/app/data/models/expansion.dart';
 import 'package:themewstore/app/data/models/userData.dart';
+import 'package:themewstore/app/data/models/card.dart' as card;
 import 'package:themewstore/uicon.dart';
 
 import '../controllers/profilefriends_controller.dart';
@@ -14,7 +17,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
 
   Widget profileInfo(Future<UserData> userData) {
     return Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         child: Column(children: [
           Row(
             children: [
@@ -177,7 +180,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                 borderRadius: BorderRadius.circular(10),
                                 child: TextField(
                                   maxLength: 14,
-                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                  maxLengthEnforcement:
+                                      MaxLengthEnforcement.enforced,
                                   controller: controller.usernameC,
                                   decoration: const InputDecoration(
                                     alignLabelWithHint: true,
@@ -332,7 +336,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                       UserData userData = snapshot.data!;
                       return StarRating(
                         size: 24,
-                        rating: userData.rating.toDouble(),
+                        rating: userData.rating,
                         color: Color.fromRGBO(78, 78, 78, 1),
                         borderColor: Color.fromRGBO(78, 78, 78, 1),
                         starCount: 5,
@@ -353,7 +357,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             color: Color.fromARGB(255, 255, 255, 255),
             width: double.infinity,
             child: Padding(
-                padding: EdgeInsets.fromLTRB(10,10,35,10),
+                padding: EdgeInsets.fromLTRB(10, 10, 35, 10),
                 child: FutureBuilder(
                     future: userData,
                     builder: (context, snapshot) {
@@ -366,7 +370,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                   BorderRadius.all(Radius.circular(10)),
                               child: Container(
                                 width: double.infinity,
-                                height: 100,
+                                height: 84,
                                 color: Color.fromARGB(255, 217, 217, 217),
                               ),
                             ));
@@ -380,7 +384,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                           '${userData.description != null ? '"${userData.description}"' : 'Make your own description!'}\n\n\n',
                           maxLines: 4,
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               height: 1.5,
                               color: Color.fromRGBO(78, 78, 78, 1)),
                         );
@@ -414,8 +418,9 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                               ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: TextField(
-                                    maxLength: 150,
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    maxLength: 80,
+                                    maxLengthEnforcement:
+                                        MaxLengthEnforcement.enforced,
                                     maxLines: 4,
                                     controller: controller.descriptionC,
                                     decoration: const InputDecoration(
@@ -460,26 +465,267 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             ),
           ))
     ]);
-    // TextField(
-    //   maxLines: 4,
-    //   controller: controller.descriptionC,
-    //   decoration: const InputDecoration(
-    //     alignLabelWithHint: true,
-    //     floatingLabelBehavior: FloatingLabelBehavior.never,
-    //     label: Text(
-    //       "Description",
-    //       style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
-    //     ),
-    //     border: InputBorder.none,
-    //     fillColor: Colors.white,
-    //     filled: true,
-    //   ),
-    // )
+  }
+
+  Widget albumInfo(Future<List<card.Card>> albumData) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: double.infinity, // Thickness
+            height: 1,
+            color: Color.fromRGBO(202, 196, 208, 1),
+          ),
+          SizedBox.fromSize(
+            size: Size(5, 5),
+          ),
+          Text("Album",
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: "Inter",
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              )),
+          SizedBox.fromSize(
+            size: Size(5, 5),
+          ),
+          albumCardCollection(albumData)
+        ]));
+  }
+
+  Widget albumCardCollection(Future<List<card.Card>> albumData) {
+    return FutureBuilder(
+        future: albumData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 217, 217, 217),
+                highlightColor: Color.fromARGB(255, 255, 255, 255),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  child: Container(
+                    width: double.infinity,
+                    height: 100,
+                    color: Color.fromARGB(255, 217, 217, 217),
+                  ),
+                ));
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return Text('No data found');
+          } else {
+            List<card.Card> albumData = snapshot.data!;
+            return Container(
+                width: double.infinity,
+                height: 340,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      childAspectRatio: 0.606,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      maxCrossAxisExtent: 150.9),
+                  itemCount: albumData.length < 20
+                      ? albumData.length + 1
+                      : albumData.length,
+                  itemBuilder: (context, index) {
+                    if (index < albumData.length) {
+                      return albumCard(albumData[index]);
+                    } else {
+                      return newAlbumCard();
+                    }
+                  },
+                ));
+          }
+        });
+  }
+
+  Widget albumCard(card.Card cardData) {
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          color: Color.fromRGBO(255, 255, 255, 0.46),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 5, 5, 2),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image(
+                      image: NetworkImage(cardData.image),
+                    )),
+              ),
+              Text(
+                cardData.cardName,
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(78, 78, 78, 1)),
+              ),
+              cardExpansionData(cardData, controller.getExpansionData(cardData))
+            ],
+          ),
+        ));
+  }
+
+  Widget newAlbumCard() {
+    return InkWell(
+        onTap: () {
+          Get.bottomSheet(
+            Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Select an expansion",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 20),
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: FutureBuilder(
+                            future: controller.expansionData,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Shimmer.fromColors(
+                                  baseColor: Color.fromARGB(255, 217, 217, 217),
+                                  highlightColor:
+                                      Color.fromARGB(255, 255, 255, 255),
+                                  child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      child: DropdownMenu(
+                                          dropdownMenuEntries: [])),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (!snapshot.hasData) {
+                                return Text('No data found');
+                              } else {
+                                List<Expansion> expansionData = snapshot.data!;
+                                return ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    child: DropdownMenu(
+                                      
+                                      width: double.infinity,
+                                      menuHeight: 200,
+                                      dropdownMenuEntries: expansionData
+                                          .map((expansion) =>
+                                              DropdownMenuEntry<String>(
+                                                value: expansion.expansionCode,
+                                                label:
+                                                    expansion.expansionName,
+                                              ))
+                                          .toList(),
+                                    ));
+                              }
+                            })),
+                    SizedBox(height: 20),
+                    Text(
+                      "You can add a new card to your album by clicking on the plus icon.",
+                      style: TextStyle(
+                          fontSize: 14, color: Color.fromRGBO(78, 78, 78, 1)),
+                    ),
+                  ],
+                )),
+            isScrollControlled: true,
+            backgroundColor: Color.fromARGB(255, 237, 213, 229),
+            enterBottomSheetDuration: Duration(milliseconds: 150),
+          );
+        },
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              color: Color.fromRGBO(255, 255, 255, 0.46),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(6),
+                    child: DottedBorder(
+                        strokeCap: StrokeCap.round,
+                        borderType: BorderType.RRect,
+                        color: Color.fromRGBO(78, 78, 78, 1),
+                        strokeWidth: 2,
+                        dashPattern: [
+                          4,
+                          4,
+                        ],
+                        radius: Radius.circular(6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Container(
+                            width: double.infinity,
+                            height: 135,
+                            child: Icon(
+                              UIcons.fibsplus,
+                              size: 40,
+                              color: Color.fromRGBO(78, 78, 78, 1),
+                            ),
+                          ),
+                        )),
+                  ),
+                  SizedBox(height: 4),
+                  Container(
+                    child: Text(
+                      "Add New Card",
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(78, 78, 78, 1)),
+                    ),
+                  ),
+                ],
+              ),
+            )));
+  }
+
+  Widget cardExpansionData(
+      card.Card cardData, Future<Expansion> expansionData) {
+    return FutureBuilder(
+        future: expansionData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 217, 217, 217),
+                highlightColor: Color.fromARGB(255, 255, 255, 255),
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                        width: double.infinity,
+                        height: 8,
+                        color: Color.fromARGB(255, 217, 217, 217),
+                      ),
+                    )));
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return Text('No data found');
+          } else {
+            Expansion expansion = snapshot.data!;
+            return Text(
+              "${expansion.expansionCode} ${cardData.numberInExpansion}/${expansion.printedTotal}",
+              style: TextStyle(
+                  fontSize: 10,
+                  color: Color.fromRGBO(123, 123, 123, 1),
+                  fontWeight: FontWeight.bold,
+                  height: 0.8),
+            );
+          }
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     controller.userData = controller.getProfileData().obs;
+    controller.albumData = controller.getAlbumData().obs;
+    controller.expansionData = controller.getAllExpansions();
 
     return Scaffold(
         appBar: AppBar(
@@ -518,7 +764,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     Obx(() => Column(
                           children: [
                             profileInfo(controller.userData.value),
-                            // Add more widgets here as needed
+                            albumInfo(controller.albumData.value)
                           ],
                         )),
                     Container()
