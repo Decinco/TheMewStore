@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:themewstore/app/data/models/expansion.dart';
+import 'package:themewstore/app/data/models/friendLink.dart';
 import 'package:themewstore/app/data/models/userData.dart';
 import 'package:themewstore/app/data/models/card.dart' as card;
 import 'package:themewstore/uicon.dart';
@@ -610,15 +612,13 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10)),
                                     child: DropdownMenu(
-                                      
                                       width: double.infinity,
                                       menuHeight: 200,
                                       dropdownMenuEntries: expansionData
                                           .map((expansion) =>
                                               DropdownMenuEntry<String>(
                                                 value: expansion.expansionCode,
-                                                label:
-                                                    expansion.expansionName,
+                                                label: expansion.expansionName,
                                               ))
                                           .toList(),
                                     ));
@@ -721,11 +721,239 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
         });
   }
 
+  Widget friendsList(Future<List<FriendLink>> friendList) {
+    return Column(
+      children: [
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    label: Text(
+                      "Search for friends",
+                      style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
+                    ),
+                    border: InputBorder.none,
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                ))),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: Color.fromRGBO(202, 196, 208, 1),
+        ),
+        FutureBuilder(
+            future: friendList,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                    height: 580,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return friendCardLoading();
+                      },
+                    ));
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData) {
+                return Text('No data found');
+              } else {
+                List<FriendLink> friendList = snapshot.data!;
+                return SizedBox(
+                    height: 580,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: friendList.length,
+                      itemBuilder: (context, index) {
+                        return friendCard(friendList[index]);
+                      },
+                    ));
+              }
+            })
+      ],
+    );
+  }
+
+  Widget friendCard(FriendLink friendLink) {
+    String foreignId = friendLink.userId == controller.user.id
+        ? friendLink.friendId
+        : friendLink.userId;
+
+    return FutureBuilder(
+        future: controller.getFriendData(foreignId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return friendCardLoading();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return Text('No data found');
+          } else {
+            UserData friendData = snapshot.data!;
+            return friendCardDetailsAccepted(friendData);
+          }
+        });
+  }
+
+  Widget friendCardLoading() {
+    return Container(
+      color: Color.fromARGB(255, 255, 255, 255),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(
+              padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+              child: Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 217, 217, 217),
+                highlightColor: Color.fromARGB(255, 255, 255, 255),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Color.fromARGB(255, 217, 217, 217),
+                ),
+              )),
+          SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(
+                height: 11,
+              ),
+              Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 217, 217, 217),
+                highlightColor: Color.fromARGB(255, 255, 255, 255),
+                child: Container(
+                  width: 100,
+                  height: 16,
+                  color: Color.fromARGB(255, 217, 217, 217),
+                ),
+              ),
+              SizedBox(height: 5),
+              Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 217, 217, 217),
+                highlightColor: Color.fromARGB(255, 255, 255, 255),
+                child: Container(
+                  width: 150,
+                  height: 12,
+                  color: Color.fromARGB(255, 217, 217, 217),
+                ),
+              ),
+            ],
+          )
+        ]),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: Color.fromRGBO(202, 196, 208, 1),
+        )
+      ]),
+    );
+  }
+
+  Widget friendCardDetailsAccepted(UserData friendData) {
+    return Container(
+        color: Color.fromARGB(255, 255, 255, 255),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(friendData.profilePicture ??
+                      'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
+                )),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                  height: 11,
+                ),
+                Text(
+                  friendData.userName ?? 'No Name',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(78, 78, 78, 1)),
+                ),
+                Text(
+                  friendData.description != null
+                      ? '"${friendData.description}"'
+                      : 'No description',
+                  style: TextStyle(
+                      fontSize: 11,
+                      color: Color.fromRGBO(152, 151, 151, 1),
+                      height: 0.8),
+                ),
+              ],
+            )
+          ]),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Color.fromRGBO(202, 196, 208, 1),
+          )
+        ]));
+  }
+
+  Widget friendCardDetailsIncoming(UserData friendData) {
+    return Container(
+        color: Color.fromARGB(255, 255, 255, 255),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(friendData.profilePicture ??
+                      'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
+                )),
+            SizedBox(width: 10),
+            Column(
+              children: [
+                SizedBox(
+                  height: 11,
+                ),
+                Text(
+                  friendData.userName ?? 'No Name',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(78, 78, 78, 1)),
+                ),
+                Text(
+                  friendData.description != null
+                      ? '"${friendData.description}"'
+                      : 'No description',
+                  style: TextStyle(
+                      fontSize: 11,
+                      color: Color.fromRGBO(152, 151, 151, 1),
+                      height: 0.8),
+                ),
+              ],
+            )
+          ]),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Color.fromRGBO(202, 196, 208, 1),
+          )
+        ]));
+  }
+
+
   @override
   Widget build(BuildContext context) {
     controller.userData = controller.getProfileData().obs;
     controller.albumData = controller.getAlbumData().obs;
     controller.expansionData = controller.getAllExpansions();
+    controller.friendList = controller.getFriends();
 
     return Scaffold(
         appBar: AppBar(
@@ -767,8 +995,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                             albumInfo(controller.albumData.value)
                           ],
                         )),
-                    Container()
-                  ]))
+                    friendsList(controller.friendList),
+                  ])),
                 ]))));
   }
 }

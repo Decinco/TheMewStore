@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:themewstore/app/data/models/friendLink.dart';
 import 'package:themewstore/app/data/models/userData.dart';
 
 import '../../../data/models/card.dart';
@@ -19,6 +20,7 @@ class ProfilefriendsController extends GetxController {
   late Rx<Future<UserData>> userData;
   late Rx<Future<List<Card>>> albumData;
   late Future<List<Expansion>> expansionData;
+  late Future<List<FriendLink>> friendList;
 
   Future<UserData> getProfileData() async {
     final response =
@@ -130,5 +132,29 @@ class ProfilefriendsController extends GetxController {
     userData.value = getProfileData();
 
     userData.refresh();
+  }
+
+  Future<List<FriendLink>> getFriends() async {
+    final response = await client
+        .from('friends')
+        .select()
+        .or('user_id.eq."${user.id}",friend_id.eq."${user.id}"')
+        .order("last_interaction", ascending: false);
+
+    List<FriendLink> friendLink = [];
+
+    for (var item in response) {
+      friendLink.add(FriendLink.fromJson(item));
+    }
+
+    return friendLink;
+  }
+
+  Future<UserData> getFriendData(String friendId) async {
+    final response = await client.from('user_data').select().eq('user_id', friendId).single();
+
+    UserData userData = UserData.fromJson(response);
+
+    return userData;
   }
 }
