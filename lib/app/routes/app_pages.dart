@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/addfriends/bindings/addfriends_binding.dart';
+import '../modules/addfriends/views/addfriends_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -77,6 +79,11 @@ class AppPages {
       name: _Paths.MAP,
       page: () => const MapView(),
       binding: MapBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADDFRIENDS,
+      page: () => const AddfriendsView(),
+      binding: AddfriendsBinding(),
     ),
   ];
 }
