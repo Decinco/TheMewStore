@@ -480,84 +480,71 @@ class ForeignprofileView extends GetView<ForeignprofileController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.userData = controller.getProfileData().obs;
-
     return Scaffold(
-        appBar: AppBar(
-          title: Obx(() => FutureBuilder<UserData>(
-            future: controller.userData.value,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Text(
-                  'Profile',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(78, 78, 78, 1),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text(
-                  'Profile',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(78, 78, 78, 1),
-                  ),
-                );
-              } else {
-                return Text(
-                  'Profile friend ${snapshot.data!.userName ?? ''}',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(78, 78, 78, 1),
-                  ),
-                );
-              }
-            },
-          )),
-          backgroundColor: Color.fromARGB(255, 237, 213, 229),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(UIcons.fibsmenuburger),
-            onPressed: () {
-              // Acción para el icono de hamburguesa
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(UIcons.fibscross),
-              onPressed: () {
-                // Acción para el icono de cruz
-                Get.back();
-              },
-            ),
-          ],
+      appBar: AppBar(
+        title: Obx(() => FutureBuilder<UserData>(
+          future: controller.friendData.value,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                'Profile friend ${snapshot.data!.userName ?? ''}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "Inter",
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(78, 78, 78, 1),
+                ),
+              );
+            }
+            return Text(
+              'Profile',
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: "Inter",
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+            );
+          },
+        )),
+        backgroundColor: Color.fromARGB(255, 237, 213, 229),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(UIcons.fibsmenuburger),
+          onPressed: () {},
         ),
-        body: Container(
-            color: Color.fromARGB(255, 237, 213, 229),
-            width: double.infinity,
-            child: DefaultTabController(
-                length: 2,
-                child: Column(children: [
-                  Expanded(
-                      child: TabBarView(children: [
-                        Obx(() => Column(
-                          children: [
-                            profileInfo(controller.userData.value),
-                            // Add more widgets here as needed
-                          ],
-                        )),
-                        Container()
-                      ])
-                  )
-                ])
-            )
-        )
+        actions: [
+          IconButton(
+            icon: Icon(UIcons.fibscross),
+            onPressed: () => Get.back(),
+          ),
+        ],
+      ),
+      body: Container(
+        color: Color.fromARGB(255, 237, 213, 229),
+        child: Obx(() => FutureBuilder<UserData>(
+          future: controller.friendData.value,
+          builder: (context, userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (userSnapshot.hasError) {
+              return Center(child: Text('Error loading profile'));
+            }
+            if (!userSnapshot.hasData) {
+              return Center(child: Text('No profile data found'));
+            }
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  profileInfo(controller.friendData.value),
+                ],
+              ),
+            );
+          },
+        )),
+      ),
     );
   }
 }

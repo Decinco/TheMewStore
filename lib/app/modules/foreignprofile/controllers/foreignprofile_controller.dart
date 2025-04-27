@@ -10,52 +10,54 @@ import '../../../data/models/expansion.dart';
 import '../../../data/models/userData.dart';
 
 class ForeignprofileController extends GetxController {
-  SupabaseClient client = Supabase.instance.client;
-  User user = Supabase.instance.client.auth.currentUser!;
+  final SupabaseClient client = Supabase.instance.client;
+  final String uuid; // UUID del amigo
 
-  TextEditingController descriptionC = TextEditingController();
-  TextEditingController usernameC = TextEditingController();
+  ForeignprofileController(this.uuid); // Constructor que recibe el UUID
 
-  late Rx<Future<UserData>> userData;
-  late Rx<Future<List<Expansion>>> expansionData; // 👈 Añadido esto
+  late Rx<Future<UserData>> friendData;
+  late Rx<Future<List<Expansion>>> expansionData;
+  late Rx<Future<List<Card>>> albumData;
 
   @override
   void onInit() {
     super.onInit();
+    friendData = getFriendData(uuid).obs;
     expansionData = getAllExpansions().obs;
+    albumData = getAlbumData(uuid).obs;
   }
 
-  Future<UserData> getProfileData() async {
-    final response =
-    await client.from('user_data').select().eq('user_id', user.id).single();
-    UserData userData = UserData.fromJson(response);
-    descriptionC.text = userData.description ?? "";
-    usernameC.text = userData.userName ?? "";
-    return userData;
+  Future<UserData> getFriendData(String friendUuid) async {
+    final response = await client
+        .from('user_data')
+        .select()
+        .eq('user_id', friendUuid)
+        .single();
+    return UserData.fromJson(response);
   }
 
   Future<Expansion> getExpansionData(Card cardData) async {
-    final response = await client.from('expansion').select('*').eq('expansion_id', cardData.expansionId).single();
-    Expansion expansion = Expansion.fromJson(response);
-    return expansion;
+    final response = await client
+        .from('expansion')
+        .select('*')
+        .eq('expansion_id', cardData.expansionId)
+        .single();
+    return Expansion.fromJson(response);
   }
 
-  Future<List<Card>> getAlbumData(String uuid) async {
-    final response = await client.from('album').select('card(*)').eq('user_id', uuid);
-    List<Card> albumData = [];
-    for (var item in response) {
-      albumData.add(Card.fromJson(item['card']));
-    }
-    return albumData;
+  Future<List<Card>> getAlbumData(String friendUuid) async {
+    final response = await client
+        .from('album')
+        .select('card(*)')
+        .eq('user_id', friendUuid);
+
+    if (response.isEmpty) return [];
+
+    return response.map<Card>((item) => Card.fromJson(item['card'])).toList();
   }
 
   Future<List<Expansion>> getAllExpansions() async {
     final response = await client.from('expansion').select('*');
-    List<Expansion> expansionData = [];
-    for (var item in response) {
-      expansionData.add(Expansion.fromJson(item));
-    }
-    return expansionData;
+    return response.map<Expansion>((item) => Expansion.fromJson(item)).toList();
   }
 }
-
