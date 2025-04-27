@@ -18,12 +18,13 @@ class HomeView extends GetView<HomeController> {
     // Normalizamos offerId por si viniera como String o null
     int? offerId;
     final raw = product.offerId;
-    if (raw is int) offerId = raw;
+    if (raw is int)
+      offerId = raw;
     else if (raw is String) offerId = int.tryParse(raw);
 
     if (offerId != null && controller.discounts.containsKey(offerId)) {
-      final pct       = controller.discounts[offerId]!;
-      final newPrice  = product.price * (1 - pct / 100);
+      final pct = controller.discounts[offerId]!;
+      final newPrice = product.price * (1 - pct / 100);
       return Text(
         '${newPrice.toStringAsFixed(2)}€',
         style: const TextStyle(
@@ -127,7 +128,8 @@ class HomeView extends GetView<HomeController> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Text('The Mew Store', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('The Mew Store',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(width: 10),
             Icon(UIcons.fibsshoppingbag, color: Colors.black),
           ],
@@ -165,7 +167,8 @@ class HomeView extends GetView<HomeController> {
 
           // Filtros de rango de precio
           Obx(() {
-            if (controller.searchQuery.value.isEmpty) return const SizedBox.shrink();
+            if (controller.searchQuery.value.isEmpty)
+              return const SizedBox.shrink();
             return Column(
               children: [
                 Padding(
@@ -225,7 +228,8 @@ class HomeView extends GetView<HomeController> {
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                            errorBuilder: (_, __, ___) =>
+                                const Icon(Icons.broken_image),
                           ),
                         ),
                         title: Text(p.productName),
@@ -260,7 +264,8 @@ class HomeView extends GetView<HomeController> {
                           getPublicImageUrl(p.image),
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 50),
+                          errorBuilder: (_, __, ___) =>
+                              const Icon(Icons.broken_image, size: 50),
                         ),
                       );
                     }).toList(),
@@ -271,7 +276,8 @@ class HomeView extends GetView<HomeController> {
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       padding: const EdgeInsets.all(10),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
@@ -299,19 +305,21 @@ class HomeView extends GetView<HomeController> {
                                   width: double.infinity,
                                   height: double.infinity,
                                   errorBuilder: (_, __, ___) =>
-                                  const Icon(Icons.broken_image, size: 50),
+                                      const Icon(Icons.broken_image, size: 50),
                                 ),
                               ),
                               Positioned(
                                 top: 8,
                                 right: 8,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 3),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(8),
                                     boxShadow: [
-                                      BoxShadow(color: Colors.black12, blurRadius: 4),
+                                      BoxShadow(
+                                          color: Colors.black12, blurRadius: 4),
                                     ],
                                   ),
                                   child: _buildPriceWidget(p),
