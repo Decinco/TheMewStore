@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../product/controllers/product_controller.dart';
 
-// Extensión de CarouselController para manejar la navegación entre páginas
 extension CarouselControllerExtension on CarouselController {
   // Para navegar a la siguiente página
   void nextPageWithAnimation(CarouselController controller, int currentPage,
@@ -24,7 +23,7 @@ extension CarouselControllerExtension on CarouselController {
   void animateToPage(int page,
       {Duration duration = const Duration(milliseconds: 300),
       Curve curve = Curves.easeInOut}) {
-    this.animateToPage(page, duration: duration, curve: curve);
+    animateToPage(page, duration: duration, curve: curve);
   }
 }
 
@@ -47,9 +46,8 @@ class ShoppingcartController extends GetxController {
     final user = client.auth.currentUser;
     if (user == null) return;
 
-    try {
-      // Select product data including stock
-      final response = await client.from('shopping_cart').select('''
+    // Select product data including stock
+    final response = await client.from('shopping_cart').select('''
             quantity,
             product:product_id (
               product_id,
@@ -61,11 +59,8 @@ class ShoppingcartController extends GetxController {
             )
           ''').eq('user_id', user.id);
 
-      cartItems.assignAll(_parseCartItems(response));
-      filteredCartItems.assignAll(cartItems);
-    } catch (e) {
-      print('Error fetching cart items: $e');
-    }
+    cartItems.assignAll(_parseCartItems(response));
+    filteredCartItems.assignAll(cartItems);
   }
 
   /// Parse Supabase response into local model
@@ -187,7 +182,6 @@ class ShoppingcartController extends GetxController {
       Get.snackbar('Éxito', 'Producto eliminado',
           snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      print('Error eliminando: ${e.toString()}');
       Get.snackbar('Error', 'No se pudo eliminar: ${e.toString()}',
           snackPosition: SnackPosition.BOTTOM);
     }
