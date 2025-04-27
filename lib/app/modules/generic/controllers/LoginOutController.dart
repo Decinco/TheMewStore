@@ -1,6 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:themewstore/app/modules/generic/controllers/FriendNotificationController.dart';
 
 class LogInOutController extends GetxController {
   RxBool loggedIn = false.obs;

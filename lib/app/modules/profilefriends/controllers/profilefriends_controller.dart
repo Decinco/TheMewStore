@@ -20,7 +20,7 @@ class ProfilefriendsController extends GetxController {
   late Rx<Future<UserData>> userData;
   late Rx<Future<List<Card>>> albumData;
   late Future<List<Expansion>> expansionData;
-  late Future<List<FriendLink>> friendList;
+  late Rx<Future<List<FriendLink>>> friendList;
 
   Future<UserData> getProfileData() async {
     final response =
@@ -48,7 +48,11 @@ class ProfilefriendsController extends GetxController {
   }
 
   Future<Expansion> getExpansionData(Card cardData) async {
-    final response = await client.from('expansion').select('*').eq('expansion_id', cardData.expansionId).single();
+    final response = await client
+        .from('expansion')
+        .select('*')
+        .eq('expansion_id', cardData.expansionId)
+        .single();
 
     Expansion expansion = Expansion.fromJson(response);
 
@@ -67,18 +71,18 @@ class ProfilefriendsController extends GetxController {
     return expansionData;
   }
 
-  Future<void> changeUsername() async {;
+  Future<void> changeUsername() async {
+    ;
     UserData data = await userData.value;
     if (usernameC.text != data.userName) {
       if (usernameC.text.isEmpty) {
         Get.snackbar("Wrong!", "Username cannot be empty");
-      }
-      else if (usernameC.text.length < 3) {
+      } else if (usernameC.text.length < 3) {
         Get.snackbar("Wrong!", "Username must be at least 3 characters");
-      }
-      else  {
-        await client.from('user_data').update({"user_name": usernameC.text}).eq(
-            "user_id", user.id);
+      } else {
+        await client
+            .from('user_data')
+            .update({"user_name": usernameC.text}).eq("user_id", user.id);
 
         userData.value = getProfileData();
 
@@ -87,47 +91,48 @@ class ProfilefriendsController extends GetxController {
     }
   }
 
-  Future<void> changeDescription() async {;
-  UserData data = await userData.value;
-  if (descriptionC.text != data.description) {
-    if (usernameC.text.isEmpty) {
-      await client.from('user_data')
-          .update({"description": null})
-          .eq(
-          "user_id", user.id);
-    }
-    else {
-      await client.from('user_data')
-          .update({"description": descriptionC.text})
-          .eq(
-          "user_id", user.id);
-    }
+  Future<void> changeDescription() async {
+    ;
+    UserData data = await userData.value;
+    if (descriptionC.text != data.description) {
+      if (usernameC.text.isEmpty) {
+        await client
+            .from('user_data')
+            .update({"description": null}).eq("user_id", user.id);
+      } else {
+        await client
+            .from('user_data')
+            .update({"description": descriptionC.text}).eq("user_id", user.id);
+      }
 
-    userData.value = getProfileData();
+      userData.value = getProfileData();
 
-    userData.refresh();
-  }
+      userData.refresh();
+    }
   }
 
   Future<void> changeImage() async {
     UserData data = await userData.value;
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
-        source: ImageSource.gallery,
+      source: ImageSource.gallery,
     );
 
     final String imageName = DateTime.now().millisecondsSinceEpoch.toString();
 
     await client.storage.from('profilepictures').upload(
-      'saved/user/${data.userId}/$imageName.png',
-      File(image!.path),
-      fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-    );
+          'saved/user/${data.userId}/$imageName.png',
+          File(image!.path),
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+        );
 
-    final String link = await client.storage.from('profilepictures').getPublicUrl('saved/user/${data.userId}/$imageName.png');
+    final String link = await client.storage
+        .from('profilepictures')
+        .getPublicUrl('saved/user/${data.userId}/$imageName.png');
 
-    await client.from('user_data').update({"profile_picture": link}).eq(
-        "user_id", user.id);
+    await client
+        .from('user_data')
+        .update({"profile_picture": link}).eq("user_id", user.id);
 
     userData.value = getProfileData();
 
@@ -138,6 +143,7 @@ class ProfilefriendsController extends GetxController {
     final response = await client
         .from('friends')
         .select()
+        .neq('status', 'Canceled')
         .or('user_id.eq."${user.id}",friend_id.eq."${user.id}"')
         .order("last_interaction", ascending: false);
 
@@ -150,11 +156,76 @@ class ProfilefriendsController extends GetxController {
     return friendLink;
   }
 
+  void subscribeToFriendChanges() {
+    client.channel("friendsUserId")
+        .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'friends',
+            filter: PostgresChangeFilter(
+                type: PostgresChangeFilterType.eq,
+                column: 'user_id',
+                value: user.id),
+            callback: (PostgresChangePayload payload) {
+              friendList.value = getFriends();
+              friendList.refresh();
+            })
+        .subscribe();
+
+    client.channel("friendsFriendId")
+        .onPostgresChanges(
+        event: PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'friends',
+        filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'friend_id',
+            value: user.id),
+        callback: (PostgresChangePayload payload) {
+          friendList.value = getFriends();
+          friendList.refresh();
+        })
+        .subscribe();
+  }
+
   Future<UserData> getFriendData(String friendId) async {
-    final response = await client.from('user_data').select().eq('user_id', friendId).single();
+    final response = await client
+        .from('user_data')
+        .select()
+        .eq('user_id', friendId)
+        .single();
 
     UserData userData = UserData.fromJson(response);
 
     return userData;
+  }
+
+  Future<void> deleteFriend(String friendId) async {
+    await client
+        .from('friends')
+        .delete()
+        .eq('friend_id', friendId)
+        .eq('user_id', user.id);
+  }
+
+  Future<void> acceptFriend(String friendId) async {
+    await client
+        .from('friends')
+        .update({"status": "Linked"})
+        .eq('friend_id', user.id)
+        .eq('user_id', friendId);
+  }
+
+  Future<void> cancelFriend(String friendId) async {
+    await client
+        .from('friends')
+        .update({"status": "Canceled"})
+        .eq('friend_id', user.id)
+        .eq('user_id', friendId);
+  }
+
+  @override
+  void onClose() async {
+    super.onClose();
   }
 }

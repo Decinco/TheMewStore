@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/modules/generic/controllers/LoginOutController.dart';
+import 'app/modules/generic/controllers/FriendNotificationController.dart';
 import 'app/routes/app_pages.dart';
 
 Future main() async {
@@ -15,6 +16,7 @@ Future main() async {
   );
 
   Get.put(LogInOutController());
+  Get.put(FriendNotificationController());
 
   runApp(
     GetMaterialApp(

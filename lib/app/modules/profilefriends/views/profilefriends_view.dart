@@ -794,6 +794,15 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             return Text('No data found');
           } else {
             UserData friendData = snapshot.data!;
+            if (friendLink.status == Status.Linked) {
+              return friendCardDetailsAccepted(friendData);
+            } else if (friendLink.status == Status.Pending) {
+              if (friendLink.userId == controller.user.id) {
+                return friendCardDetailsOutgoing(friendData);
+              } else {
+                return friendCardDetailsIncoming(friendData);
+              }
+            }
             return friendCardDetailsAccepted(friendData);
           }
         });
@@ -855,89 +864,153 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
   }
 
   Widget friendCardDetailsAccepted(UserData friendData) {
-    return Container(
-        color: Color.fromARGB(255, 255, 255, 255),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(friendData.profilePicture ??
-                      'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
-                )),
-            SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(
-                  height: 11,
-                ),
-                Text(
-                  friendData.userName ?? 'No Name',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromRGBO(78, 78, 78, 1)),
-                ),
-                Text(
-                  friendData.description != null
-                      ? '"${friendData.description}"'
-                      : 'No description',
-                  style: TextStyle(
-                      fontSize: 11,
-                      color: Color.fromRGBO(152, 151, 151, 1),
-                      height: 0.8),
-                ),
-              ],
-            )
-          ]),
-          Container(
-            width: double.infinity,
-            height: 1,
-            color: Color.fromRGBO(202, 196, 208, 1),
-          )
-        ]));
+    return InkWell(
+        onTap: () {
+          Get.toNamed("/foreignprofile", arguments: friendData.userId);
+        },
+        child: Container(
+            color: Color.fromARGB(255, 255, 255, 255),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Stack(children: [
+                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(friendData
+                                .profilePicture ??
+                            'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
+                      )),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                        height: 11,
+                      ),
+                      Text(
+                        friendData.userName ?? 'No Name',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(78, 78, 78, 1)),
+                      ),
+                      Text(
+                        friendData.description != null
+                            ? '"${friendData.description}"'
+                            : 'No description',
+                        style: TextStyle(
+                            fontSize: 11,
+                            color: Color.fromRGBO(120, 120, 120, 1),
+                            height: 0.8),
+                      ),
+                    ],
+                  )
+                ]),
+                Positioned(
+                    right: 0,
+                    top: 23,
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                //controller.acceptFriendRequest(friendData.userId);
+                                Get.snackbar("remove friend", "TODO");
+                              },
+                              constraints: BoxConstraints(),
+                              padding: EdgeInsets.all(5),
+                              icon: Icon(UIcons.fibstrash),
+                              style: const ButtonStyle(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                            ),
+                          ],
+                        )))
+              ]),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: Color.fromRGBO(202, 196, 208, 1),
+              )
+            ])));
   }
 
   Widget friendCardDetailsIncoming(UserData friendData) {
     return Container(
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: Color.fromARGB(235, 235, 235, 235),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(friendData.profilePicture ??
-                      'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
-                )),
-            SizedBox(width: 10),
-            Column(
-              children: [
-                SizedBox(
-                  height: 11,
-                ),
-                Text(
-                  friendData.userName ?? 'No Name',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromRGBO(78, 78, 78, 1)),
-                ),
-                Text(
-                  friendData.description != null
-                      ? '"${friendData.description}"'
-                      : 'No description',
-                  style: TextStyle(
-                      fontSize: 11,
-                      color: Color.fromRGBO(152, 151, 151, 1),
-                      height: 0.8),
-                ),
-              ],
-            )
+          Stack(children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(friendData.profilePicture ??
+                        'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
+                  )),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 11,
+                  ),
+                  Text(
+                    friendData.userName ?? 'No Name',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                        color: Color.fromRGBO(78, 78, 78, 1)),
+                  ),
+                  Text(
+                    "Has sent you a friend request",
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic,
+                        color: Color.fromRGBO(120, 120, 120, 1),
+                        height: 0.8),
+                  ),
+                ],
+              )
+            ]),
+            Positioned(
+                right: 0,
+                top: 23,
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            controller.acceptFriend(friendData.userId);
+                          },
+                          constraints: BoxConstraints(),
+                          padding: EdgeInsets.all(5),
+                          icon: Icon(UIcons.fibscheck),
+                          color: Colors.green,
+                          style: const ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            controller.cancelFriend(friendData.userId);
+                          },
+                          constraints: BoxConstraints(),
+                          padding: EdgeInsets.all(5),
+                          icon: Icon(UIcons.fibscross),
+                          color: Colors.red,
+                          style: const ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                      ],
+                    )))
           ]),
           Container(
             width: double.infinity,
@@ -947,13 +1020,61 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
         ]));
   }
 
+  Widget friendCardDetailsOutgoing(UserData friendData) {
+    return Container(
+        color: Color.fromARGB(235, 235, 235, 235),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Stack(children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(friendData.profilePicture ??
+                        'https://efozsdbswdnjwwgdbmzo.supabase.co/storage/v1/object/public/profilepictures//default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714-1760973665.jpg'),
+                  )),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 11,
+                  ),
+                  Text(
+                    friendData.userName ?? 'No Name',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                        color: Color.fromRGBO(78, 78, 78, 1)),
+                  ),
+                  Text(
+                    "Has not accepted your friend request yet",
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic,
+                        color: Color.fromRGBO(120, 120, 120, 1),
+                        height: 0.8),
+                  ),
+                ],
+              )
+            ]),
+          ]),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Color.fromRGBO(202, 196, 208, 1),
+          ),
+        ]));
+  }
 
   @override
   Widget build(BuildContext context) {
     controller.userData = controller.getProfileData().obs;
     controller.albumData = controller.getAlbumData().obs;
     controller.expansionData = controller.getAllExpansions();
-    controller.friendList = controller.getFriends();
+    controller.friendList = controller.getFriends().obs;
+    controller.subscribeToFriendChanges();
 
     return Scaffold(
         appBar: AppBar(
@@ -995,7 +1116,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                             albumInfo(controller.albumData.value)
                           ],
                         )),
-                    friendsList(controller.friendList),
+                    Obx(() => friendsList(controller.friendList.value)),
                   ])),
                 ]))));
   }
