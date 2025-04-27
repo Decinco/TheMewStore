@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../product/controllers/product_controller.dart';
 
-
 extension CarouselControllerExtension on CarouselController {
   // Para navegar a la siguiente página
   void nextPageWithAnimation(CarouselController controller, int currentPage,
@@ -47,8 +46,8 @@ class ShoppingcartController extends GetxController {
     final user = client.auth.currentUser;
     if (user == null) return;
 
-      // Select product data including stock
-      final response = await client.from('shopping_cart').select('''
+    // Select product data including stock
+    final response = await client.from('shopping_cart').select('''
             quantity,
             product:product_id (
               product_id,
@@ -60,8 +59,8 @@ class ShoppingcartController extends GetxController {
             )
           ''').eq('user_id', user.id);
 
-      cartItems.assignAll(_parseCartItems(response));
-      filteredCartItems.assignAll(cartItems);
+    cartItems.assignAll(_parseCartItems(response));
+    filteredCartItems.assignAll(cartItems);
   }
 
   /// Parse Supabase response into local model
