@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:get/get.dart';
+import '../../../../generated/locales.g.dart';
 import '../../../data/models/comment.dart';
 import '../../shoppingcart/controllers/shoppingcart_controller.dart';
 
@@ -117,8 +118,7 @@ class ProductController extends GetxController {
       if (availableToAdd <= 0) {
         // Ya se alcanzó el stock máximo, no añadimos más
         Get.snackbar(
-            'Stock alcanzado', 'Ya tienes la cantidad máxima en el carrito.',
-            snackPosition: SnackPosition.BOTTOM);
+            LocaleKeys.errors_title_physicalError.tr, LocaleKeys.errors_description_outOfStock.tr);
         return;
       }
 
@@ -137,11 +137,11 @@ class ProductController extends GetxController {
 
       // Opcional: notificación al usuario
       Get.snackbar(
-          'Añadido al carrito', 'Se añadieron $quantityToAdd unidades.',
-          snackPosition: SnackPosition.BOTTOM);
+          LocaleKeys.notifs_addedToCart_title.tr, LocaleKeys.notifs_addedToCart_message.trParams(
+            {'units': quantityToAdd.toString()},
+          ));
     } catch (e) {
-      Get.snackbar('Error', 'No se pudo añadir al carrito.',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(LocaleKeys.errors_title_serverError.tr, e.toString());
     }
   }
 

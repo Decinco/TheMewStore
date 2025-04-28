@@ -117,8 +117,7 @@ class ShoppingcartController extends GetxController {
 
       // 3) (opcional) refrescar totalAmount u otros cálculos, pero sin fetchCartItems()
     } else {
-      Get.snackbar('Sin stock', 'No hay más unidades disponibles',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Sin stock', 'No hay más unidades disponibles');
     }
   }
 
@@ -134,8 +133,7 @@ class ShoppingcartController extends GetxController {
         item['price'],
       );
     } else {
-      Get.snackbar('Cantidad mínima', 'La cantidad no puede ser menor que 1',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Cantidad mínima', 'La cantidad no puede ser menor que 1',);
     }
   }
 
@@ -179,11 +177,8 @@ class ShoppingcartController extends GetxController {
 
       // Actualizar contadores
       Get.find<ProductController>().updateCartQuantityFromDB();
-      Get.snackbar('Éxito', 'Producto eliminado',
-          snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      Get.snackbar('Error', 'No se pudo eliminar: ${e.toString()}',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Error', e.toString(),);
     }
   }
 

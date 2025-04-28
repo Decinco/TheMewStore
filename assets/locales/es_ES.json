@@ -1,0 +1,142 @@
+{
+  "theMewStore": "The Mew Store",
+  "signIn": {
+    "button": {
+      "logIn": "Entrar",
+      "signUp": "Crear"
+    },
+    "signUp": "Crear Cuenta",
+    "logIn": "Iniciar Sesión",
+    "signInGoogle": "Iniciar sesión con Google",
+    "signUpGoogle": "Crear cuenta con Google",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "username": "Alias",
+    "passwordReset": "Restablecer Contraseña",
+    "send": "Enviar",
+    "reset": "Restablecer",
+    "passwordResetInstructions": {
+      "email": "Introduce la dirección de correo de la cuenta a la que se va a reiniciar la contraseña:",
+      "code": "Hemos enviado in código a tu correo electrónico. Por favor, introduce el código:",
+      "newPassword": "¡Casi estamos! Introduce la nueva contraseña:"
+    }
+  },
+  "home": {
+    "price": "Precio: @price",
+    "search": "Buscar..."
+  },
+  "product": {
+    "addComment": "Añadir Comentario",
+    "writeComment": "Escribe tu comentario...",
+    "addReview": "Añadir Reseña",
+    "addToCart": "Añadir al Carrito",
+    "noName": {
+      "product": "Producto",
+      "comments": "No hay descripción",
+      "description": ""
+    },
+    "reviews": "Reseñas:",
+    "noReviews": "No hay reseñas. ¡Sé el primero en reseñar este producto!"
+  },
+  "shoppingcart": {
+    "title": "Carrito de Compras",
+    "empty": "Tu carrito está vacío",
+    "remove": "Eliminar",
+    "checkout": "Pagar"
+  },
+  "map": {
+    "title": "Encuentra una Tienda Cerca",
+    "search": "Buscar tiendas...",
+    "noName": {
+      "store": "Tienda",
+      "description": "No hay descripción"
+    }
+  },
+  "profile": {
+    "title": "Perfil y Amigos",
+    "titleForeign": "Perfil de @user",
+    "profile": "Perfil",
+    "friends": "Amigos",
+    "modify": {
+      "enterUsername": "Introduce el nuevo alias:",
+      "enterDescription": "Introduce la nueva descripción:",
+      "enterExpansion": "Selecciona una expansión:",
+      "enterCardNo": "Introduce el número de la carta que tienes:"
+    },
+    "noInfo": {
+      "username": "Usuario",
+      "description": "¡Exprésate!",
+      "descriptionForeign": "Este usuario no tiene descripción.",
+      "cardNo": "Sin número de carta"
+    },
+    "noCardsInAlbum": "@user no tiene cartas en su álbum.",
+    "submit": "Enviar"
+  },
+  "friends": {
+    "removeFriend": {
+      "prompt": "¿Estás seguro de que quieres eliminar a @friend de tu lista de amigos?",
+      "remove": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "noFriends": "No tienes amigos todavía. ¡Añade a uno!",
+    "addFriend": "Añadir Amigo",
+    "noInfo": {
+      "username": "Amigo",
+      "description": "Sin descripción"
+    }
+  },
+  "notifs": {
+    "newFriendRequest": {
+      "title": "Solicitud de Amistad",
+      "message": "¡Tienes una nueva solicitud de amistad!"
+    },
+    "emailVerification": {
+      "title": "¡Éxito!",
+      "message": "Por favor, verifica tu correo electrónico para activar tu cuenta."
+    },
+    "passwordReset": {
+      "title": "¡Éxito!",
+      "message": "Tu contraseña ha sido restablecida con éxito."
+    },
+    "addedToCart": {
+      "title": "Añadido al Carrito",
+      "message": "@units unidades han sido añadidas a tu carrito."
+    }
+  },
+  "errors": {
+    "title": {
+      "userError": "¡Mal!",
+      "serverError": "¡Oh, no!",
+      "physicalError": "¡Lo sentimos!"
+    },
+    "description": {
+      "wrongLogin": "El correo electrónico y la contraseña son obligatorios",
+      "fieldsEmpty": "Todos los campos son obligatorios",
+      "password": {
+        "doNotMatch": "Las contraseñas no coinciden",
+        "tooShort": "La contraseña debe tener al menos 8 caracteres",
+        "noUppercase": "La contraseña debe contener al menos una letra mayúscula",
+        "noLowercase": "La contraseña debe contener al menos una letra minúscula",
+        "noNumber": "La contraseña debe contener al menos un número",
+        "noSpecialChar": "La contraseña debe contener al menos un carácter especial"
+      },
+      "username": {
+        "tooShort": "El alias debe tener al menos 3 caracteres",
+        "empty": "El alias no puede estar vacío"
+      },
+      "emailRequired": "El correo electrónico es obligatorio",
+      "codeRequired": "El código es obligatorio",
+      "outOfStock": "No hay más stock disponible para este producto.",
+      "amountLessThanOne": "La cantidad debe ser al menos 1."
+    }
+  },
+  "burger": {
+    "theMewStore": "The Mew Store",
+    "shoppingCart": "Carrito",
+    "map": "Mapa de Tiendas",
+    "profileFriends": "Perfil y Amigos",
+    "logOut": "Cerrar Sesión"
+  }
+}

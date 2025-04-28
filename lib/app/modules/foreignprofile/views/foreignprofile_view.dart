@@ -224,6 +224,7 @@ class ForeignprofileView extends GetView<ForeignprofileController> {
 
                     return Text(
                       censorEmail(snapshot.data!.email),
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 12,
                         height: 1,

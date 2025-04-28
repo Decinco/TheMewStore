@@ -5,7 +5,7 @@ class ForeignprofileBinding extends Bindings {
   @override
   void dependencies() {
     // Obtén el uuid de los parámetros de ruta o usa uno por defecto
-    final uuid = Get.parameters['uuid'] ?? "31c14ddf-fc64-4982-b087-3e840955d510";
+    final uuid = Get.arguments;
 
     Get.lazyPut<ForeignprofileController>(
           () => ForeignprofileController(uuid),

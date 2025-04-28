@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../generated/locales.g.dart';
+
 class PasswordController extends GetxController {
   SupabaseClient client = Supabase.instance.client;
   TextEditingController emailC = TextEditingController();
@@ -19,10 +21,10 @@ class PasswordController extends GetxController {
         );
         return true;
       } catch (e) {
-        Get.snackbar("Oops!", e.toString());
+        Get.snackbar(LocaleKeys.errors_title_serverError.tr, e.toString());
       }
     } else {
-      Get.snackbar("Wrong!", "Email is required");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_emailRequired.tr);
     }
     return null;
   }
@@ -37,36 +39,37 @@ class PasswordController extends GetxController {
         );
         return true;
       } catch (e) {
-        Get.snackbar("Oops!", e.toString());
+        Get.snackbar(LocaleKeys.errors_title_serverError.tr, e.toString());
         codeC.text = "";
       }
     } else {
-      Get.snackbar("Wrong!", "Code is required!");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_codeRequired.tr);
     }
     return null;
   }
 
   Future<bool?> changePassword() async {
-    if (nuPasswordC.text.isEmpty || nuPasswordConfirmC.text.isEmpty) {
-      Get.snackbar("Wrong!", "All fields are required");
+    if (nuPasswordC.text.isEmpty ||
+        nuPasswordConfirmC.text.isEmpty) {
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_fieldsEmpty.tr);
     } else if (nuPasswordC.text != nuPasswordConfirmC.text) {
-      Get.snackbar("Wrong!", "Passwords do not match");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_password_doNotMatch.tr);
     } else if (nuPasswordC.text.length < 8) {
-      Get.snackbar("Wrong!", "Password must be at least 8 characters");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_password_tooShort.tr);
     } else if (nuPasswordC.text.length < 3) {
-      Get.snackbar("Wrong!", "Username must be at least 3 characters");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_username_tooShort.tr);
     } else if (nuPasswordC.text.contains(RegExp("[A-Z]")) == false) {
       Get.snackbar(
-          "Wrong!", "Password must contain at least one uppercase letter");
+          LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_password_noUppercase.tr);
     } else if (nuPasswordC.text.contains(RegExp("[a-z]")) == false) {
       Get.snackbar(
-          "Wrong!", "Password must contain at least one lowercase letter");
+          LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_password_noLowercase.tr);
     } else if (nuPasswordC.text.contains(RegExp("[0-9]")) == false) {
-      Get.snackbar("Wrong!", "Password must contain at least one number");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_password_noNumber.tr);
     } else if (nuPasswordC.text.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>-_]')) ==
         false) {
       Get.snackbar(
-          "Wrong!", "Password must contain at least one special character");
+          LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_password_noSpecialChar.tr);
     } else {
       try {
         await client.auth.updateUser(
@@ -75,10 +78,10 @@ class PasswordController extends GetxController {
         await client.auth.signOut(
           scope: SignOutScope.global,
         );
-        Get.snackbar("Success!", "Password has been updated successfully");
+        Get.snackbar(LocaleKeys.notifs_passwordReset_title.tr, LocaleKeys.notifs_passwordReset_message.tr);
         return true;
       } catch (e) {
-        Get.snackbar("Oops!", e.toString());
+        Get.snackbar(LocaleKeys.errors_title_serverError.tr, e.toString());
       }
     }
     return null;

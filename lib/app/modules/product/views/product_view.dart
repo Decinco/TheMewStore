@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
+import '../../../../generated/locales.g.dart';
 import '../../shoppingcart/controllers/shoppingcart_controller.dart';
 import '../../shoppingcart/views/shoppingcart_view.dart';
 import '../controllers/product_controller.dart';
@@ -10,15 +12,15 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
   final rating = 0.obs;
 
   Get.defaultDialog(
-    title: "Añadir Comentario",
+    title: LocaleKeys.product_addReview.tr,
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 10),
         TextField(
           controller: commentController,
-          decoration: const InputDecoration(
-            hintText: "Escribe tu comentario...",
+          decoration: InputDecoration(
+            hintText: LocaleKeys.product_writeComment.tr,
             border: OutlineInputBorder(),
           ),
           maxLines: 3,
@@ -50,7 +52,7 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
               Get.back();
             }
           },
-          child: const Text("Añadir"),
+          child: Text(LocaleKeys.product_addComment.tr),
         ),
       ],
     ),
@@ -76,7 +78,7 @@ class ProductView extends StatelessWidget {
       backgroundColor: const Color(0xFFEDD5E5),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
-        title: const Text('The Mew Store',
+        title: Text(LocaleKeys.theMewStore.tr,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
@@ -110,7 +112,7 @@ class ProductView extends StatelessWidget {
         ],
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      drawer: const Drawer(),
+      drawer: Hamburguesa(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -130,7 +132,7 @@ class ProductView extends StatelessWidget {
                         children: [
                           const SizedBox(height: 20),
                           Text(
-                            product['product_name'] ?? 'Producto',
+                            product['product_name'] ?? LocaleKeys.product_noName_product.tr,
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
@@ -148,10 +150,10 @@ class ProductView extends StatelessWidget {
                                     height: 150),
                           ),
                           const SizedBox(height: 10),
-                          Text(product['description'] ?? 'Sin descripción',
+                          Text(product['comments'] ?? LocaleKeys.product_noName_comments.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 4),
-                          Text(product['description'] ?? 'Sin descripción'),
+                          Text(product['description'] ?? LocaleKeys.product_noName_description.tr),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +182,7 @@ class ProductView extends StatelessWidget {
                               ),
                               onPressed: controller.addToCartAndSync,
                               icon: const Icon(Icons.shopping_cart),
-                              label: const Text('Añadir al Carrito'),
+                              label: Text(LocaleKeys.product_addToCart.tr),
                             ),
                           ),
                         ],
@@ -199,11 +201,11 @@ class ProductView extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Reseñas
-              const Text('Reseñas:',
+              Text(LocaleKeys.product_reviews.tr,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               Obx(() => controller.comments.isEmpty
-                  ? const Center(child: Text('No hay reseñas aún.'))
+                  ? Center(child: Text(LocaleKeys.product_noReviews.tr))
                   : Column(
                       children: controller.comments.map((comment) {
                         return Card(
@@ -278,7 +280,7 @@ class ProductView extends StatelessWidget {
                   ),
                   onPressed: () => _showCommentDialog(context, controller),
                   icon: const Icon(Icons.add_comment),
-                  label: const Text('Añadir Reseña'),
+                  label: Text(LocaleKeys.product_addReview.tr),
                 ),
               ),
             ],

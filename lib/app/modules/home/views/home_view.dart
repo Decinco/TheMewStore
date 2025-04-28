@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
 import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import 'package:themewstore/uicon.dart';
+import '../../../../generated/locales.g.dart';
 import '../controllers/home_controller.dart';
 import '../../../data/models/productStock.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -61,8 +62,8 @@ class HomeView extends GetView<HomeController> {
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text('The Mew Store',
+          children: [
+            Text(LocaleKeys.theMewStore.tr,
                 style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(width: 10),
             Icon(UIcons.fibsshoppingbag, color: Colors.black),
@@ -89,7 +90,7 @@ class HomeView extends GetView<HomeController> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Buscar...',
+                hintText: LocaleKeys.home_search.tr,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -112,7 +113,11 @@ class HomeView extends GetView<HomeController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Precio: ${controller.selectedRange.value.start.toStringAsFixed(0)}€ - ${controller.selectedRange.value.end.toStringAsFixed(0)}€',
+                        LocaleKeys.home_price.trParams({
+                          "price": '${controller.selectedRange.value.start
+                              .toStringAsFixed(0)}€ - ${controller.selectedRange
+                              .value.end.toStringAsFixed(0)}€'
+                        }),
                         style: const TextStyle(fontSize: 16),
                       ),
                       IconButton(
@@ -176,6 +181,7 @@ class HomeView extends GetView<HomeController> {
                           'description': p.description,
                           'image': getPublicImageUrl(p.image),
                           'stock': p.stock,
+                          'comments': p.comments,
                         }),
                       ),
                     );
@@ -229,6 +235,7 @@ class HomeView extends GetView<HomeController> {
                             'description': p.description,
                             'image': getPublicImageUrl(p.image),
                             'stock': p.stock,
+                            'comments': p.comments,
                           }),
                           child: Stack(
                             children: [

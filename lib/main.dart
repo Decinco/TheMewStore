@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/modules/generic/controllers/LoginOutController.dart';
 import 'app/modules/generic/controllers/FriendNotificationController.dart';
 import 'app/routes/app_pages.dart';
+import 'generated/locales.g.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -20,6 +21,9 @@ Future main() async {
 
   runApp(
     GetMaterialApp(
+      translationsKeys: AppTranslation.translations,
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('en', 'US'),
       debugShowCheckedModeBanner: false,
       onReady: () => Get.find<LogInOutController>().initNavigationListener(),
       title: "Application",
