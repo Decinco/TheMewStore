@@ -47,7 +47,7 @@
     "checkout": "Checkout"
   },
   "map": {
-    "title": "Find a Store Nearby",
+    "title": "Find a Store",
     "search": "Search for stores...",
     "noName": {
       "store": "Store",

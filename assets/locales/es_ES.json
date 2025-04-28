@@ -47,7 +47,7 @@
     "checkout": "Pagar"
   },
   "map": {
-    "title": "Encuentra una Tienda Cerca",
+    "title": "Encuentra una Tienda",
     "search": "Buscar tiendas...",
     "noName": {
       "store": "Tienda",
