@@ -242,25 +242,34 @@ class ShoppingcartController extends GetxController {
         'final_price': totalAmount.round(),
       }).select().single();
 
-      final int orderId = orderResponse['order_id'];
+      final int orderId = (orderResponse['order_id'] as num).toInt();
 
-      // 2. Insertar los detalles del pedido
-      final batchOperations = filteredCartItems.map((item) {
+      // Agrupar por product_id y sumar cantidades
+      final Map<int, int> productQuantities = {};
+      for (var item in filteredCartItems) {
+        final productId = item['product_id'];
+        final quantity = item['quantity'].value;
+        final int qty = quantity as int;
+        productQuantities.update(
+          productId,
+              (existing) => existing + qty,
+          ifAbsent: () => qty,
+        );
+      }
+
+      // Luego generar las operaciones únicas
+      final batchOperations = productQuantities.entries.map((entry) {
         return client.from('orderdetails').insert({
           'order_id': orderId,
-          'product_id': item['product_id'],
-          'quantity': item['quantity'].value,
+          'product_id': entry.key,
+          'quantity': entry.value,
         });
       }).toList();
 
-      // Ejecutar todas las operaciones en batch
       await Future.wait(batchOperations);
 
       // 3. Limpiar el carrito
-      await client
-          .from('shopping_cart')
-          .delete()
-          .eq('user_id', user.id);
+      await client.from('shopping_cart').delete().eq('user_id', user.id);
 
       // 4. Actualizar UI y estado
       cartItems.clear();
@@ -271,12 +280,10 @@ class ShoppingcartController extends GetxController {
       Get.snackbar('Éxito', 'Pedido realizado correctamente',
           snackPosition: SnackPosition.BOTTOM);
 
-      // Opcional: Redirigir a la pantalla de pedidos
       // Get.offAllNamed('/orders');
     } catch (e) {
-      Get.snackbar('Error', 'No se pudo completar el pedido: ${e.toString()}',
+      Get.snackbar('Error', 'No se sudo: ${e.toString()}',
           snackPosition: SnackPosition.BOTTOM);
-      debugPrint('Error al realizar pedido: $e');
     }
   }
 
