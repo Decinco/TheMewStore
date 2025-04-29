@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:themewstore/generated/locales.g.dart';
 
 import '../../../../uicon.dart';
 import '../controllers/login_controller.dart';
@@ -33,7 +34,7 @@ class LoginView extends GetView<LoginController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Sign Up",
+                          LocaleKeys.signIn_signUp.tr,
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -71,7 +72,7 @@ class LoginView extends GetView<LoginController> {
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                     child: Center(
                       child: Text(
-                        "Log In",
+                        LocaleKeys.signIn_logIn.tr,
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -83,11 +84,11 @@ class LoginView extends GetView<LoginController> {
                     borderRadius: BorderRadius.circular(10),
                     child: TextField(
                       controller: controller.emailC,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text("Email"),
+                        label: Text(LocaleKeys.signIn_email.tr),
                       ),
                     ),
                   ),
@@ -100,11 +101,11 @@ class LoginView extends GetView<LoginController> {
                       controller: controller.passwordC,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text("Password"),
+                        label: Text(LocaleKeys.signIn_password.tr),
                       ),
                     ),
                   ),
@@ -134,7 +135,7 @@ class LoginView extends GetView<LoginController> {
                                           "assets/images/google/googl.png"),
                                       fit: BoxFit.cover),
                                   Flexible(
-                                    child: const Text("Sign in with Google",
+                                    child: Text(LocaleKeys.signIn_signInGoogle.tr,
                                         style: TextStyle(
                                           fontSize: 13,
                                         )),
@@ -159,7 +160,7 @@ class LoginView extends GetView<LoginController> {
                                   fontSize: 20,
                                   fontFamily: "Inter"),
                             ),
-                            child: const Text("Log In"),
+                            child: Text(LocaleKeys.signIn_button_logIn.tr),
                           ),
                         ],
                       )),
@@ -178,7 +179,7 @@ class LoginView extends GetView<LoginController> {
                             arguments: controller.emailC.text);
                       },
                       child: Text(
-                        "Forgot your password?",
+                        LocaleKeys.signIn_forgotPassword.tr,
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 18,

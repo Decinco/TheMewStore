@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/utils/googleLogIn.dart';
+import 'package:themewstore/generated/locales.g.dart';
 
 class LoginController extends GetxController {
   RxBool isLoading = false.obs;
@@ -28,10 +29,10 @@ class LoginController extends GetxController {
         return true;
       } catch (e) {
         isLoading.value = false;
-        Get.snackbar("Oops!", e.toString());
+        Get.snackbar(LocaleKeys.errors_title_serverError.tr, e.toString());
       }
     } else {
-      Get.snackbar("Wrong!", "Email and password are required");
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_wrongLogin.tr);
     }
     return null;
   }
@@ -41,7 +42,7 @@ class LoginController extends GetxController {
       await GoogleLoginUtils.nativeGoogleSignIn(client);
       return true;
     } catch (e) {
-      Get.snackbar("ERROR", e.toString());
+      Get.snackbar(LocaleKeys.errors_title_serverError.tr, e.toString());
     }
     return null;
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:themewstore/app/modules/signup/controllers/signup_controller.dart';
 
+import '../../../../generated/locales.g.dart';
 import '../../../../uicon.dart';
 
 class SignupView extends GetView<SignupController> {
@@ -33,7 +34,7 @@ class SignupView extends GetView<SignupController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Log In",
+                          LocaleKeys.signIn_logIn.tr,
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -61,7 +62,7 @@ class SignupView extends GetView<SignupController> {
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                     child: Center(
                       child: Text(
-                        "Sign Up",
+                        LocaleKeys.signIn_signUp.tr,
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -73,11 +74,11 @@ class SignupView extends GetView<SignupController> {
                     borderRadius: BorderRadius.circular(10),
                     child: TextField(
                       controller: controller.emailC,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text("Email"),
+                        label: Text(LocaleKeys.signIn_email.tr),
                       ),
                     ),
                   ),
@@ -88,11 +89,11 @@ class SignupView extends GetView<SignupController> {
                     borderRadius: BorderRadius.circular(10),
                     child: TextField(
                       controller: controller.usernameC,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text("Username"),
+                        label: Text(LocaleKeys.signIn_username.tr),
                       ),
                     ),
                   ),
@@ -105,11 +106,11 @@ class SignupView extends GetView<SignupController> {
                       controller: controller.passwordC,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text("Password"),
+                        label: Text(LocaleKeys.signIn_password.tr),
                       ),
                     ),
                   ),
@@ -122,11 +123,11 @@ class SignupView extends GetView<SignupController> {
                       controller: controller.passwordAgainC,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text("Confirm Password"),
+                        label: Text(LocaleKeys.signIn_confirmPassword.tr),
                       ),
                     ),
                   ),
@@ -156,7 +157,7 @@ class SignupView extends GetView<SignupController> {
                                           "assets/images/google/googl.png"),
                                       fit: BoxFit.cover),
                                   Flexible(
-                                    child: const Text("Sign up with Google",
+                                    child: Text(LocaleKeys.signIn_signUpGoogle.tr,
                                         style: TextStyle(
                                           fontSize: 13,
                                         )),
@@ -184,7 +185,7 @@ class SignupView extends GetView<SignupController> {
                                   fontSize: 20,
                                   fontFamily: "Inter"),
                             ),
-                            child: const Text("Sign Up"),
+                            child: Text(LocaleKeys.signIn_button_signUp.tr),
                           ),
                         ],
                       )),

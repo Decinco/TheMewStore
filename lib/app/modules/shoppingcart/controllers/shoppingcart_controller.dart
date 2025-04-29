@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../generated/locales.g.dart';
 import '../../product/controllers/product_controller.dart';
 
 extension CarouselControllerExtension on CarouselController {
@@ -117,8 +118,7 @@ class ShoppingcartController extends GetxController {
 
       // 3) (opcional) refrescar totalAmount u otros cálculos, pero sin fetchCartItems()
     } else {
-      Get.snackbar('Sin stock', 'No hay más unidades disponibles',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(LocaleKeys.errors_title_physicalError.tr, LocaleKeys.errors_description_outOfStock.tr);
     }
   }
 
@@ -134,8 +134,7 @@ class ShoppingcartController extends GetxController {
         item['price'],
       );
     } else {
-      Get.snackbar('Cantidad mínima', 'La cantidad no puede ser menor que 1',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_amountLessThanOne.tr,);
     }
   }
 
@@ -179,11 +178,8 @@ class ShoppingcartController extends GetxController {
 
       // Actualizar contadores
       Get.find<ProductController>().updateCartQuantityFromDB();
-      Get.snackbar('Éxito', 'Producto eliminado',
-          snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      Get.snackbar('Error', 'No se pudo eliminar: ${e.toString()}',
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Error', e.toString(),);
     }
   }
 

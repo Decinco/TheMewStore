@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:themewstore/generated/locales.g.dart';
 import '../controllers/password_controller.dart';
 
 class PasswordView extends GetView<PasswordController> {
@@ -18,7 +19,7 @@ class PasswordView extends GetView<PasswordController> {
           titleSpacing: 0,
           centerTitle: true,
           backgroundColor: Color.fromARGB(255, 237, 213, 229),
-          title: Text('Password Reset',
+          title: Text(LocaleKeys.signIn_passwordReset.tr,
               style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         body: Container(
@@ -42,7 +43,7 @@ class PasswordView extends GetView<PasswordController> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          "Enter the email address of the account you want to reset the password for:",
+                                          LocaleKeys.signIn_passwordResetInstructions_email.tr,
                                           style: TextStyle(
                                             fontSize: 18,
                                           ),
@@ -56,11 +57,11 @@ class PasswordView extends GetView<PasswordController> {
                                         borderRadius: BorderRadius.circular(10),
                                         child: TextField(
                                           controller: controller.emailC,
-                                          decoration: const InputDecoration(
+                                          decoration: InputDecoration(
                                             border: InputBorder.none,
                                             fillColor: Colors.white,
                                             filled: true,
-                                            label: Text("Email"),
+                                            label: Text(LocaleKeys.signIn_email.tr),
                                           ),
                                         ),
                                       ),
@@ -97,7 +98,7 @@ class PasswordView extends GetView<PasswordController> {
                                               fontSize: 20,
                                               fontFamily: "Inter"),
                                         ),
-                                        child: const Text("Send"),
+                                        child: Text(LocaleKeys.signIn_send.tr),
                                       ),
                                     ],
                                   )),
@@ -110,7 +111,7 @@ class PasswordView extends GetView<PasswordController> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          "A code has been sent to your email address. Please enter the code below:",
+                                          LocaleKeys.signIn_passwordResetInstructions_code.tr,
                                           style: TextStyle(
                                             fontSize: 18,
                                           ),
@@ -177,7 +178,7 @@ class PasswordView extends GetView<PasswordController> {
                                               fontSize: 20,
                                               fontFamily: "Inter"),
                                         ),
-                                        child: const Text("Send"),
+                                        child: Text(LocaleKeys.signIn_send.tr),
                                       ),
                                     ],
                                   )),
@@ -190,7 +191,7 @@ class PasswordView extends GetView<PasswordController> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          "Almost there! Please enter the desired new password for your account:",
+                                          LocaleKeys.signIn_passwordResetInstructions_newPassword.tr,
                                           style: TextStyle(
                                             fontSize: 18,
                                           ),
@@ -208,11 +209,11 @@ class PasswordView extends GetView<PasswordController> {
                                           keyboardType:
                                               TextInputType.visiblePassword,
                                           obscureText: true,
-                                          decoration: const InputDecoration(
+                                          decoration: InputDecoration(
                                             border: InputBorder.none,
                                             fillColor: Colors.white,
                                             filled: true,
-                                            label: Text("Password"),
+                                            label: Text(LocaleKeys.signIn_password.tr),
                                           ),
                                         ),
                                       ),
@@ -227,11 +228,11 @@ class PasswordView extends GetView<PasswordController> {
                                           keyboardType:
                                               TextInputType.visiblePassword,
                                           obscureText: true,
-                                          decoration: const InputDecoration(
+                                          decoration: InputDecoration(
                                             border: InputBorder.none,
                                             fillColor: Colors.white,
                                             filled: true,
-                                            label: Text("Confirm Password"),
+                                            label: Text(LocaleKeys.signIn_confirmPassword.tr),
                                           ),
                                         ),
                                       ),
@@ -259,7 +260,7 @@ class PasswordView extends GetView<PasswordController> {
                                               fontSize: 20,
                                               fontFamily: "Inter"),
                                         ),
-                                        child: const Text("Reset"),
+                                        child: Text(LocaleKeys.signIn_reset.tr),
                                       ),
                                     ],
                                   )),

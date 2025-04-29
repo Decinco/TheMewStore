@@ -1,0 +1,157 @@
+{
+  "theMewStore": "The Mew Store",
+  "signIn": {
+    "button": {
+      "logIn": "Log In",
+      "signUp": "Sign Up"
+    },
+    "signUp": "Sign Up",
+    "logIn": "Log In",
+    "signInGoogle": "Sign in with Google",
+    "signUpGoogle": "Sign up with Google",
+    "forgotPassword": "Forgot your password?",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "passwordReset": "Password Reset",
+    "send": "Send",
+    "reset": "Reset",
+    "passwordResetInstructions": {
+      "email": "Enter the email address of the account you want to reset the password for:",
+      "code": "A code has been sent to your email address. Please enter the code below:",
+      "newPassword": "Almost there! Please enter the desired new password for your account:"
+    }
+  },
+  "home": {
+    "price": "Price: @price",
+    "search": "Look For..."
+  },
+  "product": {
+    "addComment": "Add Comment",
+    "writeComment": "Write your comment...",
+    "addReview": "Add Review",
+    "addToCart": "Add to Cart",
+    "noName": {
+      "product": "Product",
+      "comments": "No description",
+      "description": ""
+    },
+    "reviews": "Reviews:",
+    "noReviews": "No reviews yet. Be the first to review this product!"
+  },
+  "shoppingcart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "remove": "Remove",
+    "checkout": "Checkout"
+  },
+  "map": {
+    "title": "Find a Store",
+    "search": "Search for stores...",
+    "noName": {
+      "store": "Store",
+      "description": "No description"
+    }
+  },
+  "profile": {
+    "title": "Profile & Friends",
+    "titleForeign": "@user's Profile",
+    "profile": "Profile",
+    "friends": "Friends",
+    "album": "Album",
+    "modify": {
+      "enterUsername": "Enter your username below:",
+      "enterDescription": "Enter your description below:",
+      "enterExpansion": "Select an expansion:",
+      "enterCardNo": "Enter the expansion and number of the card you have:",
+      "deleteCard": "Are you sure you want to remove this card from your album?"
+    },
+    "noInfo": {
+      "username": "User",
+      "description": "Make yourself known!",
+      "descriptionForeign": "This user does not have a description.",
+      "cardNo": "No card number"
+    },
+    "textBox": {
+      "username": "Username",
+      "description": "Description",
+      "expansion": "Expansion Code",
+      "cardNo": "Card No.",
+      "printedTotal": "Total"
+    },
+    "noCardsInAlbum": "This user has no cards in their album yet.",
+    "addNewCard": "Add New Card",
+    "submit": "Submit",
+    "addCard": "Add",
+    "delete": "Delete"
+  },
+  "friends": {
+    "removeFriend": {
+      "prompt": "Are you sure you want to remove @friend from your friends list?",
+      "remove": "Remove",
+      "cancel": "Cancel"
+    },
+    "incomingRequest": "Has sent you a friend request.",
+    "outgoingRequest": "Hasn't checked your friend request yet.",
+    "noFriends": "No friends yet. Start adding some!",
+    "addFriend": "Add Friend",
+    "noInfo": {
+      "username": "Friend",
+      "description": "No description"
+    }
+  },
+  "notifs": {
+    "newFriendRequest": {
+      "title": "Friend Request",
+      "message": "You have a new friend request!"
+    },
+    "emailVerification": {
+      "title": "Success!",
+      "message": "Please verify your email address to complete the registration process."
+    },
+    "passwordReset": {
+      "title": "Success!",
+      "message": "Your password has been updated successfully."
+    },
+    "addedToCart": {
+      "title": "Added to Cart",
+      "message": "@units units have been added to your cart."
+    }
+  },
+  "errors": {
+    "title": {
+      "userError": "Wrong!",
+      "serverError": "Oops!",
+      "physicalError": "Sorry!"
+    },
+    "description": {
+      "wrongLogin": "Email and password are required",
+      "fieldsEmpty": "All fields are required",
+      "password": {
+        "doNotMatch": "Passwords do not match",
+        "tooShort": "Password must be at least 8 characters long",
+        "noUppercase": "Password must contain at least one uppercase letter",
+        "noLowercase": "Password must contain at least one lowercase letter",
+        "noNumber": "Password must contain at least one number",
+        "noSpecialChar": "Password must contain at least one special character"
+      },
+      "username": {
+        "tooShort": "Username must be at least 3 characters long",
+        "empty": "Username cannot be empty"
+      },
+      "cardNotFound": "Card does not exist! (It may not be in our database yet)",
+      "emailRequired": "Email is required",
+      "codeRequired": "Code is required",
+      "outOfStock": "There's no more stock available for this product.",
+      "amountLessThanOne": "The amount must be at least 1."
+    }
+  },
+  "burger": {
+    "theMewStore": "The Mew Store",
+    "shoppingCart": "Shopping Cart",
+    "map": "Store Map",
+    "profileFriends": "Profile & Friends",
+    "logOut": "Log Out"
+  }
+}

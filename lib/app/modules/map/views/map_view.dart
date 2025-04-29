@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart' as fm;
 import 'package:latlong2/latlong.dart';
+import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
+import 'package:themewstore/generated/locales.g.dart';
 import '../controllers/map_controller.dart';
 import '../../../../uicon.dart';
 
@@ -12,28 +14,42 @@ class MapView extends GetView<MapController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEDD5E5),
-      drawer: const Drawer(),
+      drawer: Hamburguesa(),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
-        leading: Builder(
-          builder: (ctx) => IconButton(
-            icon: const Icon(UIcons.fibsmenuburger, color: Colors.black),
-            onPressed: () => Scaffold.of(ctx).openDrawer(),
-          ),
-        ),
         title: GestureDetector(
           onTap: () => Get.toNamed('/home'),
-          child: const Text(
-            'Sellers Near You',
+          child: Text(
+            LocaleKeys.map_title.tr,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsmenuburger,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
           ),
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(UIcons.fibsexpandarrows, color: Colors.black),
-            onPressed: controller.onZoomFullScreen,
-          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsexpandarrows,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => controller.onZoomFullScreen,
+            ),
+          )
         ],
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -105,7 +121,7 @@ class MapView extends GetView<MapController> {
                       child: TextField(
                         controller: controller.searchController,
                         decoration: InputDecoration(
-                          hintText: 'Buscar tiendas...',
+                          hintText: LocaleKeys.map_search.tr,
                           hintStyle: TextStyle(color: Colors.grey[600]),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(
@@ -214,7 +230,7 @@ class MapView extends GetView<MapController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  location['location'] ?? 'Sin nombre',
+                  location['location'] ?? LocaleKeys.map_noName_store.tr,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -228,7 +244,8 @@ class MapView extends GetView<MapController> {
             ),
             const SizedBox(height: 8),
             Text(
-              location['description_user'] ?? 'Sin descripción',
+              location['description_user'] ??
+                  LocaleKeys.map_noName_description.tr,
               style: const TextStyle(fontSize: 14),
             ),
           ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart' as slider;
+import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import 'package:themewstore/uicon.dart';
+import '../../../../generated/locales.g.dart';
 import '../controllers/home_controller.dart';
 import '../../../data/models/productStock.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -50,98 +52,43 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
-      drawer: Drawer(
-        backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            // Cabecera del drawer
-            Container(
-              color: const Color.fromRGBO(237, 213, 229, 1),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/images/themewstore/themewstore.png',
-                    width: 50,
-                    height: 50,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            ),
-            // Ítems del drawer
-            ListTile(
-              leading: const Icon(UIcons.fibsuser),
-              title: const Text('Perfil'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/profile');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsshoppingbag),
-              title: const Text('Cesta'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/shoppingcart');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsmap),
-              title: const Text('Mapa'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/map');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsfollowing),
-              title: const Text('Amigos'),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed('/profilefriends');
-              },
-            ),
-            ListTile(
-              leading: const Icon(UIcons.fibsexit),
-              title: const Text('Cerrar sesión'),
-              onTap: () {
-                Navigator.pop(context);
-                controller.logOut();
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: Hamburguesa(),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsmenuburger,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text('The Mew Store',
+          children: [
+            Text(LocaleKeys.theMewStore.tr,
                 style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(width: 10),
             Icon(UIcons.fibsshoppingbag, color: Colors.black),
           ],
         ),
         actions: [
-          IconButton(
-            icon: Image.asset(
-              'assets/images/themewstore/themewstore.png',
-              width: 24,
-              height: 24,
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: Image.asset(
+                'assets/images/themewstore/themewstore.png',
+                width: 35,
+                height: 35,
+              ),
+              onPressed: () => Get.toNamed("/addfriend"),
             ),
-            onPressed: () {},
           ),
         ],
       ),
@@ -155,7 +102,7 @@ class HomeView extends GetView<HomeController> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Buscar...',
+                hintText: LocaleKeys.home_search.tr,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -167,8 +114,9 @@ class HomeView extends GetView<HomeController> {
 
           // Filtros de rango de precio
           Obx(() {
-            if (controller.searchQuery.value.isEmpty)
+            if (controller.searchQuery.value.isEmpty) {
               return const SizedBox.shrink();
+            }
             return Column(
               children: [
                 Padding(
@@ -177,7 +125,11 @@ class HomeView extends GetView<HomeController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Precio: ${controller.selectedRange.value.start.toStringAsFixed(0)}€ - ${controller.selectedRange.value.end.toStringAsFixed(0)}€',
+                        LocaleKeys.home_price.trParams({
+                          "price": '${controller.selectedRange.value.start
+                              .toStringAsFixed(0)}€ - ${controller.selectedRange
+                              .value.end.toStringAsFixed(0)}€'
+                        }),
                         style: const TextStyle(fontSize: 16),
                       ),
                       IconButton(
@@ -241,6 +193,7 @@ class HomeView extends GetView<HomeController> {
                           'description': p.description,
                           'image': getPublicImageUrl(p.image),
                           'stock': p.stock,
+                          'comments': p.comments,
                         }),
                       ),
                     );
@@ -294,6 +247,7 @@ class HomeView extends GetView<HomeController> {
                             'description': p.description,
                             'image': getPublicImageUrl(p.image),
                             'stock': p.stock,
+                            'comments': p.comments,
                           }),
                           child: Stack(
                             children: [
