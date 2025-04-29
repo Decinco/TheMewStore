@@ -228,27 +228,33 @@ class ShoppingcartController extends GetxController {
       return;
     }
 
+    if (filteredCartItems.isEmpty) {
+      Get.snackbar('Error', 'El carrito está vacío');
+      return;
+    }
+
     try {
       // 1. Crear el nuevo pedido
       final orderResponse = await client.from('orders').insert({
         'user_id': user.id,
         'order_date': DateTime.now().toIso8601String(),
         'delivery_date': DateTime.now().add(const Duration(days: 3)).toIso8601String(),
-        'final_price': totalAmount.round(), // o usa int.parse si prefieres
+        'final_price': totalAmount.round(),
       }).select().single();
 
       final int orderId = orderResponse['order_id'];
 
-      // 2. Insertar los detalles del pedido (tabla orderdetails)
-      final List<Map<String, dynamic>> orderDetails = filteredCartItems.map((item) {
-        return {
+      // 2. Insertar los detalles del pedido
+      final batchOperations = filteredCartItems.map((item) {
+        return client.from('orderdetails').insert({
           'order_id': orderId,
           'product_id': item['product_id'],
           'quantity': item['quantity'].value,
-        };
+        });
       }).toList();
 
-      await client.from('orderdetails').insert(orderDetails);
+      // Ejecutar todas las operaciones en batch
+      await Future.wait(batchOperations);
 
       // 3. Limpiar el carrito
       await client
@@ -256,17 +262,38 @@ class ShoppingcartController extends GetxController {
           .delete()
           .eq('user_id', user.id);
 
-      // 4. Actualizar UI
+      // 4. Actualizar UI y estado
       cartItems.clear();
       filteredCartItems.clear();
       currentPage.value = 0;
+      Get.find<ProductController>().updateCartQuantityFromDB();
 
       Get.snackbar('Éxito', 'Pedido realizado correctamente',
           snackPosition: SnackPosition.BOTTOM);
+
+      // Opcional: Redirigir a la pantalla de pedidos
+      // Get.offAllNamed('/orders');
     } catch (e) {
-      Get.snackbar('Error', 'No se pudo completar el pedido: $e',
+      Get.snackbar('Error', 'No se pudo completar el pedido: ${e.toString()}',
           snackPosition: SnackPosition.BOTTOM);
+      debugPrint('Error al realizar pedido: $e');
     }
   }
 
+  Future<bool> _checkStockAvailability() async {
+    for (final item in filteredCartItems) {
+      final productId = item['product_id'];
+      final response = await client
+          .from('product_stock')
+          .select('stock')
+          .eq('product_id', productId)
+          .single();
+
+      final availableStock = response['stock'] as int;
+      if (item['quantity'].value > availableStock) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
