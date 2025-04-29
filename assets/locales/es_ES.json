@@ -28,7 +28,7 @@
     "search": "Buscar..."
   },
   "product": {
-    "addComment": "Añadir Comentario",
+    "addComment": "Añadir",
     "writeComment": "Escribe tu comentario...",
     "addReview": "Añadir Reseña",
     "addToCart": "Añadir al Carrito",
@@ -65,7 +65,8 @@
       "enterDescription": "Introduce la nueva descripción:",
       "enterExpansion": "Selecciona una expansión:",
       "enterCardNo": "Introduce la expansión y el número de la carta que tienes:",
-      "deleteCard": "¿Estás seguro de que quieres eliminar esta carta de tu álbum?"
+      "deleteCard": "¿Estás seguro de que quieres eliminar esta carta de tu álbum?",
+      "enterFriendCode": "Introduce el código de tu amigo:"
     },
     "noInfo": {
       "username": "Usuario",
@@ -78,7 +79,8 @@
       "description": "Descripción",
       "expansion": "Cod. Expan.",
       "cardNo": "Núm. Carta",
-      "printedTotal": "Total"
+      "printedTotal": "Total",
+      "friendCode": "Código de Amigo"
     },
     "noCardsInAlbum": "Este usuario no tiene cartas en su álbum.",
     "addNewCard": "Añadir Nueva",
@@ -114,6 +116,10 @@
       "title": "¡Éxito!",
       "message": "Tu contraseña ha sido restablecida con éxito."
     },
+    "friendRequestSent": {
+      "title": "¡Éxito!",
+      "message": "Tu solicitud de amistad ha sido enviada."
+    },
     "addedToCart": {
       "title": "Añadido al Carrito",
       "message": "@units unidades han sido añadidas a tu carrito."
@@ -136,6 +142,8 @@
         "noNumber": "La contraseña debe contener al menos un número",
         "noSpecialChar": "La contraseña debe contener al menos un carácter especial"
       },
+      "friendCodeNotFound": "¡No hay ningún usuario con ese código!",
+      "friendAlreadyAdded": "Este usuario ya está en tu lista de amigos, o tiene una solicitud pendiente.",
       "cardNotFound": "¡La carta introducida no existe! (Es posible que no esté en nuestra base de datos aún)",
       "username": {
         "tooShort": "El alias debe tener al menos 3 caracteres",

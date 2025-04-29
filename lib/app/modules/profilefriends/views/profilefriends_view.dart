@@ -415,7 +415,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "Enter your description below:",
+                                LocaleKeys.profile_modify_enterDescription.tr,
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
@@ -428,9 +428,10 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                         MaxLengthEnforcement.enforced,
                                     maxLines: 4,
                                     controller: controller.descriptionC,
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       label: Text(
-                                        "Description",
+                                        LocaleKeys
+                                            .profile_textBox_description.tr,
                                         style: TextStyle(
                                             color: Color.fromRGBO(
                                                 152, 151, 151, 1)),
@@ -1328,6 +1329,55 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
         ]));
   }
 
+  Widget friendBottomSheet() {
+    return Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              LocaleKeys.profile_modify_enterFriendCode.tr,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: TextField(
+                  maxLength: 10,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  controller: controller.friendcodeC,
+                  decoration: InputDecoration(
+                    alignLabelWithHint: true,
+                    label: Text(
+                      LocaleKeys.profile_textBox_friendCode.tr,
+                      style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
+                    ),
+                    border: InputBorder.none,
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                )),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                await controller.sendFriendRequest();
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(135, 45),
+                elevation: 0,
+                backgroundColor: Color.fromARGB(255, 118, 171, 218),
+                foregroundColor: Colors.white,
+                textStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontFamily: "Inter"),
+              ),
+              child: Text(LocaleKeys.profile_submit.tr),
+            ),
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     controller.userData = controller.getProfileData().obs;
@@ -1366,11 +1416,14 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
               padding: EdgeInsets.only(right: 10),
               child: IconButton(
                 icon: const Icon(
-                  UIcons.fibsQR,
+                  UIcons.fibsuseradd,
                   size: 35,
                   color: Color.fromRGBO(78, 78, 78, 1),
                 ),
-                onPressed: () => Get.toNamed("/addfriend"),
+                onPressed: () => Get.bottomSheet(friendBottomSheet(),
+                    isScrollControlled: true,
+                    backgroundColor: Color.fromARGB(255, 237, 213, 229),
+                    enterBottomSheetDuration: Duration(milliseconds: 150)),
               ),
             )
           ],

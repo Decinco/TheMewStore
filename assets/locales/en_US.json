@@ -28,7 +28,7 @@
     "search": "Look For..."
   },
   "product": {
-    "addComment": "Add Comment",
+    "addComment": "Add",
     "writeComment": "Write your comment...",
     "addReview": "Add Review",
     "addToCart": "Add to Cart",
@@ -65,7 +65,8 @@
       "enterDescription": "Enter your description below:",
       "enterExpansion": "Select an expansion:",
       "enterCardNo": "Enter the expansion and number of the card you have:",
-      "deleteCard": "Are you sure you want to remove this card from your album?"
+      "deleteCard": "Are you sure you want to remove this card from your album?",
+      "enterFriendCode": "Enter your friend's code below:"
     },
     "noInfo": {
       "username": "User",
@@ -78,7 +79,8 @@
       "description": "Description",
       "expansion": "Expansion Code",
       "cardNo": "Card No.",
-      "printedTotal": "Total"
+      "printedTotal": "Total",
+      "friendCode": "Friend Code"
     },
     "noCardsInAlbum": "This user has no cards in their album yet.",
     "addNewCard": "Add New Card",
@@ -114,6 +116,10 @@
       "title": "Success!",
       "message": "Your password has been updated successfully."
     },
+    "friendRequestSent": {
+      "title": "Success!",
+      "message": "Your friend request has been sent."
+    },
     "addedToCart": {
       "title": "Added to Cart",
       "message": "@units units have been added to your cart."
@@ -140,6 +146,8 @@
         "tooShort": "Username must be at least 3 characters long",
         "empty": "Username cannot be empty"
       },
+      "friendCodeNotFound": "There's no user with that friend code!",
+      "friendAlreadyAdded": "This user is already your friend or has a pending request.",
       "cardNotFound": "Card does not exist! (It may not be in our database yet)",
       "emailRequired": "Email is required",
       "codeRequired": "Code is required",

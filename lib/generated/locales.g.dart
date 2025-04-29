@@ -62,6 +62,8 @@ class LocaleKeys {
   static const profile_modify_enterExpansion = 'profile_modify_enterExpansion';
   static const profile_modify_enterCardNo = 'profile_modify_enterCardNo';
   static const profile_modify_deleteCard = 'profile_modify_deleteCard';
+  static const profile_modify_enterFriendCode =
+      'profile_modify_enterFriendCode';
   static const profile_noInfo_username = 'profile_noInfo_username';
   static const profile_noInfo_description = 'profile_noInfo_description';
   static const profile_noInfo_descriptionForeign =
@@ -72,6 +74,7 @@ class LocaleKeys {
   static const profile_textBox_expansion = 'profile_textBox_expansion';
   static const profile_textBox_cardNo = 'profile_textBox_cardNo';
   static const profile_textBox_printedTotal = 'profile_textBox_printedTotal';
+  static const profile_textBox_friendCode = 'profile_textBox_friendCode';
   static const profile_noCardsInAlbum = 'profile_noCardsInAlbum';
   static const profile_addNewCard = 'profile_addNewCard';
   static const profile_submit = 'profile_submit';
@@ -95,6 +98,10 @@ class LocaleKeys {
       'notifs_emailVerification_message';
   static const notifs_passwordReset_title = 'notifs_passwordReset_title';
   static const notifs_passwordReset_message = 'notifs_passwordReset_message';
+  static const notifs_friendRequestSent_title =
+      'notifs_friendRequestSent_title';
+  static const notifs_friendRequestSent_message =
+      'notifs_friendRequestSent_message';
   static const notifs_addedToCart_title = 'notifs_addedToCart_title';
   static const notifs_addedToCart_message = 'notifs_addedToCart_message';
   static const errors_title_userError = 'errors_title_userError';
@@ -119,6 +126,10 @@ class LocaleKeys {
       'errors_description_username_tooShort';
   static const errors_description_username_empty =
       'errors_description_username_empty';
+  static const errors_description_friendCodeNotFound =
+      'errors_description_friendCodeNotFound';
+  static const errors_description_friendAlreadyAdded =
+      'errors_description_friendAlreadyAdded';
   static const errors_description_cardNotFound =
       'errors_description_cardNotFound';
   static const errors_description_emailRequired =
@@ -160,7 +171,7 @@ class Locales {
         'Almost there! Please enter the desired new password for your account:',
     'home_price': 'Price: @price',
     'home_search': 'Look For...',
-    'product_addComment': 'Add Comment',
+    'product_addComment': 'Add',
     'product_writeComment': 'Write your comment...',
     'product_addReview': 'Add Review',
     'product_addToCart': 'Add to Cart',
@@ -189,6 +200,7 @@ class Locales {
         'Enter the expansion and number of the card you have:',
     'profile_modify_deleteCard':
         'Are you sure you want to remove this card from your album?',
+    'profile_modify_enterFriendCode': 'Enter your friend\'s code below:',
     'profile_noInfo_username': 'User',
     'profile_noInfo_description': 'Make yourself known!',
     'profile_noInfo_descriptionForeign':
@@ -199,6 +211,7 @@ class Locales {
     'profile_textBox_expansion': 'Expansion Code',
     'profile_textBox_cardNo': 'Card No.',
     'profile_textBox_printedTotal': 'Total',
+    'profile_textBox_friendCode': 'Friend Code',
     'profile_noCardsInAlbum': 'This user has no cards in their album yet.',
     'profile_addNewCard': 'Add New Card',
     'profile_submit': 'Submit',
@@ -222,6 +235,8 @@ class Locales {
     'notifs_passwordReset_title': 'Success!',
     'notifs_passwordReset_message':
         'Your password has been updated successfully.',
+    'notifs_friendRequestSent_title': 'Success!',
+    'notifs_friendRequestSent_message': 'Your friend request has been sent.',
     'notifs_addedToCart_title': 'Added to Cart',
     'notifs_addedToCart_message': '@units units have been added to your cart.',
     'errors_title_userError': 'Wrong!',
@@ -243,6 +258,10 @@ class Locales {
     'errors_description_username_tooShort':
         'Username must be at least 3 characters long',
     'errors_description_username_empty': 'Username cannot be empty',
+    'errors_description_friendCodeNotFound':
+        'There\'s no user with that friend code!',
+    'errors_description_friendAlreadyAdded':
+        'This user is already your friend or has a pending request.',
     'errors_description_cardNotFound':
         'Card does not exist! (It may not be in our database yet)',
     'errors_description_emailRequired': 'Email is required',
@@ -280,7 +299,7 @@ class Locales {
         '¡Casi estamos! Introduce la nueva contraseña:',
     'home_price': 'Precio: @price',
     'home_search': 'Buscar...',
-    'product_addComment': 'Añadir Comentario',
+    'product_addComment': 'Añadir',
     'product_writeComment': 'Escribe tu comentario...',
     'product_addReview': 'Añadir Reseña',
     'product_addToCart': 'Añadir al Carrito',
@@ -310,6 +329,7 @@ class Locales {
         'Introduce la expansión y el número de la carta que tienes:',
     'profile_modify_deleteCard':
         '¿Estás seguro de que quieres eliminar esta carta de tu álbum?',
+    'profile_modify_enterFriendCode': 'Introduce el código de tu amigo:',
     'profile_noInfo_username': 'Usuario',
     'profile_noInfo_description': '¡Exprésate!',
     'profile_noInfo_descriptionForeign': 'Este usuario no tiene descripción.',
@@ -319,6 +339,7 @@ class Locales {
     'profile_textBox_expansion': 'Cod. Expan.',
     'profile_textBox_cardNo': 'Núm. Carta',
     'profile_textBox_printedTotal': 'Total',
+    'profile_textBox_friendCode': 'Código de Amigo',
     'profile_noCardsInAlbum': 'Este usuario no tiene cartas en su álbum.',
     'profile_addNewCard': 'Añadir Nueva',
     'profile_submit': 'Enviar',
@@ -343,6 +364,9 @@ class Locales {
     'notifs_passwordReset_title': '¡Éxito!',
     'notifs_passwordReset_message':
         'Tu contraseña ha sido restablecida con éxito.',
+    'notifs_friendRequestSent_title': '¡Éxito!',
+    'notifs_friendRequestSent_message':
+        'Tu solicitud de amistad ha sido enviada.',
     'notifs_addedToCart_title': 'Añadido al Carrito',
     'notifs_addedToCart_message':
         '@units unidades han sido añadidas a tu carrito.',
@@ -363,6 +387,10 @@ class Locales {
         'La contraseña debe contener al menos un número',
     'errors_description_password_noSpecialChar':
         'La contraseña debe contener al menos un carácter especial',
+    'errors_description_friendCodeNotFound':
+        '¡No hay ningún usuario con ese código!',
+    'errors_description_friendAlreadyAdded':
+        'Este usuario ya está en tu lista de amigos, o tiene una solicitud pendiente.',
     'errors_description_cardNotFound':
         '¡La carta introducida no existe! (Es posible que no esté en nuestra base de datos aún)',
     'errors_description_username_tooShort':

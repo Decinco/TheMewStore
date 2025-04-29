@@ -21,6 +21,7 @@ class ProfilefriendsController extends GetxController {
   TextEditingController expansionCodeC = TextEditingController();
   TextEditingController cardNoC = TextEditingController();
   TextEditingController printedTotalC = TextEditingController();
+  TextEditingController friendcodeC = TextEditingController();
 
   RxBool editMode = false.obs;
 
@@ -296,6 +297,76 @@ class ProfilefriendsController extends GetxController {
 
       albumData.refresh();
     }
+  }
+
+  Future<void> sendFriendRequest() async {
+    if (friendcodeC.text.isEmpty) {
+      Get.snackbar(LocaleKeys.errors_title_userError.tr,
+          LocaleKeys.errors_description_fieldsEmpty.tr);
+    } else {
+      var response = await client
+          .from('user_data')
+          .select()
+          .eq('user_code', friendcodeC.text)
+          .single();
+
+      if (response.isEmpty) {
+        Get.back();
+        Get.snackbar(LocaleKeys.errors_title_userError.tr,
+            LocaleKeys.errors_description_friendCodeNotFound.tr);
+      } else {
+        UserData friendData = UserData.fromJson(response);
+
+        response = await client
+            .from('friends')
+            .select()
+            .or('user_id.eq.${user.id},friend_id.eq.${user.id}')
+            .or('user_id.eq.${friendData.userId},friend_id.eq.${friendData.userId}')
+            .single();
+
+        if (response.isNotEmpty) {
+          FriendLink friendLink = FriendLink.fromJson(response);
+
+          if (friendLink.status == Status.Canceled) {
+            await client
+                .from('friends')
+                .update({
+                  "status": "Pending",
+                  "user_id": user.id,
+                  "friend_id": friendData.userId,
+                  "last_interaction": DateTime.now().toIso8601String()
+                })
+                .eq('friend_link_id', friendLink.friendLinkId);
+
+            friendcodeC.text = "";
+
+            Get.back();
+
+            Get.snackbar(LocaleKeys.notifs_friendRequestSent_title.tr,
+                LocaleKeys.notifs_friendRequestSent_message.tr);
+          } else {
+            Get.back();
+            Get.snackbar(LocaleKeys.errors_title_userError.tr,
+                LocaleKeys.errors_description_friendAlreadyAdded.tr);
+          }
+        } else {
+          await client.from('friends').insert({
+            "user_id": user.id,
+            "friend_id": friendData.userId,
+            "status": "Pending",
+            "last_interaction": DateTime.now().toIso8601String()
+          });
+
+          friendcodeC.text = "";
+
+          Get.back();
+
+          Get.snackbar(LocaleKeys.notifs_friendRequestSent_title.tr,
+              LocaleKeys.notifs_friendRequestSent_message.tr);
+        }
+      }
+    }
+
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import '../../../../generated/locales.g.dart';
@@ -12,51 +13,85 @@ void _showCommentDialog(BuildContext context, ProductController controller) {
   final commentController = TextEditingController();
   final rating = 0.obs;
 
-  Get.defaultDialog(
-    title: LocaleKeys.product_addReview.tr,
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 10),
-        TextField(
-          controller: commentController,
-          decoration: InputDecoration(
-            hintText: LocaleKeys.product_writeComment.tr,
-            border: OutlineInputBorder(),
-          ),
-          maxLines: 3,
-        ),
-        const SizedBox(height: 10),
-        Obx(() => Row(
+  Get.bottomSheet(
+    Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(child:
+            Text(
+              LocaleKeys.product_addReview.tr,
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            ),
+            SizedBox(height: 20),
+            Obx(() => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(5, (index) {
                 return GestureDetector(
                   onTap: () {
                     rating.value =
-                        rating.value == index + 1 ? index : index + 1;
+                    rating.value == index + 1 ? index : index + 1;
                   },
                   child: Icon(
                     index < rating.value ? Icons.star : Icons.star_border,
-                    color: Colors.yellow,
+                    color: Color.fromRGBO(78, 78, 78, 1),
                   ),
                 );
               }),
             )),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () async {
-            if (commentController.text.isNotEmpty) {
-              await controller.addComment(
-                commentController.text,
-                rating.value,
-              );
-              Get.back();
-            }
-          },
-          child: Text(LocaleKeys.product_addComment.tr),
-        ),
-      ],
-    ),
+            SizedBox(height: 20),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: TextField(
+                  maxLength: 200,
+                  maxLengthEnforcement:
+                  MaxLengthEnforcement.enforced,
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    alignLabelWithHint: true,
+                    label: Text(
+                        LocaleKeys.product_writeComment.tr,
+                      style: TextStyle(
+                          color:
+                          Color.fromRGBO(152, 151, 151, 1)),
+                    ),
+                    border: InputBorder.none,
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                )),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                if (commentController.text.isNotEmpty) {
+                  await controller.addComment(
+                    commentController.text,
+                    rating.value,
+                  );
+                  Get.back();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(135, 45),
+                elevation: 0,
+                backgroundColor:
+                Color.fromARGB(255, 118, 171, 218),
+                foregroundColor: Colors.white,
+                textStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontFamily: "Inter"),
+              ),
+              child: Text(LocaleKeys.profile_submit.tr),
+            ),
+          ],
+        )),
+    isScrollControlled: true,
+    backgroundColor: Color.fromARGB(255, 237, 213, 229),
+    enterBottomSheetDuration: Duration(milliseconds: 150),
   );
 }
 
