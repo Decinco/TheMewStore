@@ -148,9 +148,9 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: TextButton.icon(
-                            onPressed: controller.filteredCartItems.isEmpty
-                                ? null
-                                : () {},
+                              onPressed: controller.filteredCartItems.isEmpty
+                                  ? null
+                                  : () => controller.placeOrder(),
                             icon: const Icon(Icons.payment,
                                 color: Colors.white, size: 24),
                             style: TextButton.styleFrom(

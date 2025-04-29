@@ -220,4 +220,53 @@ class ShoppingcartController extends GetxController {
 
   // Obtener el número total de productos en el carrito
   int get totalItems => cartItems.length;
+
+  Future<void> placeOrder() async {
+    final user = client.auth.currentUser;
+    if (user == null) {
+      Get.snackbar('Error', 'Usuario no autenticado');
+      return;
+    }
+
+    try {
+      // 1. Crear el nuevo pedido
+      final orderResponse = await client.from('orders').insert({
+        'user_id': user.id,
+        'order_date': DateTime.now().toIso8601String(),
+        'delivery_date': DateTime.now().add(const Duration(days: 3)).toIso8601String(),
+        'final_price': totalAmount.round(), // o usa int.parse si prefieres
+      }).select().single();
+
+      final int orderId = orderResponse['order_id'];
+
+      // 2. Insertar los detalles del pedido (tabla orderdetails)
+      final List<Map<String, dynamic>> orderDetails = filteredCartItems.map((item) {
+        return {
+          'order_id': orderId,
+          'product_id': item['product_id'],
+          'quantity': item['quantity'].value,
+        };
+      }).toList();
+
+      await client.from('orderdetails').insert(orderDetails);
+
+      // 3. Limpiar el carrito
+      await client
+          .from('shopping_cart')
+          .delete()
+          .eq('user_id', user.id);
+
+      // 4. Actualizar UI
+      cartItems.clear();
+      filteredCartItems.clear();
+      currentPage.value = 0;
+
+      Get.snackbar('Éxito', 'Pedido realizado correctamente',
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudo completar el pedido: $e',
+          snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
 }
