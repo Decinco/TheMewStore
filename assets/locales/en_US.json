@@ -59,11 +59,13 @@
     "titleForeign": "@user's Profile",
     "profile": "Profile",
     "friends": "Friends",
+    "album": "Album",
     "modify": {
       "enterUsername": "Enter your username below:",
       "enterDescription": "Enter your description below:",
       "enterExpansion": "Select an expansion:",
-      "enterCardNo": "Enter the number of the card you have:"
+      "enterCardNo": "Enter the expansion and number of the card you have:",
+      "deleteCard": "Are you sure you want to remove this card from your album?"
     },
     "noInfo": {
       "username": "User",
@@ -71,8 +73,17 @@
       "descriptionForeign": "This user does not have a description.",
       "cardNo": "No card number"
     },
+    "textBox": {
+      "username": "Username",
+      "description": "Description",
+      "expansion": "Expansion Code",
+      "cardNo": "Card No.",
+      "printedTotal": "Total"
+    },
     "noCardsInAlbum": "@user has no cards in their album yet.",
-    "submit": "Submit"
+    "addNewCard": "Add New Card",
+    "submit": "Submit",
+    "addCard": "Add"
   },
   "friends": {
     "removeFriend": {
@@ -126,6 +137,7 @@
         "tooShort": "Username must be at least 3 characters long",
         "empty": "Username cannot be empty"
       },
+      "cardNotFound": "Card does not exist! (It may not be in our database yet)",
       "emailRequired": "Email is required",
       "codeRequired": "Code is required",
       "outOfStock": "There's no more stock available for this product.",

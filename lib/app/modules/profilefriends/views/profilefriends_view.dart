@@ -1,9 +1,11 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:themewstore/app/data/models/expansion.dart';
 import 'package:themewstore/app/data/models/friendLink.dart';
@@ -11,6 +13,8 @@ import 'package:themewstore/app/data/models/userData.dart';
 import 'package:themewstore/app/data/models/card.dart' as card;
 import 'package:themewstore/uicon.dart';
 
+import '../../../../generated/locales.g.dart';
+import '../../../data/models/album.dart';
 import '../../generic/sidebar/hamburguesa.dart';
 import '../controllers/profilefriends_controller.dart';
 
@@ -156,7 +160,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                   } else {
                     UserData userData = snapshot.data!;
                     return Text(
-                      userData.userName ?? 'No Name',
+                      userData.userName ?? LocaleKeys.profile_noInfo_username.tr,
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -173,7 +177,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              "Enter your username below:",
+                              LocaleKeys.profile_modify_enterUsername.tr,
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
@@ -185,10 +189,10 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                   maxLengthEnforcement:
                                       MaxLengthEnforcement.enforced,
                                   controller: controller.usernameC,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     alignLabelWithHint: true,
                                     label: Text(
-                                      "Username",
+                                      LocaleKeys.profile_textBox_username.tr,
                                       style: TextStyle(
                                           color:
                                               Color.fromRGBO(152, 151, 151, 1)),
@@ -215,7 +219,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                     fontSize: 20,
                                     fontFamily: "Inter"),
                               ),
-                              child: const Text("Submit"),
+                              child: Text(LocaleKeys.profile_submit.tr),
                             ),
                           ],
                         )),
@@ -227,8 +231,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                 padding: EdgeInsets.only(left: 5),
                 constraints: BoxConstraints(),
                 style: const ButtonStyle(
-                  tapTargetSize:
-                      MaterialTapTargetSize.shrinkWrap, // the '2023' part
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 icon: Icon(UIcons.fibspencil))
           ]),
@@ -469,7 +472,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
     ]);
   }
 
-  Widget albumInfo(Future<List<card.Card>> albumData) {
+  Widget albumInfo(Future<List<Album>> albumData) {
     return Padding(
         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -481,13 +484,31 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
           SizedBox.fromSize(
             size: Size(5, 5),
           ),
-          Text("Album",
-              style: TextStyle(
-                fontSize: 20,
-                fontFamily: "Inter",
-                fontWeight: FontWeight.bold,
-                color: Color.fromRGBO(78, 78, 78, 1),
-              )),
+          Row(children: [
+            Text("Album",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Inter",
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(78, 78, 78, 1),
+                )),
+            IconButton(
+              onPressed: () {
+                controller.editMode.value =
+                    !controller.editMode.value; // Toggle edit mode
+              },
+              icon: controller.editMode.value
+                  ? Icon(UIcons.fibspencilslash)
+                  : Icon(UIcons.fibspencil),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              padding: EdgeInsets.only(left: 5),
+              constraints: BoxConstraints(),
+              style: const ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+          ]),
           SizedBox.fromSize(
             size: Size(5, 5),
           ),
@@ -495,7 +516,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
         ]));
   }
 
-  Widget albumCardCollection(Future<List<card.Card>> albumData) {
+  Widget albumCardCollection(Future<List<Album>> albumData) {
     return FutureBuilder(
         future: albumData,
         builder: (context, snapshot) {
@@ -511,7 +532,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                       maxCrossAxisExtent: 150.9),
                   itemCount: 6,
                   itemBuilder: (context, index) {
-                    return loadingAlbumCard();
+                    return albumCardLoading();
                   },
                 ));
           } else if (snapshot.hasError) {
@@ -519,13 +540,13 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
           } else if (!snapshot.hasData) {
             return Text('No data found');
           } else {
-            List<card.Card> albumData = snapshot.data!;
+            List<Album> albumData = snapshot.data!;
             return Container(
                 width: double.infinity,
                 height: 340,
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      childAspectRatio: 0.606,
+                      childAspectRatio: 0.6,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                       maxCrossAxisExtent: 150.9),
@@ -544,36 +565,125 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
         });
   }
 
-  Widget albumCard(card.Card cardData) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          color: Color.fromRGBO(255, 255, 255, 0.46),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(5, 5, 5, 2),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Image(
-                      image: NetworkImage(cardData.image),
-                    )),
-              ),
-              Text(
-                cardData.cardName,
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(78, 78, 78, 1)),
-              ),
-              cardExpansionData(cardData, controller.getExpansionData(cardData))
-            ],
-          ),
-        ));
+  Widget albumCard(Album albumData) {
+    return FutureBuilder(
+        future: controller.getAlbumCardData(albumData.cardId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return albumCardLoading();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return Text('No data found');
+          } else {
+            card.Card cardData = snapshot.data!;
+            return albumCardDetails(cardData, albumData.albumCardId);
+          }
+        });
   }
 
-  Widget loadingAlbumCard() {
+  Widget albumCardDetails(card.Card cardData, int albumCardId) {
+    return Stack(children: [
+      ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            color: Color.fromRGBO(255, 255, 255, 0.46),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 2),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: FancyShimmerImage(
+                        imageUrl: cardData.image,
+                        boxFit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 140,
+                      )),
+                ),
+                FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      cardData.cardName,
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(78, 78, 78, 1)),
+                    )),
+                cardExpansionData(
+                    cardData, controller.getExpansionData(cardData)),
+                SizedBox(height: 10),
+              ],
+            ),
+          )),
+      Obx(() => Positioned(
+          right: 5,
+          top: 5,
+          child: AnimatedOpacity(
+              opacity: controller.editMode.value == true ? 1.0 : 0.0,
+              duration: Duration(seconds: 1),
+              child: IgnorePointer(
+                  ignoring: !controller.editMode.value,
+                  child: albumCardDeleteButton(albumCardId))))),
+    ]);
+  }
+
+  Widget albumCardDeleteButton(int albumCardId) {
+    return ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(6)),
+        child: Container(
+            color: Color.fromRGBO(244, 67, 54, 0.9),
+            width: 27,
+            height: 27,
+            child: IconButton(
+                color: Colors.white,
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Get.bottomSheet(
+                    Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Container(
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Are you sure you want to delete this card?",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 20),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    controller.deleteCard(albumCardId);
+                                    Get.back();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    fixedSize: Size(135, 45),
+                                    elevation: 0,
+                                    backgroundColor:
+                                        Color.fromARGB(255, 118, 171, 218),
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        fontFamily: "Inter"),
+                                  ),
+                                  child: const Text("Delete"),
+                                ),
+                              ],
+                            ))),
+                    isScrollControlled: true,
+                    backgroundColor: Color.fromARGB(255, 237, 213, 229),
+                    enterBottomSheetDuration: Duration(milliseconds: 150),
+                  );
+                },
+                icon: Icon(UIcons.fibstrash))));
+  }
+
+  Widget albumCardLoading() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
@@ -590,7 +700,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                   borderRadius: BorderRadius.circular(6),
                   child: Container(
                     width: double.infinity,
-                    height: 135,
+                    height: 140,
                     color: Color.fromARGB(255, 217, 217, 217),
                   ),
                 ),
@@ -631,55 +741,89 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Select an expansion",
+                      LocaleKeys.profile_modify_enterCardNo.tr,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 20),
                     ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: FutureBuilder(
-                            future: controller.expansionData,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Shimmer.fromColors(
-                                  baseColor: Color.fromARGB(255, 217, 217, 217),
-                                  highlightColor:
-                                      Color.fromARGB(255, 255, 255, 255),
-                                  child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      child: DropdownMenu(
-                                          dropdownMenuEntries: [])),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (!snapshot.hasData) {
-                                return Text('No data found');
-                              } else {
-                                List<Expansion> expansionData = snapshot.data!;
-                                return ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    child: DropdownMenu(
-                                      width: double.infinity,
-                                      menuHeight: 200,
-                                      dropdownMenuEntries: expansionData
-                                          .map((expansion) =>
-                                              DropdownMenuEntry<String>(
-                                                value: expansion.expansionCode,
-                                                label: expansion.expansionName,
-                                              ))
-                                          .toList(),
-                                    ));
-                              }
-                            })),
+                        child: Row(children: [
+                          Expanded(
+                            child: TextField(
+                              maxLength: 5,
+                              maxLengthEnforcement:
+                                  MaxLengthEnforcement.enforced,
+                              controller: controller.expansionCodeC,
+                              decoration: InputDecoration(
+                                label: Text(
+                                  LocaleKeys.profile_textBox_expansion.tr,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(152, 151, 151, 1)),
+                                ),
+                                border: InputBorder.none,
+                                fillColor: Colors.white,
+                                filled: true,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              maxLength: 3,
+                              maxLengthEnforcement:
+                                  MaxLengthEnforcement.enforced,
+                              controller: controller.cardNoC,
+                              decoration: InputDecoration(
+                                label: Text(
+                                  LocaleKeys.profile_textBox_cardNo.tr,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(152, 151, 151, 1)),
+                                ),
+                                border: InputBorder.none,
+                                fillColor: Colors.white,
+                                filled: true,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              maxLength: 3,
+                              maxLengthEnforcement:
+                                  MaxLengthEnforcement.enforced,
+                              controller: controller.printedTotalC,
+                              decoration: InputDecoration(
+                                label: Text(
+                                  LocaleKeys.profile_textBox_printedTotal.tr,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(152, 151, 151, 1)),
+                                ),
+                                border: InputBorder.none,
+                                fillColor: Colors.white,
+                                filled: true,
+                              ),
+                            ),
+                          )
+                        ])),
                     SizedBox(height: 20),
-                    Text(
-                      "You can add a new card to your album by clicking on the plus icon.",
-                      style: TextStyle(
-                          fontSize: 14, color: Color.fromRGBO(78, 78, 78, 1)),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await controller.addCard();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(135, 45),
+                        elevation: 0,
+                        backgroundColor: Color.fromARGB(255, 118, 171, 218),
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            fontFamily: "Inter"),
+                      ),
+                      child: Text(LocaleKeys.profile_addCard.tr),
                     ),
                   ],
                 )),
@@ -721,14 +865,12 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                         )),
                   ),
                   SizedBox(height: 4),
-                  Container(
-                    child: Text(
-                      "Add New Card",
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(78, 78, 78, 1)),
-                    ),
+                  Text(
+                    LocaleKeys.profile_addNewCard.tr,
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(78, 78, 78, 1)),
                   ),
                 ],
               ),
@@ -816,13 +958,13 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                 List<FriendLink> friendList = snapshot.data!;
                 return SizedBox(
                     child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: friendList.length,
-                      itemBuilder: (context, index) {
-                        return friendCard(friendList[index]);
-                      },
-                    ));
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: friendList.length,
+                  itemBuilder: (context, index) {
+                    return friendCard(friendList[index]);
+                  },
+                ));
               }
             })
       ],
@@ -1033,8 +1175,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                           )
                                         ],
                                       )),
-                                  backgroundColor: Color.fromARGB(
-                                      255, 237, 213, 229),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 237, 213, 229),
                                 );
                               },
                               constraints: BoxConstraints(),

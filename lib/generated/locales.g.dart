@@ -55,18 +55,27 @@ class LocaleKeys {
   static const profile_titleForeign = 'profile_titleForeign';
   static const profile_profile = 'profile_profile';
   static const profile_friends = 'profile_friends';
+  static const profile_album = 'profile_album';
   static const profile_modify_enterUsername = 'profile_modify_enterUsername';
   static const profile_modify_enterDescription =
       'profile_modify_enterDescription';
   static const profile_modify_enterExpansion = 'profile_modify_enterExpansion';
   static const profile_modify_enterCardNo = 'profile_modify_enterCardNo';
+  static const profile_modify_deleteCard = 'profile_modify_deleteCard';
   static const profile_noInfo_username = 'profile_noInfo_username';
   static const profile_noInfo_description = 'profile_noInfo_description';
   static const profile_noInfo_descriptionForeign =
       'profile_noInfo_descriptionForeign';
   static const profile_noInfo_cardNo = 'profile_noInfo_cardNo';
+  static const profile_textBox_username = 'profile_textBox_username';
+  static const profile_textBox_description = 'profile_textBox_description';
+  static const profile_textBox_expansion = 'profile_textBox_expansion';
+  static const profile_textBox_cardNo = 'profile_textBox_cardNo';
+  static const profile_textBox_printedTotal = 'profile_textBox_printedTotal';
   static const profile_noCardsInAlbum = 'profile_noCardsInAlbum';
+  static const profile_addNewCard = 'profile_addNewCard';
   static const profile_submit = 'profile_submit';
+  static const profile_addCard = 'profile_addCard';
   static const friends_removeFriend_prompt = 'friends_removeFriend_prompt';
   static const friends_removeFriend_remove = 'friends_removeFriend_remove';
   static const friends_removeFriend_cancel = 'friends_removeFriend_cancel';
@@ -107,6 +116,8 @@ class LocaleKeys {
       'errors_description_username_tooShort';
   static const errors_description_username_empty =
       'errors_description_username_empty';
+  static const errors_description_cardNotFound =
+      'errors_description_cardNotFound';
   static const errors_description_emailRequired =
       'errors_description_emailRequired';
   static const errors_description_codeRequired =
@@ -172,17 +183,28 @@ class Locales {
     'profile_titleForeign': '@user\'s Profile',
     'profile_profile': 'Profile',
     'profile_friends': 'Friends',
+    'profile_album': 'Album',
     'profile_modify_enterUsername': 'Enter your username below:',
     'profile_modify_enterDescription': 'Enter your description below:',
     'profile_modify_enterExpansion': 'Select an expansion:',
-    'profile_modify_enterCardNo': 'Enter the number of the card you have:',
+    'profile_modify_enterCardNo':
+        'Enter the expansion and number of the card you have:',
+    'profile_modify_deleteCard':
+        'Are you sure you want to remove this card from your album?',
     'profile_noInfo_username': 'User',
     'profile_noInfo_description': 'Make yourself known!',
     'profile_noInfo_descriptionForeign':
         'This user does not have a description.',
     'profile_noInfo_cardNo': 'No card number',
+    'profile_textBox_username': 'Username',
+    'profile_textBox_description': 'Description',
+    'profile_textBox_expansion': 'Expansion Code',
+    'profile_textBox_cardNo': 'Card No.',
+    'profile_textBox_printedTotal': 'Total',
     'profile_noCardsInAlbum': '@user has no cards in their album yet.',
+    'profile_addNewCard': 'Add New Card',
     'profile_submit': 'Submit',
+    'profile_addCard': 'Add',
     'friends_removeFriend_prompt':
         'Are you sure you want to remove @friend from your friends list?',
     'friends_removeFriend_remove': 'Remove',
@@ -220,6 +242,8 @@ class Locales {
     'errors_description_username_tooShort':
         'Username must be at least 3 characters long',
     'errors_description_username_empty': 'Username cannot be empty',
+    'errors_description_cardNotFound':
+        'Card does not exist! (It may not be in our database yet)',
     'errors_description_emailRequired': 'Email is required',
     'errors_description_codeRequired': 'Code is required',
     'errors_description_outOfStock':
@@ -277,16 +301,27 @@ class Locales {
     'profile_titleForeign': 'Perfil de @user',
     'profile_profile': 'Perfil',
     'profile_friends': 'Amigos',
+    'profile_album': 'Álbum',
     'profile_modify_enterUsername': 'Introduce el nuevo alias:',
     'profile_modify_enterDescription': 'Introduce la nueva descripción:',
     'profile_modify_enterExpansion': 'Selecciona una expansión:',
-    'profile_modify_enterCardNo': 'Introduce el número de la carta que tienes:',
+    'profile_modify_enterCardNo':
+        'Introduce la expansión y el número de la carta que tienes:',
+    'profile_modify_deleteCard':
+        '¿Estás seguro de que quieres eliminar esta carta de tu álbum?',
     'profile_noInfo_username': 'Usuario',
     'profile_noInfo_description': '¡Exprésate!',
     'profile_noInfo_descriptionForeign': 'Este usuario no tiene descripción.',
     'profile_noInfo_cardNo': 'Sin número de carta',
+    'profile_textBox_username': 'Alias',
+    'profile_textBox_description': 'Descripción',
+    'profile_textBox_expansion': 'Cod. Expan.',
+    'profile_textBox_cardNo': 'Núm. Carta',
+    'profile_textBox_printedTotal': 'Total',
     'profile_noCardsInAlbum': '@user no tiene cartas en su álbum.',
+    'profile_addNewCard': 'Añadir Nueva',
     'profile_submit': 'Enviar',
+    'profile_addCard': 'Añadir',
     'friends_removeFriend_prompt':
         '¿Estás seguro de que quieres eliminar a @friend de tu lista de amigos?',
     'friends_removeFriend_remove': 'Eliminar',
@@ -324,6 +359,8 @@ class Locales {
         'La contraseña debe contener al menos un número',
     'errors_description_password_noSpecialChar':
         'La contraseña debe contener al menos un carácter especial',
+    'errors_description_cardNotFound':
+        '¡La carta introducida no existe! (Es posible que no esté en nuestra base de datos aún)',
     'errors_description_username_tooShort':
         'El alias debe tener al menos 3 caracteres',
     'errors_description_username_empty': 'El alias no puede estar vacío',

@@ -59,11 +59,13 @@
     "titleForeign": "Perfil de @user",
     "profile": "Perfil",
     "friends": "Amigos",
+    "album": "Álbum",
     "modify": {
       "enterUsername": "Introduce el nuevo alias:",
       "enterDescription": "Introduce la nueva descripción:",
       "enterExpansion": "Selecciona una expansión:",
-      "enterCardNo": "Introduce el número de la carta que tienes:"
+      "enterCardNo": "Introduce la expansión y el número de la carta que tienes:",
+      "deleteCard": "¿Estás seguro de que quieres eliminar esta carta de tu álbum?"
     },
     "noInfo": {
       "username": "Usuario",
@@ -71,8 +73,17 @@
       "descriptionForeign": "Este usuario no tiene descripción.",
       "cardNo": "Sin número de carta"
     },
+    "textBox": {
+      "username": "Alias",
+      "description": "Descripción",
+      "expansion": "Cod. Expan.",
+      "cardNo": "Núm. Carta",
+      "printedTotal": "Total"
+    },
     "noCardsInAlbum": "@user no tiene cartas en su álbum.",
-    "submit": "Enviar"
+    "addNewCard": "Añadir Nueva",
+    "submit": "Enviar",
+    "addCard": "Añadir"
   },
   "friends": {
     "removeFriend": {
@@ -122,6 +133,7 @@
         "noNumber": "La contraseña debe contener al menos un número",
         "noSpecialChar": "La contraseña debe contener al menos un carácter especial"
       },
+      "cardNotFound": "¡La carta introducida no existe! (Es posible que no esté en nuestra base de datos aún)",
       "username": {
         "tooShort": "El alias debe tener al menos 3 caracteres",
         "empty": "El alias no puede estar vacío"

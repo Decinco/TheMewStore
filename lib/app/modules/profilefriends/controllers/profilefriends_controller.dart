@@ -6,7 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:themewstore/app/data/models/friendLink.dart';
 import 'package:themewstore/app/data/models/userData.dart';
+import 'package:themewstore/generated/locales.g.dart';
 
+import '../../../data/models/album.dart';
 import '../../../data/models/card.dart';
 import '../../../data/models/expansion.dart';
 
@@ -16,9 +18,14 @@ class ProfilefriendsController extends GetxController {
 
   TextEditingController descriptionC = TextEditingController();
   TextEditingController usernameC = TextEditingController();
+  TextEditingController expansionCodeC = TextEditingController();
+  TextEditingController cardNoC = TextEditingController();
+  TextEditingController printedTotalC = TextEditingController();
+
+  RxBool editMode = false.obs;
 
   late Rx<Future<UserData>> userData;
-  late Rx<Future<List<Card>>> albumData;
+  late Rx<Future<List<Album>>> albumData;
   late Future<List<Expansion>> expansionData;
   late Rx<Future<List<FriendLink>>> friendList;
 
@@ -34,17 +41,26 @@ class ProfilefriendsController extends GetxController {
     return userData;
   }
 
-  Future<List<Card>> getAlbumData() async {
+  Future<List<Album>> getAlbumData() async {
     final response =
-        await client.from('album').select('card(*)').eq('user_id', user.id);
+        await client.from('album').select('*').eq('user_id', user.id);
 
-    List<Card> albumData = [];
+    List<Album> albumData = [];
 
     for (var item in response) {
-      albumData.add(Card.fromJson(item['card']));
+      albumData.add(Album.fromJson(item));
     }
 
     return albumData;
+  }
+
+  Future<Card> getAlbumCardData(int cardId) async {
+    final response =
+        await client.from('card').select('*').eq('card_id', cardId).single();
+
+    Card card = Card.fromJson(response);
+
+    return card;
   }
 
   Future<Expansion> getExpansionData(Card cardData) async {
@@ -157,7 +173,8 @@ class ProfilefriendsController extends GetxController {
   }
 
   void subscribeToFriendChanges() {
-    client.channel("friendsUserId")
+    client
+        .channel("friendsUserId")
         .onPostgresChanges(
             event: PostgresChangeEvent.all,
             schema: 'public',
@@ -172,19 +189,20 @@ class ProfilefriendsController extends GetxController {
             })
         .subscribe();
 
-    client.channel("friendsFriendId")
+    client
+        .channel("friendsFriendId")
         .onPostgresChanges(
-        event: PostgresChangeEvent.all,
-        schema: 'public',
-        table: 'friends',
-        filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'friend_id',
-            value: user.id),
-        callback: (PostgresChangePayload payload) {
-          friendList.value = getFriends();
-          friendList.refresh();
-        })
+            event: PostgresChangeEvent.all,
+            schema: 'public',
+            table: 'friends',
+            filter: PostgresChangeFilter(
+                type: PostgresChangeFilterType.eq,
+                column: 'friend_id',
+                value: user.id),
+            callback: (PostgresChangePayload payload) {
+              friendList.value = getFriends();
+              friendList.refresh();
+            })
         .subscribe();
   }
 
@@ -222,6 +240,58 @@ class ProfilefriendsController extends GetxController {
         .update({"status": "Canceled"})
         .eq('friend_id', user.id)
         .eq('user_id', friendId);
+  }
+
+  Future<void> deleteCard(int albumCardId) async {
+    await client.from('album').delete().eq('album_card_id', albumCardId);
+
+    albumData.value = getAlbumData();
+
+    albumData.refresh();
+  }
+
+  Future<void> addCard() async {
+    if (cardNoC.text.isEmpty ||
+        printedTotalC.text.isEmpty ||
+        expansionCodeC.text.isEmpty) {
+      Get.back();
+      Get.snackbar(LocaleKeys.errors_title_userError.tr,
+          LocaleKeys.errors_description_fieldsEmpty.tr);
+    } else {
+      var response = await client
+          .from('card')
+          .select('*,expansion!inner(*)')
+          .eq('expansion.expansion_code', expansionCodeC.text.toUpperCase())
+          .eq('expansion.printed_total', printedTotalC.text)
+          .eq('number_in_expansion', cardNoC.text);
+      if (response.isEmpty) {
+        Get.back();
+
+        Get.snackbar(LocaleKeys.errors_title_userError.tr,
+            LocaleKeys.errors_description_cardNotFound.tr);
+      } else {
+        Card card = Card.fromJson(response[0]);
+
+        await client.from('album').insert({
+          "user_id": user.id,
+          "card_id": card.cardId
+        });
+
+        cardNoC.text = "";
+        printedTotalC.text = "";
+        expansionCodeC.text = "";
+
+        Get.back();
+
+        albumData.value = getAlbumData();
+
+        albumData.refresh();
+      }
+
+      albumData.value = getAlbumData();
+
+      albumData.refresh();
+    }
   }
 
   @override
