@@ -216,4 +216,87 @@ class ShoppingcartController extends GetxController {
 
   // Obtener el número total de productos en el carrito
   int get totalItems => cartItems.length;
+
+  Future<void> placeOrder() async {
+    final user = client.auth.currentUser;
+    if (user == null) {
+      Get.snackbar('Error', 'Usuario no autenticado');
+      return;
+    }
+
+    if (filteredCartItems.isEmpty) {
+      Get.snackbar('Error', 'El carrito está vacío');
+      return;
+    }
+
+    try {
+      // 1. Crear el nuevo pedido
+      final orderResponse = await client.from('orders').insert({
+        'user_id': user.id,
+        'order_date': DateTime.now().toIso8601String(),
+        'delivery_date': DateTime.now().add(const Duration(days: 3)).toIso8601String(),
+        'final_price': totalAmount.round(),
+      }).select().single();
+
+      final int orderId = (orderResponse['order_id'] as num).toInt();
+
+      // Agrupar por product_id y sumar cantidades
+      final Map<int, int> productQuantities = {};
+      for (var item in filteredCartItems) {
+        final productId = item['product_id'];
+        final quantity = item['quantity'].value;
+        final int qty = quantity as int;
+        productQuantities.update(
+          productId,
+              (existing) => existing + qty,
+          ifAbsent: () => qty,
+        );
+      }
+
+      // Luego generar las operaciones únicas
+      final batchOperations = productQuantities.entries.map((entry) {
+        return client.from('orderdetails').insert({
+          'order_id': orderId,
+          'product_id': entry.key,
+          'quantity': entry.value,
+        });
+      }).toList();
+
+      await Future.wait(batchOperations);
+
+      // 3. Limpiar el carrito
+      await client.from('shopping_cart').delete().eq('user_id', user.id);
+
+      // 4. Actualizar UI y estado
+      cartItems.clear();
+      filteredCartItems.clear();
+      currentPage.value = 0;
+      Get.find<ProductController>().updateCartQuantityFromDB();
+
+      Get.snackbar('Éxito', 'Pedido realizado correctamente',
+          snackPosition: SnackPosition.BOTTOM);
+
+      // Get.offAllNamed('/orders');
+    } catch (e) {
+      Get.snackbar('Error', 'No se sudo: ${e.toString()}',
+          snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  Future<bool> _checkStockAvailability() async {
+    for (final item in filteredCartItems) {
+      final productId = item['product_id'];
+      final response = await client
+          .from('product_stock')
+          .select('stock')
+          .eq('product_id', productId)
+          .single();
+
+      final availableStock = response['stock'] as int;
+      if (item['quantity'].value > availableStock) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
