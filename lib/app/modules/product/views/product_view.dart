@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
 import '../../../../generated/locales.g.dart';
+import '../../../../uicon.dart';
 import '../../shoppingcart/controllers/shoppingcart_controller.dart';
 import '../../shoppingcart/views/shoppingcart_view.dart';
 import '../controllers/product_controller.dart';
@@ -77,38 +78,55 @@ class ProductView extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFEDD5E5),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsmenuburger,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
+        ),
         backgroundColor: const Color(0xFFEDD5E5),
         title: Text(LocaleKeys.theMewStore.tr,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
           // En el AppBar de ProductView
-          Obx(() => IconButton(
-              icon: Stack(
-                children: [
-                  const Icon(Icons.shopping_bag, color: Colors.black),
-                  if (controller.cartQuantity.value > 0)
-                    Positioned(
-                      right: 0,
-                      child: CircleAvatar(
-                        radius: 7,
-                        backgroundColor: Colors.red,
-                        child: Text(
-                          controller.cartQuantity.value > 9
-                              ? '+9'
-                              : '${controller.cartQuantity.value}',
-                          style: const TextStyle(
-                              fontSize: 10, color: Colors.white),
-                        ),
+          Obx(() => Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: IconButton(
+                  icon: Stack(
+                    children: [
+                      const Icon(
+                        UIcons.fibsshoppingbag,
+                        color: Color.fromRGBO(78, 78, 78, 1),
+                        size: 35,
                       ),
-                    ),
-                ],
-              ),
-              onPressed: () {
-                // Inyectamos el controlador antes de navegar
-                Get.put(ShoppingcartController());
-                Get.to(() => const ShoppingcartView());
-              })),
+                      if (controller.cartQuantity.value > 0)
+                        Positioned(
+                          right: 0,
+                          child: CircleAvatar(
+                            radius: 7,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              controller.cartQuantity.value > 9
+                                  ? '+9'
+                                  : '${controller.cartQuantity.value}',
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  onPressed: () {
+                    Get.toNamed("/shoppingcart");
+                  }))),
         ],
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -132,7 +150,8 @@ class ProductView extends StatelessWidget {
                         children: [
                           const SizedBox(height: 20),
                           Text(
-                            product['product_name'] ?? LocaleKeys.product_noName_product.tr,
+                            product['product_name'] ??
+                                LocaleKeys.product_noName_product.tr,
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
@@ -150,10 +169,13 @@ class ProductView extends StatelessWidget {
                                     height: 150),
                           ),
                           const SizedBox(height: 10),
-                          Text(product['comments'] ?? LocaleKeys.product_noName_comments.tr,
+                          Text(
+                              product['comments'] ??
+                                  LocaleKeys.product_noName_comments.tr,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 4),
-                          Text(product['description'] ?? LocaleKeys.product_noName_description.tr),
+                          Text(product['description'] ??
+                              LocaleKeys.product_noName_description.tr),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

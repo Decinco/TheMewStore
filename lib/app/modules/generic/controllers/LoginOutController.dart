@@ -54,6 +54,7 @@ class LogInOutController extends GetxController {
   void navigateBasedOnListener() {
     if (loggedIn.value) {
       Get.offAllNamed(firstpage);
+      Get.find<FriendNotificationController>().subscribeToNotifs();
     } else {
       Get.offAllNamed('/login');
     }

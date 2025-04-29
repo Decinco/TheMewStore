@@ -17,12 +17,6 @@ class MapView extends GetView<MapController> {
       drawer: Hamburguesa(),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEDD5E5),
-        leading: Builder(
-          builder: (ctx) => IconButton(
-            icon: const Icon(UIcons.fibsmenuburger, color: Colors.black),
-            onPressed: () => Scaffold.of(ctx).openDrawer(),
-          ),
-        ),
         title: GestureDetector(
           onTap: () => Get.toNamed('/home'),
           child: Text(
@@ -30,12 +24,32 @@ class MapView extends GetView<MapController> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         ),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsmenuburger,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
+        ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(UIcons.fibsexpandarrows, color: Colors.black),
-            onPressed: controller.onZoomFullScreen,
-          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsexpandarrows,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => controller.onZoomFullScreen,
+            ),
+          )
         ],
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -230,7 +244,8 @@ class MapView extends GetView<MapController> {
             ),
             const SizedBox(height: 8),
             Text(
-              location['description_user'] ?? LocaleKeys.map_noName_description.tr,
+              location['description_user'] ??
+                  LocaleKeys.map_noName_description.tr,
               style: const TextStyle(fontSize: 14),
             ),
           ],

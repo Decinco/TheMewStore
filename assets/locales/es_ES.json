@@ -80,10 +80,11 @@
       "cardNo": "Núm. Carta",
       "printedTotal": "Total"
     },
-    "noCardsInAlbum": "@user no tiene cartas en su álbum.",
+    "noCardsInAlbum": "Este usuario no tiene cartas en su álbum.",
     "addNewCard": "Añadir Nueva",
     "submit": "Enviar",
-    "addCard": "Añadir"
+    "addCard": "Añadir",
+    "delete": "Eliminar"
   },
   "friends": {
     "removeFriend": {
@@ -91,6 +92,8 @@
       "remove": "Eliminar",
       "cancel": "Cancelar"
     },
+    "incomingRequest": "Te ha enviado una solicitud de amistad.",
+    "outgoingRequest": "Aún no ha revisado tu solicitud de amistad.",
     "noFriends": "No tienes amigos todavía. ¡Añade a uno!",
     "addFriend": "Añadir Amigo",
     "noInfo": {

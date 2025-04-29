@@ -50,6 +50,7 @@ dependencies:
   path: ^1.9.0
   dotted_border: ^2.1.0
   fancy_shimmer_image: ^2.0.3
+  flutter_launcher_icons: ^0.14.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

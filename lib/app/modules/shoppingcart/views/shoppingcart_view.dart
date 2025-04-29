@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:themewstore/app/modules/generic/sidebar/hamburguesa.dart';
+import '../../../../generated/locales.g.dart';
+import '../../../../uicon.dart';
 import '../controllers/shoppingcart_controller.dart';
 
 class ShoppingcartView extends GetView<ShoppingcartController> {
@@ -13,50 +15,43 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
       backgroundColor: const Color(0xFFEDD5E5),
       drawer: Hamburguesa(),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsmenuburger,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
+        ),
         backgroundColor: const Color(0xFFEDD5E5),
         elevation: 0,
         title: GestureDetector(
           onTap: () {
             Get.offAllNamed('/home'); // <-- Asegúrate de que la ruta exista
           },
-          child: const Text(
-            'Shopping cart',
+          child: Text(
+              LocaleKeys.shoppingcart_title.tr,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         ),
         centerTitle: true,
         actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_bag,
-                    color: Colors.black, size: 28),
-                onPressed: () {},
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibscross,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
               ),
-              Obx(() {
-                return controller.cartItems.isEmpty
-                    ? Container()
-                    : Positioned(
-                        right: 6,
-                        top: 6,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            controller.filteredCartItems.length.toString(),
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      );
-              }),
-            ],
-          ),
+              onPressed: () => Get.back(),
+            ),
+          )
         ],
       ),
       body: Column(
@@ -64,9 +59,9 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
           Expanded(
             child: Obx(() {
               if (controller.filteredCartItems.isEmpty) {
-                return const Center(
+                return Center(
                   child: Text(
-                    "No hay ningún producto disponible",
+                      LocaleKeys.shoppingcart_empty.tr,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 );
@@ -131,11 +126,11 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                             backgroundColor:
                                 Colors.red.shade500, // Fondo rojo oscuro
                           ),
-                          label: const Text.rich(
+                          label: Text.rich(
                             TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'Remove',
+                                  text: LocaleKeys.shoppingcart_remove.tr,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -159,8 +154,8 @@ class ShoppingcartView extends GetView<ShoppingcartController> {
                               return Text.rich(
                                 TextSpan(
                                   children: [
-                                    const TextSpan(
-                                      text: 'Pay ',
+                                    TextSpan(
+                                      text: '${LocaleKeys.shoppingcart_checkout.tr} ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),

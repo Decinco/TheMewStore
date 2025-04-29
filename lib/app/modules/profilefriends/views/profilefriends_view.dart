@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 
 import 'package:get/get.dart';
-import 'package:path/path.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:themewstore/app/data/models/expansion.dart';
 import 'package:themewstore/app/data/models/friendLink.dart';
@@ -160,7 +159,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                   } else {
                     UserData userData = snapshot.data!;
                     return Text(
-                      userData.userName ?? LocaleKeys.profile_noInfo_username.tr,
+                      userData.userName ??
+                          LocaleKeys.profile_noInfo_username.tr,
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -386,7 +386,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                       } else {
                         UserData userData = snapshot.data!;
                         return Text(
-                          '${userData.description != null ? '"${userData.description}"' : 'Make your own description!'}\n\n\n',
+                          '${userData.description != null ? '"${userData.description}"' : LocaleKeys.profile_noInfo_description.tr}\n\n\n',
                           maxLines: 4,
                           style: TextStyle(
                               fontSize: 14,
@@ -485,7 +485,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
             size: Size(5, 5),
           ),
           Row(children: [
-            Text("Album",
+            Text(LocaleKeys.profile_album.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontFamily: "Inter",
@@ -649,7 +649,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Are you sure you want to delete this card?",
+                                  LocaleKeys.profile_modify_deleteCard.tr,
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -671,7 +671,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                         fontSize: 20,
                                         fontFamily: "Inter"),
                                   ),
-                                  child: const Text("Delete"),
+                                  child: Text(LocaleKeys.profile_album.tr),
                                 ),
                               ],
                             ))),
@@ -915,60 +915,51 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
   }
 
   Widget friendsList(Future<List<FriendLink>> friendList) {
-    return Column(
-      children: [
-        Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    label: Text(
-                      "Search for friends",
-                      style: TextStyle(color: Color.fromRGBO(152, 151, 151, 1)),
-                    ),
-                    border: InputBorder.none,
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
-                ))),
-        Container(
-          width: double.infinity,
-          height: 1,
-          color: Color.fromRGBO(202, 196, 208, 1),
-        ),
-        FutureBuilder(
-            future: friendList,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox(
-                    height: 580,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 8,
-                      itemBuilder: (context, index) {
-                        return friendCardLoading();
-                      },
-                    ));
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else if (!snapshot.hasData) {
-                return Text('No data found');
-              } else {
-                List<FriendLink> friendList = snapshot.data!;
-                return SizedBox(
-                    child: ListView.builder(
-                  shrinkWrap: true,
+    return FutureBuilder(
+        future: friendList,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox(
+                height: 580,
+                child: ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: friendList.length,
+                  itemCount: 8,
                   itemBuilder: (context, index) {
-                    return friendCard(friendList[index]);
+                    return friendCardLoading();
                   },
                 ));
-              }
-            })
-      ],
-    );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData) {
+            return Text('No data found');
+          } else {
+            List<FriendLink> friendList = snapshot.data!;
+            if (friendList.isEmpty) {
+              return Container(
+                  height: double.infinity,
+                  child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Center(
+                          child: Text(LocaleKeys.friends_noFriends.tr,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(78, 78, 78, 1))))));
+            } else {
+              return SizedBox(
+                  child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: friendList.length,
+                itemBuilder: (context, index) {
+                  return friendCard(friendList[index]);
+                },
+              ));
+            }
+          }
+        });
   }
 
   Widget friendCard(FriendLink friendLink) {
@@ -1083,7 +1074,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                         height: 11,
                       ),
                       Text(
-                        friendData.userName ?? 'No Name',
+                        friendData.userName ??
+                            LocaleKeys.friends_noInfo_username.tr,
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -1092,7 +1084,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                       Text(
                         friendData.description != null
                             ? '"${friendData.description}"'
-                            : 'No description',
+                            : LocaleKeys.friends_noInfo_description.tr,
                         style: TextStyle(
                             fontSize: 11,
                             color: Color.fromRGBO(120, 120, 120, 1),
@@ -1120,7 +1112,11 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Are you sure you want to remove ${friendData.userName} from your friends list?",
+                                            LocaleKeys
+                                                .friends_removeFriend_prompt
+                                                .trParams({
+                                              "friend": friendData.userName
+                                            }),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -1149,7 +1145,9 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                                       fontSize: 20,
                                                       fontFamily: "Inter"),
                                                 ),
-                                                child: const Text("Remove"),
+                                                child: Text(LocaleKeys
+                                                    .friends_removeFriend_remove
+                                                    .tr),
                                               ),
                                               SizedBox(width: 10),
                                               ElevatedButton(
@@ -1169,7 +1167,9 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                                                       fontSize: 20,
                                                       fontFamily: "Inter"),
                                                 ),
-                                                child: const Text("Cancel"),
+                                                child: Text(LocaleKeys
+                                                    .friends_removeFriend_cancel
+                                                    .tr),
                                               ),
                                             ],
                                           )
@@ -1218,7 +1218,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     height: 11,
                   ),
                   Text(
-                    friendData.userName ?? 'No Name',
+                    friendData.userName ??
+                        LocaleKeys.friends_noInfo_username.tr,
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -1226,7 +1227,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                         color: Color.fromRGBO(78, 78, 78, 1)),
                   ),
                   Text(
-                    "Has sent you a friend request",
+                    LocaleKeys.friends_incomingRequest.tr,
                     style: TextStyle(
                         fontSize: 11,
                         fontStyle: FontStyle.italic,
@@ -1299,7 +1300,8 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                     height: 11,
                   ),
                   Text(
-                    friendData.userName ?? 'No Name',
+                    friendData.userName ??
+                        LocaleKeys.friends_noInfo_username.tr,
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -1307,7 +1309,7 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                         color: Color.fromRGBO(78, 78, 78, 1)),
                   ),
                   Text(
-                    "Has not accepted your friend request yet",
+                    LocaleKeys.friends_outgoingRequest.tr,
                     style: TextStyle(
                         fontSize: 11,
                         fontStyle: FontStyle.italic,
@@ -1337,7 +1339,20 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
     return Scaffold(
         drawer: Hamburguesa(),
         appBar: AppBar(
-          title: const Text('Profile & Friends',
+          leading: Builder(
+            builder: (context) => Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: IconButton(
+                icon: const Icon(
+                  UIcons.fibsmenuburger,
+                  size: 35,
+                  color: Color.fromRGBO(78, 78, 78, 1),
+                ),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+            ),
+          ),
+          title: Text(LocaleKeys.profile_title.tr,
               style: TextStyle(
                 fontSize: 24,
                 fontFamily: "Inter",
@@ -1346,6 +1361,19 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
               )),
           backgroundColor: Color.fromARGB(255, 237, 213, 229),
           centerTitle: true,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: IconButton(
+                icon: const Icon(
+                  UIcons.fibsQR,
+                  size: 35,
+                  color: Color.fromRGBO(78, 78, 78, 1),
+                ),
+                onPressed: () => Get.toNamed("/addfriend"),
+              ),
+            )
+          ],
         ),
         body: Container(
             color: Color.fromARGB(255, 237, 213, 229),
@@ -1356,11 +1384,11 @@ class ProfilefriendsView extends GetView<ProfilefriendsController> {
                   TabBar(
                     tabs: [
                       Tab(
-                        text: "Profile",
+                        text: LocaleKeys.profile_profile.tr,
                         icon: Icon(UIcons.fibsuser),
                       ),
                       Tab(
-                        text: "Friends",
+                        text: LocaleKeys.profile_friends.tr,
                         icon: Icon(UIcons.fibsusers),
                       )
                     ],

@@ -108,7 +108,6 @@ class ProfilefriendsController extends GetxController {
   }
 
   Future<void> changeDescription() async {
-    ;
     UserData data = await userData.value;
     if (descriptionC.text != data.description) {
       if (usernameC.text.isEmpty) {
@@ -229,7 +228,10 @@ class ProfilefriendsController extends GetxController {
   Future<void> acceptFriend(String friendId) async {
     await client
         .from('friends')
-        .update({"status": "Linked"})
+        .update({
+          "status": "Linked",
+          "last_interaction": DateTime.now().toIso8601String()
+        })
         .eq('friend_id', user.id)
         .eq('user_id', friendId);
   }
@@ -237,7 +239,10 @@ class ProfilefriendsController extends GetxController {
   Future<void> cancelFriend(String friendId) async {
     await client
         .from('friends')
-        .update({"status": "Canceled"})
+        .update({
+          "status": "Canceled",
+          "last_interaction": DateTime.now().toIso8601String()
+        })
         .eq('friend_id', user.id)
         .eq('user_id', friendId);
   }
@@ -272,10 +277,9 @@ class ProfilefriendsController extends GetxController {
       } else {
         Card card = Card.fromJson(response[0]);
 
-        await client.from('album').insert({
-          "user_id": user.id,
-          "card_id": card.cardId
-        });
+        await client
+            .from('album')
+            .insert({"user_id": user.id, "card_id": card.cardId});
 
         cardNoC.text = "";
         printedTotalC.text = "";

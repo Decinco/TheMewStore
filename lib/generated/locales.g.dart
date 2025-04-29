@@ -76,9 +76,12 @@ class LocaleKeys {
   static const profile_addNewCard = 'profile_addNewCard';
   static const profile_submit = 'profile_submit';
   static const profile_addCard = 'profile_addCard';
+  static const profile_delete = 'profile_delete';
   static const friends_removeFriend_prompt = 'friends_removeFriend_prompt';
   static const friends_removeFriend_remove = 'friends_removeFriend_remove';
   static const friends_removeFriend_cancel = 'friends_removeFriend_cancel';
+  static const friends_incomingRequest = 'friends_incomingRequest';
+  static const friends_outgoingRequest = 'friends_outgoingRequest';
   static const friends_noFriends = 'friends_noFriends';
   static const friends_addFriend = 'friends_addFriend';
   static const friends_noInfo_username = 'friends_noInfo_username';
@@ -125,11 +128,6 @@ class LocaleKeys {
   static const errors_description_outOfStock = 'errors_description_outOfStock';
   static const errors_description_amountLessThanOne =
       'errors_description_amountLessThanOne';
-  static const errors_burger_theMewStore = 'errors_burger_theMewStore';
-  static const errors_burger_shoppingCart = 'errors_burger_shoppingCart';
-  static const errors_burger_map = 'errors_burger_map';
-  static const errors_burger_profileFriends = 'errors_burger_profileFriends';
-  static const errors_burger_logOut = 'errors_burger_logOut';
   static const burger_theMewStore = 'burger_theMewStore';
   static const burger_shoppingCart = 'burger_shoppingCart';
   static const burger_map = 'burger_map';
@@ -201,14 +199,17 @@ class Locales {
     'profile_textBox_expansion': 'Expansion Code',
     'profile_textBox_cardNo': 'Card No.',
     'profile_textBox_printedTotal': 'Total',
-    'profile_noCardsInAlbum': '@user has no cards in their album yet.',
+    'profile_noCardsInAlbum': 'This user has no cards in their album yet.',
     'profile_addNewCard': 'Add New Card',
     'profile_submit': 'Submit',
     'profile_addCard': 'Add',
+    'profile_delete': 'Delete',
     'friends_removeFriend_prompt':
         'Are you sure you want to remove @friend from your friends list?',
     'friends_removeFriend_remove': 'Remove',
     'friends_removeFriend_cancel': 'Cancel',
+    'friends_incomingRequest': 'Has sent you a friend request.',
+    'friends_outgoingRequest': 'Hasn\'t checked your friend request yet.',
     'friends_noFriends': 'No friends yet. Start adding some!',
     'friends_addFriend': 'Add Friend',
     'friends_noInfo_username': 'Friend',
@@ -249,11 +250,11 @@ class Locales {
     'errors_description_outOfStock':
         'There\'s no more stock available for this product.',
     'errors_description_amountLessThanOne': 'The amount must be at least 1.',
-    'errors_burger_theMewStore': 'The Mew Store',
-    'errors_burger_shoppingCart': 'Shopping Cart',
-    'errors_burger_map': 'Store Map',
-    'errors_burger_profileFriends': 'Profile & Friends',
-    'errors_burger_logOut': 'Log Out',
+    'burger_theMewStore': 'The Mew Store',
+    'burger_shoppingCart': 'Shopping Cart',
+    'burger_map': 'Store Map',
+    'burger_profileFriends': 'Profile & Friends',
+    'burger_logOut': 'Log Out',
   };
   static const es_ES = {
     'theMewStore': 'The Mew Store',
@@ -318,14 +319,17 @@ class Locales {
     'profile_textBox_expansion': 'Cod. Expan.',
     'profile_textBox_cardNo': 'Núm. Carta',
     'profile_textBox_printedTotal': 'Total',
-    'profile_noCardsInAlbum': '@user no tiene cartas en su álbum.',
+    'profile_noCardsInAlbum': 'Este usuario no tiene cartas en su álbum.',
     'profile_addNewCard': 'Añadir Nueva',
     'profile_submit': 'Enviar',
     'profile_addCard': 'Añadir',
+    'profile_delete': 'Eliminar',
     'friends_removeFriend_prompt':
         '¿Estás seguro de que quieres eliminar a @friend de tu lista de amigos?',
     'friends_removeFriend_remove': 'Eliminar',
     'friends_removeFriend_cancel': 'Cancelar',
+    'friends_incomingRequest': 'Te ha enviado una solicitud de amistad.',
+    'friends_outgoingRequest': 'Aún no ha revisado tu solicitud de amistad.',
     'friends_noFriends': 'No tienes amigos todavía. ¡Añade a uno!',
     'friends_addFriend': 'Añadir Amigo',
     'friends_noInfo_username': 'Amigo',

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../generated/locales.g.dart';
 import '../../product/controllers/product_controller.dart';
 
 extension CarouselControllerExtension on CarouselController {
@@ -117,7 +118,7 @@ class ShoppingcartController extends GetxController {
 
       // 3) (opcional) refrescar totalAmount u otros cálculos, pero sin fetchCartItems()
     } else {
-      Get.snackbar('Sin stock', 'No hay más unidades disponibles');
+      Get.snackbar(LocaleKeys.errors_title_physicalError.tr, LocaleKeys.errors_description_outOfStock.tr);
     }
   }
 
@@ -133,7 +134,7 @@ class ShoppingcartController extends GetxController {
         item['price'],
       );
     } else {
-      Get.snackbar('Cantidad mínima', 'La cantidad no puede ser menor que 1',);
+      Get.snackbar(LocaleKeys.errors_title_userError.tr, LocaleKeys.errors_description_amountLessThanOne.tr,);
     }
   }
 

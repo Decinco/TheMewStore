@@ -1,6 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:themewstore/generated/locales.g.dart';
 
 import '../../../data/models/friendLink.dart';
 
@@ -16,10 +17,10 @@ class FriendNotificationController extends GetxController {
     firstpage = dotenv.env['DEFAULT_FIRST_PAGE'] ?? '/home';
 
     super.onInit();
-    _subscribeToNotifs();
+    subscribeToNotifs();
   }
 
-  void _subscribeToNotifs() {
+  void subscribeToNotifs() {
     client.channel("globalNotifications")
         .onPostgresChanges(
         event: PostgresChangeEvent.all,
@@ -31,9 +32,8 @@ class FriendNotificationController extends GetxController {
             value: client.auth.currentUser!.id),
         callback: (PostgresChangePayload payload) {
           FriendLink friendLink = FriendLink.fromJson(payload.newRecord);
-
           if (friendLink.status == Status.Pending) {
-            Get.snackbar("Friend Request", "You have a new friend request!");
+            Get.snackbar(LocaleKeys.notifs_newFriendRequest_title.tr, LocaleKeys.notifs_newFriendRequest_message.tr);
           }
         })
         .subscribe();

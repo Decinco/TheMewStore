@@ -80,10 +80,11 @@
       "cardNo": "Card No.",
       "printedTotal": "Total"
     },
-    "noCardsInAlbum": "@user has no cards in their album yet.",
+    "noCardsInAlbum": "This user has no cards in their album yet.",
     "addNewCard": "Add New Card",
     "submit": "Submit",
-    "addCard": "Add"
+    "addCard": "Add",
+    "delete": "Delete"
   },
   "friends": {
     "removeFriend": {
@@ -91,6 +92,8 @@
       "remove": "Remove",
       "cancel": "Cancel"
     },
+    "incomingRequest": "Has sent you a friend request.",
+    "outgoingRequest": "Hasn't checked your friend request yet.",
     "noFriends": "No friends yet. Start adding some!",
     "addFriend": "Add Friend",
     "noInfo": {
@@ -142,13 +145,13 @@
       "codeRequired": "Code is required",
       "outOfStock": "There's no more stock available for this product.",
       "amountLessThanOne": "The amount must be at least 1."
-    },
-    "burger": {
-      "theMewStore": "The Mew Store",
-      "shoppingCart": "Shopping Cart",
-      "map": "Store Map",
-      "profileFriends": "Profile & Friends",
-      "logOut": "Log Out"
     }
+  },
+  "burger": {
+    "theMewStore": "The Mew Store",
+    "shoppingCart": "Shopping Cart",
+    "map": "Store Map",
+    "profileFriends": "Profile & Friends",
+    "logOut": "Log Out"
   }
 }

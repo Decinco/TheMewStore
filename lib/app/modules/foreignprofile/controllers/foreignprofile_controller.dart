@@ -1,10 +1,7 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../data/models/album.dart';
 import '../../../data/models/card.dart';
 import '../../../data/models/expansion.dart';
 import '../../../data/models/userData.dart';
@@ -15,16 +12,14 @@ class ForeignprofileController extends GetxController {
 
   ForeignprofileController(this.uuid); // Constructor que recibe el UUID
 
-  late Rx<Future<UserData>> friendData;
-  late Rx<Future<List<Expansion>>> expansionData;
-  late Rx<Future<List<Card>>> albumData;
+  late Future<UserData> friendData;
+  late Future<List<Album>> albumData;
 
   @override
   void onInit() {
     super.onInit();
-    friendData = getFriendData(uuid).obs;
-    expansionData = getAllExpansions().obs;
-    albumData = getAlbumData(uuid).obs;
+    friendData = getFriendData(uuid);
+    albumData = getAlbumData(uuid);
   }
 
   Future<UserData> getFriendData(String friendUuid) async {
@@ -45,19 +40,25 @@ class ForeignprofileController extends GetxController {
     return Expansion.fromJson(response);
   }
 
-  Future<List<Card>> getAlbumData(String friendUuid) async {
-    final response = await client
-        .from('album')
-        .select('card(*)')
-        .eq('user_id', friendUuid);
+  Future<List<Album>> getAlbumData(String friendUuid) async {
+    final response =
+    await client.from('album').select('*').eq('user_id', friendUuid);
 
-    if (response.isEmpty) return [];
+    List<Album> albumData = [];
 
-    return response.map<Card>((item) => Card.fromJson(item['card'])).toList();
+    for (var item in response) {
+      albumData.add(Album.fromJson(item));
+    }
+
+    return albumData;
   }
 
-  Future<List<Expansion>> getAllExpansions() async {
-    final response = await client.from('expansion').select('*');
-    return response.map<Expansion>((item) => Expansion.fromJson(item)).toList();
+  Future<Card> getAlbumCardData(int cardId) async {
+    final response =
+    await client.from('card').select('*').eq('card_id', cardId).single();
+
+    Card card = Card.fromJson(response);
+
+    return card;
   }
 }

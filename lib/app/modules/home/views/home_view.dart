@@ -56,9 +56,18 @@ class HomeView extends GetView<HomeController> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(237, 213, 229, 1),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                UIcons.fibsmenuburger,
+                size: 35,
+                color: Color.fromRGBO(78, 78, 78, 1),
+              ),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -70,13 +79,16 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: Image.asset(
-              'assets/images/themewstore/themewstore.png',
-              width: 24,
-              height: 24,
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: Image.asset(
+                'assets/images/themewstore/themewstore.png',
+                width: 35,
+                height: 35,
+              ),
+              onPressed: () => Get.toNamed("/addfriend"),
             ),
-            onPressed: () {},
           ),
         ],
       ),

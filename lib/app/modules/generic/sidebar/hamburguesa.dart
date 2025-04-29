@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_common/get_reset.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:themewstore/generated/locales.g.dart';
 
@@ -52,7 +51,7 @@ class Hamburguesa extends StatelessWidget {
             title: Text(LocaleKeys.burger_shoppingCart.tr),
             onTap: () {
               Navigator.pop(context);
-              Get.offAllNamed('/shoppingcart');
+              Get.toNamed('/shoppingcart');
             },
           ),
           ListTile(
