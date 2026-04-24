@@ -142,13 +142,13 @@
         "noNumber": "Password must contain at least one number",
         "noSpecialChar": "Password must contain at least one special character"
       },
+      "friendCodeNotFound": "There's no user with that friend code!",
+      "friendAlreadyAdded": "This user is already your friend or has a pending request.",
+      "cardNotFound": "Card does not exist! (It may not be in our database yet)",
       "username": {
         "tooShort": "Username must be at least 3 characters long",
         "empty": "Username cannot be empty"
       },
-      "friendCodeNotFound": "There's no user with that friend code!",
-      "friendAlreadyAdded": "This user is already your friend or has a pending request.",
-      "cardNotFound": "Card does not exist! (It may not be in our database yet)",
       "emailRequired": "Email is required",
       "codeRequired": "Code is required",
       "outOfStock": "There's no more stock available for this product.",
